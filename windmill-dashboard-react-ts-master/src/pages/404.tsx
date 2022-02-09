@@ -1,4 +1,5 @@
 import { ForbiddenIcon } from '../icons';
+import React from 'react'
 
 function Page404() {
   return (

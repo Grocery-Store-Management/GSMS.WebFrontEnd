@@ -4,7 +4,7 @@
     "module": "esnext",
     "allowJs": true,
     "checkJs": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "outDir": "target",
     "strict": true,
     "typeRoots": [

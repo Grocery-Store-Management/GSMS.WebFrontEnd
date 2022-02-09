@@ -1,4 +1,5 @@
 import { ReactSVGElement } from 'react';
+import React from 'react'
 import { Card, CardBody } from '@windmill/react-ui';
 
 interface IInfoCard{

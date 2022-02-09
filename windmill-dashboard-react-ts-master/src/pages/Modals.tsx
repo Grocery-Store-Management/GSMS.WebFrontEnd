@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import React from 'react';
 import PageTitle from '../components/Typography/PageTitle';
 import CTA from '../components/CTA';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
