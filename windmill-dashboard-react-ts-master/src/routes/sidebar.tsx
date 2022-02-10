@@ -6,7 +6,7 @@
  * `routes/index.js`
  */
 
-interface IRoute{
+interface IRoute {
   path?: string
   icon?: string
   name: string
@@ -14,70 +14,33 @@ interface IRoute{
   exact?: boolean
 };
 
-const routes: IRoute[] =[
+const routes: IRoute[] = [
   {
     path: '/app/dashboard', // the url
     icon: 'HomeIcon', // the component being exported from icons/index.js
-    name: 'Home', // name that appear in Sidebar
+    name: 'Trang chủ', // name that appear in Sidebar
   },
-  // {
-  //   path: '/app/forms',
-  //   icon: 'FormsIcon',
-  //   name: 'Forms',
-  // },
-  // {
-  //   path: '/app/cards',
-  //   icon: 'CardsIcon',
-  //   name: 'Cards',
-  // },
-  {
-    path: '/app/charts',
-    icon: 'ChartsIcon',
-    name: 'Reports',
-  },
-  // {
-  //   path: '/app/buttons',
-  //   icon: 'ButtonsIcon',
-  //   name: 'Buttons',
-  // },
-  // {
-  //   path: '/app/modals',
-  //   icon: 'ModalsIcon',
-  //   name: 'Modals',
-  // },
   {
     path: '/app/tables',
     icon: 'TablesIcon',
-    name: 'Billings',
+    name: 'Xuất hóa đơn',
   },
   {
-    icon: 'PagesIcon',
-    name: 'Pages',
-    routes: [
-      // submenu
-      {
-        path: '/login',
-        name: 'Login',
-      },
-      {
-        path: '/create-account',
-        name: 'Create account',
-      },
-      {
-        path: '/forgot-password',
-        name: 'Forgot password',
-      },
-      {
-        path: '/app/404',
-        name: '404',
-      },
-      {
-        path: '/app/blank',
-        name: 'Blank',
-      },
-    ],
+    path: '/app/charts',
+    icon: 'ChartsIcon',
+    name: 'Báo cáo',
+  },
+  {
+    path: '/app/employee',
+    icon: 'ModalsIcon',
+    name: 'Nhân viên',
+  },
+  {
+    path: '/app/stock',
+    icon: 'FormsIcon',
+    name: 'Kho',
   },
 ];
 
-export type {IRoute};
+export type { IRoute };
 export default routes;
