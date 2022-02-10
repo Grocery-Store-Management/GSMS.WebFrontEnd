@@ -5,7 +5,7 @@
     "allowJs": true,
     "checkJs": true,
     "jsx": "react",
-    "outDir": "target",
+    "outDir": "dist",
     "strict": true,
     "typeRoots": [
       "./src/@types"
@@ -23,7 +23,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
   },
   "exclude": [
     "./postcss.config.js",
