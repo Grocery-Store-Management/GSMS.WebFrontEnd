@@ -15,7 +15,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "tsc": "tsc",
-    "postinstall": "npm run start"
   },
   "dependencies": {
     "@testing-library/jest-dom": "4.2.4",
