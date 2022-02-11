@@ -50,7 +50,7 @@ function Brand() {
     getBrandList().then((res: any) => {
       if (res) { setResponse(res); setResult(res.length) }
     })
-  })
+  }, [])
 
   useEffect(() => {
     if (response) {
