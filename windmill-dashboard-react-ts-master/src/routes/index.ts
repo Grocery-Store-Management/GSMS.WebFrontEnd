@@ -12,7 +12,7 @@ const Page404 = lazy(() => import('../pages/404'));
 const Blank = lazy(() => import('../pages/Blank'));
 const Stock = lazy(() => import('../pages/Stock'));
 const Employee = lazy(() => import('../pages/Employee'));
-
+const Brand = lazy(() => import('../pages/Brand'));
 
 /**
  * ⚠ These are internal routes!
@@ -52,7 +52,12 @@ const routes = [
   {
     path: '/blank',
     component: Blank,
+  },
+  {
+    path: '/brand',
+    component: Brand,
   }
+
 ];
 
 export default routes;

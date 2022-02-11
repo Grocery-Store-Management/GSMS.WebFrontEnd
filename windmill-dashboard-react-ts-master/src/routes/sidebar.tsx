@@ -38,7 +38,12 @@ const routes: IRoute[] = [
   {
     path: '/app/stock',
     icon: 'FormsIcon',
-    name: 'Kho',
+    name: 'Kho', 
+  },
+  {
+    path: '/app/brand',
+    icon: 'PagesIcon',
+    name: 'Chuỗi cửa hàng', 
   },
 ];
 
