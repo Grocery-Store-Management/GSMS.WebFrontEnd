@@ -40,6 +40,11 @@ const routes: IRoute[] = [
     icon: 'FormsIcon',
     name: 'Kho', 
   },
+  {
+    path: '/app/brand',
+    icon: 'PagesIcon',
+    name: 'Chuỗi cửa hàng', 
+  },
 ];
 
 export type { IRoute };
