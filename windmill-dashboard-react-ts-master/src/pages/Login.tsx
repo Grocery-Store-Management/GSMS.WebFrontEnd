@@ -1,11 +1,28 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import React from 'react';
 import ImageLight from '../assets/img/login-office.jpeg';
 import ImageDark from '../assets/img/login-office-dark.jpeg';
-import { GithubIcon, TwitterIcon } from '../icons';
+import { GithubIcon, GoogleIcon } from '../icons';
 import { Label, Input, Button } from '@windmill/react-ui';
+import { firebase } from '../utils/firebase/firebase';
 
 function Login() {
+  const history = useHistory();
+
+  const SignInWithGoogle = () => {
+    var google_provider = new firebase.auth.GoogleAuthProvider();
+
+    firebase.auth().signInWithPopup(google_provider)
+    .then((response) => {
+      const user = response.user;
+      localStorage.setItem("USER", JSON.stringify(user));
+      history.push('/app');
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
       <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
@@ -37,7 +54,7 @@ function Login() {
                 <Input css="" className="mt-1" type="password" placeholder="***************" />
               </Label>
 
-            <Link to="/app">
+              <Link to="/app">
                 <Button className="mt-4" block tag={"button"} >
                   Log in
                 </Button>
@@ -45,13 +62,13 @@ function Login() {
 
               <hr className="my-8" />
 
-              <Button block layout="outline">
-                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Github
+              <Button block layout="outline" onClick={SignInWithGoogle}>
+                <GoogleIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                Google
               </Button>
               <Button className="mt-4" block layout="outline">
-                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Twitter
+                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                Github
               </Button>
 
               <p className="mt-4">
