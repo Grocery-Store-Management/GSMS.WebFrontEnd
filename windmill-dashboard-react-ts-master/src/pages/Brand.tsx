@@ -62,7 +62,7 @@ function Brand() {
     <div className="container mt-3">
       <div className="row">
         <div className="col col-md-7">
-          <SectionTitle>brands List</SectionTitle>
+          <SectionTitle>Quản lý chuỗi cửa hàng</SectionTitle>
           <TableContainer className="mb-8">
             <Table>
               <TableHeader>
