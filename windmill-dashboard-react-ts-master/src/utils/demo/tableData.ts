@@ -1,3 +1,5 @@
+
+
 export const status = {
   AVAILABLE: "Còn hàng",
   OUT_OF_STOCK: "Hết hàng",
@@ -7,12 +9,28 @@ export const status = {
   PTO: "Nghỉ phép",
   DECOMMISSIONED: "Đã nghỉ việc"
 }
+
+export const status_mapping : { [key: string]: any } = {
+  1: status.AVAILABLE,
+  2: status.OUT_OF_STOCK,
+  3: status.ALMOST_OUT_OF_STOCK,
+  4: status.BEST_SELLER,
+  5: status.WORKING,
+  6: status.PTO,
+  7: status.DECOMMISSIONED
+}
 export const type = {
   SUCCESS: "success",
   PRIMARY: "primary",
   NEUTRAL: "neutral",
   DANGER: "danger",
   WARNING: "warning"
+}
+export const type_mapping : { [key: string]: any } = {
+  1: type.NEUTRAL,
+  2: type.DANGER,
+  3: type.WARNING,
+  4: type.SUCCESS
 }
 
 export const category = {
