@@ -50,49 +50,44 @@ function Brand() {
     getBrandList().then((res: any) => {
       if (res) { setResponse(res); setResult(res.length) }
     })
-  })
+  }, [])
 
   useEffect(() => {
-    setDataTable1(response.slice((pageTable1 - 1) * resultsPerPage, pageTable1 * resultsPerPage))
-  }, [pageTable1])
+    if (response) {
+      setDataTable1(response.slice((pageTable1 - 1) * resultsPerPage, pageTable1 * resultsPerPage))
+    }
+  }, [response, pageTable1])
 
   return (
     <div className="container mt-3">
       <div className="row">
         <div className="col col-md-7">
-          <SectionTitle>Products List</SectionTitle>
+          <SectionTitle>Quản lý chuỗi cửa hàng</SectionTitle>
           <TableContainer className="mb-8">
             <Table>
               <TableHeader>
                 <tr>
-                  <TableCell>Tên hàng</TableCell>
-                  <TableCell>Giá</TableCell>
+                  <TableCell>Tên chuỗi Cửa hàng</TableCell>
                   <TableCell>Tình trạng</TableCell>
                   <TableCell>Tương tác</TableCell>
                 </tr>
               </TableHeader>
               <TableBody>
-                {dataTable1.map((product, i) => (
+                {dataTable1.map((brand, i) => (
                   <TableRow key={i}>
                     <TableCell>
                       <div className="flex items-center text-sm">
-                        {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
+                        {/* <Avatar className="hidden mr-3 md:block" src={brand.avatar} alt="brand avatar" /> */}
                         <div>
-                          <p className="font-semibold">{product.name}</p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">
-                            {product.category}
-                          </p>
+                          <p className="font-semibold">{brand.name}</p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm">$ {product.price}</span>
-                    </TableCell>
-                    <TableCell>
-
-                      <Badge type={product.type}> {product.type === type.SUCCESS &&
-                        <FireIcon className="w-5 h-5" aria-hidden="true" />
-                      }{product.status}</Badge>
+                      <Badge
+                        type={brand.isDeleted ? type.SUCCESS as any : type.NEUTRAL}>
+                        {brand.isDeleted ? "Đang hoạt động" : "Đã đóng cửa"}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-4">
