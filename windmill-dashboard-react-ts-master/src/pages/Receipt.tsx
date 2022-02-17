@@ -18,8 +18,11 @@ import {
 } from '@windmill/react-ui';
 import { HeartIcon, TrashIcon, FireIcon } from '../icons';
 import { type, status_mapping, status, type_mapping } from '../utils/demo/tableData';
+import { IReceipt, Receipt as ReceiptModel } from "../models/Receipt";
+import { createNewReceipt } from '../Services/ReceiptService';
+import {showToastError, showToastSuccess} from "../utils/ToasterUtility/ToasterUtility";
 // make a copy of the data, for the second table
-
+const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Receipt() {
   /**
    * DISCLAIMER: This code could be badly improved, but for the sake of the example
@@ -125,8 +128,15 @@ function Receipt() {
     setTotal(total)
   }, [productsInCart])
 
-  function createReceipt() {
-
+  async function createReceipt() {
+    var newReceipt: IReceipt = new ReceiptModel();
+    newReceipt.storeId = STORE_ID;
+    try {
+      let res = await createNewReceipt(newReceipt);
+      showToastSuccess("Tạo đơn thành công!")
+    } catch (ex: any) {
+      showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!")
+    };
   }
   return (
     <div className="container mt-3">
@@ -196,7 +206,7 @@ function Receipt() {
         <div className="col col-md-5">
           <div className='row'>
             <SectionTitle className={"col col-5"}>
-              <Button style={{ backgroundColor: "green" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
+              <Button disabled={productsInCart.length === 0} style={{ backgroundColor: "green" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
                 XUẤT ĐƠN
               </Button>
             </SectionTitle>
