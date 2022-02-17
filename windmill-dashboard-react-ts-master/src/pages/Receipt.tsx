@@ -37,6 +37,7 @@ function Receipt() {
   const [productDetails, setProductsDetails] = useState<any[]>([])
   const [productsInCart, setDataTableProductsInCart] = useState<any[]>([])
   const [category, setCategegories] = useState<any>([])
+  const [total, setTotal] = useState<number>()
   // pagination setup
   const resultsPerPage = 10;
 
@@ -90,7 +91,7 @@ function Receipt() {
     }
   }
 
-  function changeProductQuantity(product:any,quantity:number){
+  function changeProductQuantity(product: any, quantity: number) {
     let prodsInCart = _.cloneDeep(productsInCart)
     let prodInCartIndex = prodsInCart.findIndex((prod: any) => prod.id === product.id);
     if (prodInCartIndex !== -1) {
@@ -113,12 +114,26 @@ function Receipt() {
     setDataTableProductsInCart(productsInCart.slice((pageTablePorductsInCart - 1) * resultsPerPage, pageTablePorductsInCart * resultsPerPage))
   }, [pageTablePorductsInCart])
 
+  useEffect(() => {
+    let total = 0;
+    productsInCart.forEach((product: any) => {
+      let curProdDetail = productDetails.find((prodDet: any) => prodDet.productId === product.id);
+      if (curProdDetail) {
+        total += curProdDetail.price * product.quantity
+      }
+    })
+    setTotal(total)
+  }, [productsInCart])
+
+  function createReceipt() {
+
+  }
   return (
     <div className="container mt-3">
       <div className="row">
         <div className="col col-md-7">
           <SectionTitle>Products List</SectionTitle>
-          <TableContainer className="mb-8">
+          <TableContainer className="mb-8 ">
             <Table>
               <TableHeader>
                 <tr>
@@ -133,7 +148,7 @@ function Receipt() {
                   let curProdDetail = productDetails.find((prodDet: any) => prodDet?.productId === product.id);
                   let prodStatus = status_mapping[curProdDetail?.status];
                   let prodType = type_mapping[curProdDetail?.status];
-                  let prodCat = category.find((cat: any) => cat.Id === product?.categoryId);
+                  let prodCat = category.find((cat: any) => cat.id === product?.categoryId);
                   return (
                     <TableRow key={i}>
                       <TableCell>
@@ -148,7 +163,7 @@ function Receipt() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">$ {curProdDetail?.price}</span>
+                        <span className="text-sm">$ {curProdDetail?.price ? curProdDetail?.price : 0}</span>
                       </TableCell>
                       <TableCell>
                         <Badge type={prodType}> {prodType === type.SUCCESS &&
@@ -157,7 +172,7 @@ function Receipt() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-4">
-                          <Button disabled={prodStatus===status.OUT_OF_STOCK || prodStatus ===undefined} layout="primary" size="small" aria-label="Edit" onClick={() => addToCart(product, curProdDetail)}>
+                          <Button disabled={prodStatus === status.OUT_OF_STOCK || prodStatus === undefined} layout="primary" size="small" aria-label="Edit" onClick={() => addToCart(product, curProdDetail)}>
                             Thêm vào giỏ
                           </Button>
                         </div>
@@ -180,10 +195,14 @@ function Receipt() {
 
         <div className="col col-md-5">
           <div className='row'>
-          <SectionTitle className={"col col-3"}>Hóa đơn</SectionTitle>
-          <SectionTitle className={"col col-6"}> Tổng tiền: </SectionTitle>
+            <SectionTitle className={"col col-5"}>
+              <Button style={{ backgroundColor: "green" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
+                XUẤT ĐƠN
+              </Button>
+            </SectionTitle>
+            {productsInCart?.length > 0 && <SectionTitle className={"col col-5"}> Tổng tiền: {total} </SectionTitle>}
           </div>
-          <TableContainer className="mb-8">
+          <TableContainer className="mb-8 mt-0">
             <Table>
               <TableHeader>
                 <tr>
@@ -210,11 +229,11 @@ function Receipt() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Input className="text-sm" type='number' value={product.quantity} css={""} 
-                        onChange={(e : any) => {
-                          e.persist();
-                          changeProductQuantity(product, e.target.value);
-                        }}
+                        <Input className="text-sm" type='number' value={product.quantity} css={""}
+                          onChange={(e: any) => {
+                            e.persist();
+                            changeProductQuantity(product, e.target.value);
+                          }}
                         />
                       </TableCell>
                       <TableCell>
