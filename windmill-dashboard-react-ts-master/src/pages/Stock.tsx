@@ -216,56 +216,7 @@ function Stock() {
             </div>
           )}
           {currentContent === STOCK_CONTENT.IMPORT_ORDERS && (
-            <div className="col col-md-12">
-              <SectionTitle>Đơn hàng nhập kho</SectionTitle>
-              <TableContainer className="mb-8">
-                <Table>
-                  <TableHeader>
-                    <tr>
-                      <TableCell>Tình trạng đơn hàng</TableCell>
-                      <TableCell>Thành tiền</TableCell>
-                      <TableCell>Ngày tạo đơn</TableCell>
-                      <TableCell>Tương tác</TableCell>
-                    </tr>
-                  </TableHeader>
-                  <TableBody>
-                    {dataImportOrder.map((order, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          <Badge type={order.type}>
-                            {order.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <span className="text-sm">$ {order.price}</span>
-                        </TableCell>
-                        <TableCell>
-                          {order.date}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-4">
-                            <Button layout="link" size="small" aria-label="Edit">
-                              <HeartIcon className="w-5 h-5" aria-hidden="true" />
-                            </Button>
-                            <Button layout="link" size="small" aria-label="Delete">
-                              <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <TableFooter>
-                  <Pagination
-                    totalResults={totalResults}
-                    resultsPerPage={resultsPerPage}
-                    onChange={onPageChangeProduct}
-                    label="Table navigation"
-                  />
-                </TableFooter>
-              </TableContainer>
-            </div>
+            <></>
           )}
         </div>
       </div></>

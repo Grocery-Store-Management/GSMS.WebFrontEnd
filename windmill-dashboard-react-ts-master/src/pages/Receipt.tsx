@@ -19,6 +19,7 @@ import {
 import { HeartIcon, TrashIcon, FireIcon } from '../icons';
 import { type, status_mapping, status, type_mapping } from '../utils/demo/tableData';
 import { IReceipt, Receipt as ReceiptModel } from "../models/Receipt";
+import { IReceiptDetail, ReceiptDetail } from "../models/ReceiptDetail";
 import { createNewReceipt } from '../Services/ReceiptService';
 import {showToastError, showToastSuccess} from "../utils/ToasterUtility/ToasterUtility";
 // make a copy of the data, for the second table
@@ -36,13 +37,15 @@ function Receipt() {
   const [pageTableProducts, setPageTableProducts] = useState(1)
   const [pageTablePorductsInCart, setPageTableProductsInCart] = useState(1)
   // setup data for every table
-  const [products, setDataTableProducts] = useState<any[]>([])
+  const [products, setProducts] = useState<any[]>([])
+  const [productsInCart, setProductsInCart] = useState<any[]>([])
+  const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
   const [productDetails, setProductsDetails] = useState<any[]>([])
-  const [productsInCart, setDataTableProductsInCart] = useState<any[]>([])
-  const [category, setCategegories] = useState<any>([])
+  const [dataTableProductsInCart, setDataTableProductsInCart] = useState<any[]>([])
+  const [category, setCategories] = useState<any>([])
   const [total, setTotal] = useState<number>()
   // pagination setup
-  const resultsPerPage = 10;
+  const resultsPerPage = 5;
 
   // pagination change control
   function onPageChangeTable1(p: number) {
@@ -57,6 +60,7 @@ function Receipt() {
   async function refreshProductList() {
     let prodList = await getProductList();
     setDataTableProducts(prodList);
+    setProducts(prodList)
   }
 
   async function refreshProductDetails() {
@@ -66,12 +70,11 @@ function Receipt() {
 
   async function refresgCategoryList() {
     let catList = await getCategoryList();
-    setCategegories(catList);
+    setCategories(catList);
   }
 
   function addToCart(product: any, productDetail: any) {
     let prodsInCart = _.cloneDeep(productsInCart);
-    console.log(prodsInCart)
     let prodInCartIndex = prodsInCart.findIndex((prod: any) => prod.Id === product.Id)
     if (prodInCartIndex !== -1) {
       prodsInCart[prodInCartIndex].quantity++;
@@ -83,6 +86,7 @@ function Receipt() {
       prodsInCart.push(product);
     }
     setDataTableProductsInCart(prodsInCart)
+    setProductsInCart(prodsInCart)
   }
 
   function removeFromCart(product: any) {
@@ -91,6 +95,7 @@ function Receipt() {
     if (rmvProdIndex !== -1) {
       prodsInCart.splice(rmvProdIndex, 1)
       setDataTableProductsInCart(prodsInCart)
+      setProductsInCart(prodsInCart)
     }
   }
 
@@ -100,6 +105,7 @@ function Receipt() {
     if (prodInCartIndex !== -1) {
       prodsInCart[prodInCartIndex].quantity = quantity;
       setDataTableProductsInCart(prodsInCart)
+      setProductsInCart(prodsInCart)
     }
   }
 
@@ -110,11 +116,11 @@ function Receipt() {
   }, [])
 
   useEffect(() => {
-    setDataTableProducts(products.slice((pageTableProducts - 1) * resultsPerPage, pageTableProducts * resultsPerPage))
+    setDataTableProducts(dataTableProducts.slice((pageTableProducts - 1) * resultsPerPage, pageTableProducts * resultsPerPage))
   }, [pageTableProducts])
 
   useEffect(() => {
-    setDataTableProductsInCart(productsInCart.slice((pageTablePorductsInCart - 1) * resultsPerPage, pageTablePorductsInCart * resultsPerPage))
+    setDataTableProductsInCart(dataTableProductsInCart.slice((pageTablePorductsInCart - 1) * resultsPerPage, pageTablePorductsInCart * resultsPerPage))
   }, [pageTablePorductsInCart])
 
   useEffect(() => {
@@ -126,13 +132,21 @@ function Receipt() {
       }
     })
     setTotal(total)
-  }, [productsInCart])
+  }, [dataTableProductsInCart])
 
   async function createReceipt() {
     var newReceipt: IReceipt = new ReceiptModel();
     newReceipt.storeId = STORE_ID;
+    productsInCart.forEach((product : any) => {
+      var newReceiptDetail : IReceiptDetail = new ReceiptDetail();
+      newReceiptDetail.productId = product.id;
+      newReceiptDetail.quantity = product.quantity;
+      newReceipt.receiptDetails.push(newReceiptDetail);
+    })
     try {
       let res = await createNewReceipt(newReceipt);
+      setProductsInCart([])
+      setDataTableProductsInCart([])
       showToastSuccess("Tạo đơn thành công!")
     } catch (ex: any) {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!")
@@ -142,7 +156,7 @@ function Receipt() {
     <div className="container mt-3">
       <div className="row">
         <div className="col col-md-7">
-          <SectionTitle>Products List</SectionTitle>
+          <SectionTitle>Danh sách hàng hóa</SectionTitle>
           <TableContainer className="mb-8 ">
             <Table>
               <TableHeader>
@@ -154,7 +168,7 @@ function Receipt() {
                 </tr>
               </TableHeader>
               <TableBody>
-                {products.map((product: any, i: any) => {
+                {dataTableProducts.map((product: any, i: any) => {
                   let curProdDetail = productDetails.find((prodDet: any) => prodDet?.productId === product.id);
                   let prodStatus = status_mapping[curProdDetail?.status];
                   let prodType = type_mapping[curProdDetail?.status];
@@ -206,11 +220,11 @@ function Receipt() {
         <div className="col col-md-5">
           <div className='row'>
             <SectionTitle className={"col col-5"}>
-              <Button disabled={productsInCart.length === 0} style={{ backgroundColor: "green" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
+              <Button disabled={dataTableProductsInCart.length === 0} style={{ backgroundColor: "green" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
                 XUẤT ĐƠN
               </Button>
             </SectionTitle>
-            {productsInCart?.length > 0 && <SectionTitle className={"col col-5"}> Tổng tiền: {total} </SectionTitle>}
+            {dataTableProductsInCart?.length > 0 && <SectionTitle className={"col col-5"}> Tổng tiền: {total} </SectionTitle>}
           </div>
           <TableContainer className="mb-8 mt-0">
             <Table>
@@ -222,7 +236,7 @@ function Receipt() {
                 </tr>
               </TableHeader>
               <TableBody>
-                {productsInCart.map((product: any, i: any) => {
+                {dataTableProductsInCart.map((product: any, i: any) => {
                   let curProdDetail = productDetails.find((prodDet: any) => prodDet.productId === product.Id);
                   let prodCat = category.find((cat: any) => cat.Id === product.categoryId);
                   return (

@@ -4,6 +4,7 @@ export interface IReceipt {
     employeeId: string,
     storeId: string,
     createdDate: any,
+    receiptDetails : any[],
 }
 
 export class Receipt implements IReceipt {
@@ -12,12 +13,14 @@ export class Receipt implements IReceipt {
     employeeId: string;
     storeId: string;
     createdDate: any;
+    receiptDetails: any[];
     constructor() {
         this.id = "";
         this.customerId = "";
         this.employeeId = "";
         this.storeId = "";
         this.createdDate = null;
+        this.receiptDetails = [];
      }
 }
 
