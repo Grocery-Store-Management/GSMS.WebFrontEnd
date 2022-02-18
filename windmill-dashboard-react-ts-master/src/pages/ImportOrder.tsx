@@ -17,10 +17,6 @@ import {
     Input,
 } from '@windmill/react-ui';
 import { HeartIcon, TrashIcon, FireIcon } from '../icons';
-import { type, status_mapping, status, type_mapping } from '../utils/demo/tableData';
-import { IReceipt, Receipt as ReceiptModel } from "../models/Receipt";
-import { IReceiptDetail, ReceiptDetail } from "../models/ReceiptDetail";
-import { createNewReceipt } from '../Services/ReceiptService';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 // make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
@@ -34,21 +30,21 @@ function Receipt() {
      */
 
     // setup pages control for every table
-    const [pageTableProducts, setPageTableProducts] = useState(1)
+    const [pageTableImportOrders, setPageTableImportOrders] = useState(1)
     // setup data for every table
-    const [dataImportOrder, setDataImportOrder] = useState<any[]>([])
-    const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
+    const [importOrders, setImportOrder] = useState<any[]>([])
+    const [dataTableImportOrders, setDataTableImportOrders] = useState<any[]>([])
     // pagination setup
     const resultsPerPage = 5;
 
     // pagination change control
-    function onPageChangeTable1(p: number) {
-        setPageTableProducts(p)
+    function onPageChangeTableImportOrders(p: number) {
+        setPageTableImportOrders(p)
     }
 
-    async function refresh() {
+    async function refreshImportOrder() {
         let prodList = await getProductList();
-        setDataTableProducts(prodList);
+        setDataTableImportOrders(prodList);
     }
 
     async function refreshImportOrderList() {
@@ -59,8 +55,8 @@ function Receipt() {
     }, [])
 
     useEffect(() => {
-        setDataTableProducts(dataTableProducts.slice((pageTableProducts - 1) * resultsPerPage, pageTableProducts * resultsPerPage))
-    }, [pageTableProducts])
+        setDataTableImportOrders(dataTableImportOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
+    }, [pageTableImportOrders])
 
     return (
         <div className="container mt-3">
@@ -78,7 +74,7 @@ function Receipt() {
                                 </tr>
                             </TableHeader>
                             <TableBody>
-                                {dataImportOrder.map((order, i) => (
+                                {importOrders.map((order, i) => (
                                     <TableRow key={i}>
                                         <TableCell>
                                             <Badge type={order.type}>
@@ -106,12 +102,12 @@ function Receipt() {
                             </TableBody>
                         </Table>
                         <TableFooter>
-                            {/* <Pagination
-                    totalResults={totalResults}
+                            <Pagination
+                    totalResults={importOrders.length}
                     resultsPerPage={resultsPerPage}
-                    onChange={onPageChangeProduct}
+                    onChange={onPageChangeTableImportOrders}
                     label="Table navigation"
-                  /> */}
+                  />
                         </TableFooter>
                     </TableContainer>
                 </div>
