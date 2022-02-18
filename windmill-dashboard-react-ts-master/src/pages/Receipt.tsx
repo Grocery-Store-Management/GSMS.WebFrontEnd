@@ -21,7 +21,7 @@ import { type, status_mapping, status, type_mapping } from '../utils/demo/tableD
 import { IReceipt, Receipt as ReceiptModel } from "../models/Receipt";
 import { IReceiptDetail, ReceiptDetail } from "../models/ReceiptDetail";
 import { createNewReceipt } from '../Services/ReceiptService';
-import {showToastError, showToastSuccess} from "../utils/ToasterUtility/ToasterUtility";
+import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 // make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Receipt() {
@@ -137,8 +137,8 @@ function Receipt() {
   async function createReceipt() {
     var newReceipt: IReceipt = new ReceiptModel();
     newReceipt.storeId = STORE_ID;
-    productsInCart.forEach((product : any) => {
-      var newReceiptDetail : IReceiptDetail = new ReceiptDetail();
+    productsInCart.forEach((product: any) => {
+      var newReceiptDetail: IReceiptDetail = new ReceiptDetail();
       newReceiptDetail.productId = product.id;
       newReceiptDetail.quantity = product.quantity;
       newReceipt.receiptDetails.push(newReceiptDetail);
@@ -152,12 +152,30 @@ function Receipt() {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!")
     };
   }
+
+  function searchProduct(searchPrompt: String) {
+    let productList = _.cloneDeep(products);
+    if (searchPrompt.length === 0) {
+      setDataTableProducts(productList);
+    } else {
+      productList = productList.filter((prod: any) => prod.name.trim().toLowerCase().includes(searchPrompt.trim().toLowerCase()));
+      setDataTableProducts(productList);
+    }
+  }
+
   return (
     <div className="container mt-3">
       <div className="row">
         <div className="col col-md-7">
-          <SectionTitle>Danh sách hàng hóa</SectionTitle>
-          <TableContainer className="mb-8 ">
+          <div className='row'>
+            <SectionTitle className="col col-md-5">Danh sách hàng hóa </SectionTitle>
+            <Input css={undefined} className="col col-md-6 ms-5 mb-2 text-gray-700" placeholder='Tìm kiếm' onChange={(e: any) => {
+              e.persist();
+              searchProduct(e.target.value)
+            }}
+            />
+          </div>
+          <TableContainer className="mb-8">
             <Table>
               <TableHeader>
                 <tr>
