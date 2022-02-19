@@ -21,7 +21,7 @@ const routes: IRoute[] = [
     name: 'Trang chủ', // name that appear in Sidebar
   },
   {
-    path: '/app/tables',
+    path: '/app/receipt',
     icon: 'TablesIcon',
     name: 'Xuất hóa đơn',
   },

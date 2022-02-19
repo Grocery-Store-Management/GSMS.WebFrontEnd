@@ -13,6 +13,9 @@ const Blank = lazy(() => import('../pages/Blank'));
 const Stock = lazy(() => import('../pages/Stock'));
 const Employee = lazy(() => import('../pages/Employee'));
 const Brand = lazy(() => import('../pages/Brand'));
+const ImportOrder = lazy(() => import('../pages/ImportOrder'));
+const Receipt = lazy(() => import('../pages/Receipt'));
+
 
 /**
  * ⚠ These are internal routes!
@@ -38,8 +41,8 @@ const routes = [
     component: Stock, // view rendered
   },
   {
-    path: '/tables',
-    component: Tables,
+    path: '/receipt',
+    component: Receipt,
   },
   {
     path: '/charts',
@@ -57,7 +60,6 @@ const routes = [
     path: '/brand',
     component: Brand,
   }
-
 ];
 
 export default routes;

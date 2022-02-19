@@ -20,6 +20,7 @@ import {
 import { STOCK_CONTENT } from '../Shared/Model';
 import { HeartIcon, TrashIcon, FireIcon, DropdownIcon } from '../icons';
 import response, { type, categories } from '../utils/demo/tableData';
+import ImportOrder from "../pages/ImportOrder"
 // make a copy of the data, for the second table
 const response2 = categories;
 
@@ -216,7 +217,9 @@ function Stock() {
             </div>
           )}
           {currentContent === STOCK_CONTENT.IMPORT_ORDERS && (
-            <></>
+            <>
+              <ImportOrder />
+            </>
           )}
         </div>
       </div></>
