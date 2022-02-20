@@ -29,6 +29,7 @@ import {
   barOptions,
   barLegends,
 } from '../utils/demo/chartsData';
+import Employee from './Employee';
 
 
 function Dashboard() {
@@ -50,15 +51,10 @@ function Dashboard() {
     setData(response.slice((page - 1) * resultsPerPage, page * resultsPerPage))
   }, [page]);
 
-  
+
   return (
     <>
       <PageTitle>FullThings Grocery Store</PageTitle>
-
-      {/* <CTA /> */}
-
-      {/* <!-- Cards --> */}
-
       <PageTitle>Charts</PageTitle>
       <div className="grid gap-6 mb-8 md:grid-cols-2">
         <ChartCard title="Best Seller">
@@ -70,59 +66,7 @@ function Dashboard() {
           <ChartLegend legends={barLegends} />
         </ChartCard>
       </div>
-
-      <TableContainer>
-        <Table>
-          <TableHeader>
-            <tr>
-              <TableCell>Tên Nhân Viên</TableCell>
-              <TableCell>Mật Khẩu</TableCell>
-              <TableCell>Trạng thái</TableCell>
-              <TableCell>Bắt đầu từ ngày</TableCell>
-            </tr>
-          </TableHeader>
-          <TableBody>
-            {data.map((user, i) => (
-              <TableRow key={i}>
-                <TableCell>
-                  <div className="flex items-center text-sm">
-                    {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User image" /> */}
-                    <div>
-                      <p className="font-semibold">{user.name}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {user.category}
-                      </p>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <input
-                    type="password"
-                    className="text-sm"
-                    value={user.password}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Badge type={user.type}>{user.status}</Badge>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm">
-                    {new Date(user.date).toLocaleDateString()}
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <TableFooter>
-          <Pagination
-            totalResults={totalResults}
-            resultsPerPage={resultsPerPage}
-            label="Table navigation"
-            onChange={onPageChange}
-          />
-        </TableFooter>
-      </TableContainer>
+      <Employee />
     </>
   );
 };

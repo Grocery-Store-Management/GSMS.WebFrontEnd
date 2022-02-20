@@ -2,6 +2,7 @@ import { useState } from 'react';
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import ImportOrderForm from "../pages/ImportOrderForm"
+import { MODAL_TYPES } from '../Shared/Model';
 
 function Modals(props: any) {
 
@@ -10,7 +11,7 @@ function Modals(props: any) {
       <Modal style={{ width: "50%" }} isOpen={props.showModal} onClose={props.closeModal}>
         <ModalHeader>{props.header}</ModalHeader>
         <ModalBody>
-          <ImportOrderForm callback={props.callback} />
+          {props.modalType === MODAL_TYPES.IMPORT_ORDER && <ImportOrderForm callback={props.callback} />}
         </ModalBody>
         <ModalFooter>
           <div className="hidden sm:block">

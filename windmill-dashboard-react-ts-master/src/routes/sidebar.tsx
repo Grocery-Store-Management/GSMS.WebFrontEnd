@@ -26,15 +26,15 @@ const routes: IRoute[] = [
     name: 'Xuất hóa đơn',
   },
   {
-    path: '/app/charts',
+    path: '/app/reports',
     icon: 'ChartsIcon',
     name: 'Báo cáo',
   },
-  {
-    path: '/app/employee',
-    icon: 'ModalsIcon',
-    name: 'Nhân viên',
-  },
+  // {
+  //   path: '/app/employee',
+  //   icon: 'ModalsIcon',
+  //   name: 'Nhân viên',
+  // },
   {
     path: '/app/stock',
     icon: 'FormsIcon',

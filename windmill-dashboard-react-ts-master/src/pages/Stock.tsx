@@ -21,6 +21,8 @@ import { STOCK_CONTENT } from '../Shared/Model';
 import { HeartIcon, TrashIcon, FireIcon, DropdownIcon } from '../icons';
 import response, { type, categories } from '../utils/demo/tableData';
 import ImportOrder from "../pages/ImportOrder"
+import Product from "../pages/Product"
+import Category from './Category';
 // make a copy of the data, for the second table
 const response2 = categories;
 
@@ -104,117 +106,12 @@ function Stock() {
         </div>
         <div className="row">
           {currentContent === STOCK_CONTENT.PRODUCTS && (
-            <div className="col col-md-12">
-              <SectionTitle>Danh sách hàng trong kho</SectionTitle>
-              <TableContainer className="mb-8">
-                <Table>
-                  <TableHeader>
-                    <tr>
-                      <TableCell>Tên hàng</TableCell>
-                      <TableCell>Giá</TableCell>
-                      <TableCell>Số lượng</TableCell>
-                      <TableCell>Tình trạng</TableCell>
-                      <TableCell>Tương tác</TableCell>
-                    </tr>
-                  </TableHeader>
-                  <TableBody>
-                    {dataProduct.map((product, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          <div className="flex items-center text-sm">
-                            {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
-                            <div>
-                              <p className="font-semibold">{product.name}</p>
-                              <p className="text-xs text-gray-600 dark:text-gray-400">
-                                {product.category}
-                              </p>
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        <TableCell>
-                          <span className="text-sm">$ {product.price}</span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="text-sm">{product.quantity}</span>
-                        </TableCell>
-                        <TableCell>
-                          <Badge type={product.type}> {product.type === type.SUCCESS &&
-                            <FireIcon className="w-5 h-5" aria-hidden="true" />
-                          }{product.status}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-4">
-                            <Button layout="primary" size="small" aria-label="Edit">
-                              Cập nhật
-                            </Button>
-                            <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete">
-                              Xóa
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <TableFooter>
-                  <Pagination
-                    totalResults={totalResults}
-                    resultsPerPage={resultsPerPage}
-                    onChange={onPageChangeProduct}
-                    label="Table navigation"
-                  />
-                </TableFooter>
-              </TableContainer>
-            </div>
+            <Product />
           )}
           {currentContent === STOCK_CONTENT.CATEGORY && (
-            <div className="col col-md-12">
-              <SectionTitle>Danh mục hàng trong kho</SectionTitle>
-              <TableContainer className="mb-8">
-                <Table>
-                  <TableHeader>
-                    <tr>
-                      <TableCell>Tên danh mục</TableCell>
-                      <TableCell>Tương tác</TableCell>
-                    </tr>
-                  </TableHeader>
-                  <TableBody>
-                    {dataCategory.map((category, i) => (
-                      <TableRow key={i}>
-                        <TableCell>
-                          <div className="flex items-center text-sm">
-                            {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
-                            <div>
-                              <p className="font-semibold">{category.name}</p>
-
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-4">
-                            <Button layout="primary" size="small" aria-label="Edit">
-                              Cập nhật
-                            </Button>
-                            <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete">
-                              Xóa
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <TableFooter>
-                  <Pagination
-                    totalResults={totalResults}
-                    resultsPerPage={resultsPerPage}
-                    onChange={onPageChangeProduct}
-                    label="Table navigation"
-                  />
-                </TableFooter>
-              </TableContainer>
-            </div>
+            <>
+              <Category />
+            </>
           )}
           {currentContent === STOCK_CONTENT.IMPORT_ORDERS && (
             <>

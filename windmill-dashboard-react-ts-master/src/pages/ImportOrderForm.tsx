@@ -17,7 +17,7 @@ function ImportOrderForm(props: any) {
         let importOrderDetails = _.cloneDeep(ImportOrderDetails);
         let initImportOrderDetails: any = [{
             id: "",
-            productId: products[0].id,
+            productId: products[0].id ? products[0].id : "",
             quantity: 1
         }];
         importOrderDetails.push(initImportOrderDetails[0]);
@@ -80,7 +80,7 @@ function ImportOrderForm(props: any) {
                 })}
             </div>
             <div className='mt-3' style={{ textAlign: "center" }}>
-                <Button size='small' onClick={addProductToImportOrder}>Thêm hàng +</Button>
+                <Button size='small' disabled={ImportOrderDetails.filter((importOrderDet : any) => importOrderDet.productId === "") !== undefined } onClick={addProductToImportOrder}>Thêm hàng +</Button>
             </div>
         </div>
     )

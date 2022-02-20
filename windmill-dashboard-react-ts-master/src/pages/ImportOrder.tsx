@@ -21,6 +21,7 @@ import {
 } from '@windmill/react-ui';
 import { HeartIcon, TrashIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
+import { MODAL_TYPES } from '../Shared/Model';
 // make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function ImportOrder() {
@@ -94,7 +95,7 @@ function ImportOrder() {
 
     return (
         <div className="container mt-3">
-            {<Modal cancel="Hủy" accept="Gửi đơn" header="Tạo đơn" callback={(value: any) => setImportOrderDetails(value)} acceptModal={sendImportOrder} closeModal={closeCreateNewImportOrder} showModal={showCreateOrder} />}
+            {<Modal modalType={MODAL_TYPES.IMPORT_ORDER} cancel="Hủy" accept="Gửi đơn" header="Tạo đơn" callback={(value: any) => setImportOrderDetails(value)} acceptModal={sendImportOrder} closeModal={closeCreateNewImportOrder} showModal={showCreateOrder} />}
             <div className="row">
                 <div className="col col-md-12">
                     <div className='row'>

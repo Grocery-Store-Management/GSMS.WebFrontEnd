@@ -15,6 +15,7 @@ const Employee = lazy(() => import('../pages/Employee'));
 const Brand = lazy(() => import('../pages/Brand'));
 const ImportOrder = lazy(() => import('../pages/ImportOrder'));
 const Receipt = lazy(() => import('../pages/Receipt'));
+const Reports = lazy(() => import('../pages/Reports'));
 
 
 /**
@@ -45,8 +46,8 @@ const routes = [
     component: Receipt,
   },
   {
-    path: '/charts',
-    component: Charts,
+    path: '/reports',
+    component: Reports,
   },
   {
     path: '/404',
