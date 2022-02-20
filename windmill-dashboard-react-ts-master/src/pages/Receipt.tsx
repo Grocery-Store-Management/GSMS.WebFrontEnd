@@ -271,7 +271,7 @@ function Receipt() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Input className="text-sm" type='number' value={product.quantity} css={""}
+                        <Input className="text-sm" type='number' min={0} value={product.quantity} css={""}
                           onChange={(e: any) => {
                             e.persist();
                             changeProductQuantity(product, e.target.value);

@@ -227,7 +227,7 @@ function Product() {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <Input className="text-sm" type='number' value={curProdDetail?.price ? curProdDetail?.price : 0} css={""}
+                                    <Input className="text-sm" type='number' min={0} value={curProdDetail?.price ? curProdDetail?.price : 0} css={""}
                                         onChange={(e: any) => {
                                             e.persist();
                                             changeProductPrice(product, e.target.value);
@@ -235,7 +235,7 @@ function Product() {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    <Input className="text-sm" type='number' value={curProdDetail?.storedQuantity ? curProdDetail?.storedQuantity : 0} css={""}
+                                    <Input className="text-sm" type='number' min={0} value={curProdDetail?.storedQuantity ? curProdDetail?.storedQuantity : 0} css={""}
                                         onChange={(e: any) => {
                                             e.persist();
                                             changeProductQuantity(product, e.target.value);

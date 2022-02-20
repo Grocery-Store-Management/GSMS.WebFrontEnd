@@ -65,7 +65,7 @@ function ImportOrderForm(props: any) {
                                     </p>
                                     <p className="col col-md-3 text-sm text-gray-600 dark:text-gray-400">
                                         Số lượng:
-                                        <Input className="text-sm" type='number' value={importOrderDetail.quantity} css={""}
+                                        <Input className="text-sm" type='number' min={0} value={importOrderDetail.quantity} css={""}
                                             onChange={(e: any) => {
                                                 e.persist();
                                                 changeOrderQuantity(importOrderDetail, e.target.value);
