@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { addCategory, deleteCategory, getCategoryList, updateCategory } from "../Services/CategoryService";
-import { getProductList, getProductDetaiList, updateProductDetail, updateProduct, deleteProduct } from "../Services/ProductService";
-import Modal from "../pages/Modals";
+import { getProductList, getProductDetaiList } from "../Services/ProductService";
 
 import _ from "lodash"
 import {
@@ -18,32 +17,17 @@ import {
     Pagination,
     Input,
 } from '@windmill/react-ui';
-import { FireIcon, HeartIcon, TrashIcon } from '../icons';
-import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
-import { MODAL_TYPES } from '../Shared/Model';
-import { TYPE } from 'react-toastify/dist/utils';
-// make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Category() {
-    /**
-     * DISCLAIMER: This code could be badly improved, but for the sake of the example
-     * and readability, all the logic for both table are here.
-     * You would be better served by dividing each table in its own
-     * component, like Table(?) and TableWithActions(?) hiding the
-     * presentation details away from the page view.
-     */
 
-    // setup pages control for every table
+
     const [pageTableCategory, setPageTableCategory] = useState(1)
-    // setup data for every table
     const [Category, setCategory] = useState<any[]>([])
     const [dataTableCategory, setDataTableCategory] = useState<any[]>([])
     const [productDetails, setProductsDetails] = useState<any[]>([])
     const [products, setProducts] = useState<any[]>([])
-    // pagination setup
     const resultsPerPage = 5;
 
-    // pagination change control
     function onPageChangeTableCategory(p: number) {
         setPageTableCategory(p)
     }

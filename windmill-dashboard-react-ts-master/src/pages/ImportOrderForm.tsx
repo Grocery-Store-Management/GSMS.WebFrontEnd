@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, Input, Select } from '@windmill/react-ui'
-import { getProductList, getProductDetaiList } from "../Services/ProductService";
-import { getCategoryList } from "../Services/CategoryService";
+import { getProductList } from "../Services/ProductService";
 import _ from 'lodash';
 function ImportOrderForm(props: any) {
 
@@ -80,7 +79,7 @@ function ImportOrderForm(props: any) {
                 })}
             </div>
             <div className='mt-3' style={{ textAlign: "center" }}>
-                <Button size='small' disabled={ImportOrderDetails.filter((importOrderDet : any) => importOrderDet.productId === "") !== undefined } onClick={addProductToImportOrder}>Thêm hàng +</Button>
+                <Button size='small' disabled={ImportOrderDetails.filter((importOrderDet: any) => importOrderDet.productId === "") !== undefined} onClick={addProductToImportOrder}>Thêm hàng +</Button>
             </div>
         </div>
     )

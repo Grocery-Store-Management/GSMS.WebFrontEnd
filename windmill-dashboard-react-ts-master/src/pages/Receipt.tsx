@@ -16,7 +16,7 @@ import {
   Pagination,
   Input,
 } from '@windmill/react-ui';
-import { HeartIcon, TrashIcon, FireIcon } from '../icons';
+import { TrashIcon, FireIcon } from '../icons';
 import { type, status_mapping, status, type_mapping } from '../utils/demo/tableData';
 import { IReceipt, Receipt as ReceiptModel } from "../models/Receipt";
 import { IReceiptDetail, ReceiptDetail } from "../models/ReceiptDetail";

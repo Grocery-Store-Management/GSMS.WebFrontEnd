@@ -6,7 +6,6 @@ import { getProductList, getProductDetaiList } from "../Services/ProductService"
 import { getReceiptList, getReceiptDetailList } from "../Services/ReceiptService";
 import { getImportOrderList, getImportOrderDetailList } from "../Services/ImportOrderService";
 import _ from 'lodash';
-import { Card } from '@windmill/react-ui';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 
@@ -185,7 +184,7 @@ function Reports() {
         setReportMonth(curDate);
         setReportYear(curYear);
         generateData(curDate, curYear);
-    }, [])
+    }, [generateData])
 
 
     return (

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { addProduct, getProductList, getProductDetaiList, updateProductDetail, updateProduct, deleteProduct, addProductDetail } from "../Services/ProductService";
 import { getCategoryList } from "../Services/CategoryService";
-import Modal from "../pages/Modals";
-
 import _ from "lodash"
 import {
     Table,
@@ -19,28 +17,13 @@ import {
     Input,
     Select,
 } from '@windmill/react-ui';
-import { FireIcon, HeartIcon, TrashIcon } from '../icons';
+import { FireIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
-import { MODAL_TYPES } from '../Shared/Model';
-import { TYPE } from 'react-toastify/dist/utils';
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
-// make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Product() {
-    /**
-     * DISCLAIMER: This code could be badly improved, but for the sake of the example
-     * and readability, all the logic for both table are here.
-     * You would be better served by dividing each table in its own
-     * component, like Table(?) and TableWithActions(?) hiding the
-     * presentation details away from the page view.
-     */
-
-
-
-    // setup pages control for every table
     const [pageTableProducts, setPageTableProducts] = useState(1)
-    // setup data for every table
     const [originalProducts, setOriginalProducts] = useState<any[]>([])
     const [originalProductDetails, setOriginalProductDetails] = useState<any[]>([])
     const [productDetails, setProductsDetails] = useState<any[]>([])
@@ -49,10 +32,8 @@ function Product() {
     const [category, setCategories] = useState<any>([])
     const [pageLoading, setPageLoading] = useState<boolean>(true);
 
-    // pagination setup
     const resultsPerPage = 5;
 
-    // pagination change control
     function onPageChangeTableProducts(p: number) {
         setPageTableProducts(p)
     }

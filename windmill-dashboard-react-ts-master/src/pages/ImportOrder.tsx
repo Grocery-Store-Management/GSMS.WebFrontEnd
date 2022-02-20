@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
-import { getProductList, getProductDetaiList } from "../Services/ProductService";
-import { getCategoryList } from "../Services/CategoryService";
+import { getProductDetaiList } from "../Services/ProductService";
 import { getImportOrderDetailList, getImportOrderList, removeImportOrder, createImportOrder } from "../Services/ImportOrderService";
 import Modal from "../pages/Modals";
-
 import _ from "lodash"
 import {
     Table,
@@ -17,35 +15,22 @@ import {
     Badge,
     Button,
     Pagination,
-    Input,
 } from '@windmill/react-ui';
-import { HeartIcon, TrashIcon } from '../icons';
+import { TrashIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 import { MODAL_TYPES } from '../Shared/Model';
-// make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function ImportOrder() {
-    /**
-     * DISCLAIMER: This code could be badly improved, but for the sake of the example
-     * and readability, all the logic for both table are here.
-     * You would be better served by dividing each table in its own
-     * component, like Table(?) and TableWithActions(?) hiding the
-     * presentation details away from the page view.
-     */
 
-    // setup pages control for every table
+
     const [pageTableImportOrders, setPageTableImportOrders] = useState(1)
-    // setup data for every table
     const [importOrders, setImportOrder] = useState<any[]>([])
     const [importOrdersDetails, setImportOrderDetails] = useState<any[]>([])
     const [productDetails, setProductsDetails] = useState<any[]>([])
     const [dataTableImportOrders, setDataTableImportOrders] = useState<any[]>([])
-    const [totalPrice, setTotalPrice] = useState<number>(0);
     const [showCreateOrder, setShowCreateOrder] = useState<boolean>(false);
-    // pagination setup
     const resultsPerPage = 5;
 
-    // pagination change control
     function onPageChangeTableImportOrders(p: number) {
         setPageTableImportOrders(p)
     }

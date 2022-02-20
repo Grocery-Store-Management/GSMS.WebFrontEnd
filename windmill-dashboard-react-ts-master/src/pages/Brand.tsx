@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PageTitle from '../components/Typography/PageTitle';
 import SectionTitle from '../components/Typography/SectionTitle';
-import CTA from '../components/CTA';
 import {
   Table,
   TableHeader,
@@ -18,34 +16,20 @@ import {
 import { HeartIcon, TrashIcon, FireIcon } from '../icons';
 import { type } from '../utils/demo/tableData';
 import { getBrandList } from '../Services/BrandService';
-// make a copy of the data, for the second table
 
 function Brand() {
-  /**
-   * DISCLAIMER: This code could be badly improved, but for the sake of the example
-   * and readability, all the logic for both table are here.
-   * You would be better served by dividing each table in its own
-   * component, like Table(?) and TableWithActions(?) hiding the
-   * presentation details away from the page view.
-   */
 
-  // setup pages control for every table
   const [response, setResponse] = useState<any>();
   const [totalResults, setResult] = useState<any>();
   const [pageTable1, setPageTable1] = useState(1)
 
-  // setup data for every table
   const [dataTable1, setDataTable1] = useState<any[]>([])
 
-  // pagination setup
   const resultsPerPage = 10;
 
-  // pagination change control
   function onPageChangeTable1(p: number) {
     setPageTable1(p)
   }
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
     getBrandList().then((res: any) => {
       if (res) { setResponse(res); setResult(res.length) }

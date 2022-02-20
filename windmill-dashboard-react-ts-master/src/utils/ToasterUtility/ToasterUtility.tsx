@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { toast } from 'react-toastify';
 
 export const showToastSuccess = (msg: string) => {
