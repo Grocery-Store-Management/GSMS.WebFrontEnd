@@ -46,7 +46,6 @@ function Product() {
     const [products, setProducts] = useState<any[]>([])
     const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
     const [category, setCategories] = useState<any>([])
-    const [addingProductModal, setAddingProductModal] = useState<boolean>(false);
 
     // pagination setup
     const resultsPerPage = 5;
@@ -73,11 +72,16 @@ function Product() {
         setCategories(catList);
     }
 
-    function changeProductQuantity(product: any, quantity: number) {
+    function changeProductQuantity(product: any, quantity: any) {
         let prodDets = _.cloneDeep(productDetails)
         let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
         if (prodDetIndex !== -1) {
-            prodDets[prodDetIndex].quantity = quantity;
+            if (quantity === "0") {
+                prodDets[prodDetIndex].status = 2
+            }else{
+                prodDets[prodDetIndex].status = 1
+            }
+            prodDets[prodDetIndex].storedQuantity = quantity;
             setProductsDetails(prodDets)
         }
     }
@@ -91,7 +95,7 @@ function Product() {
     }
     function changeProductName(product: any, name: string) {
         let prods = _.cloneDeep(products)
-        let prodIndex = prods.findIndex((prodDet: any) => prodDet.productId === product.id);
+        let prodIndex = prods.findIndex((prod: any) => prod.id === product.id);
         if (prodIndex !== -1) {
             prods[prodIndex].name = name;
             setProducts(prods)
@@ -100,7 +104,7 @@ function Product() {
 
     function changeProductCategory(product: any, catId: string) {
         let prods = _.cloneDeep(products)
-        let prodIndex = prods.findIndex((prodDet: any) => prodDet.productId === product.id);
+        let prodIndex = prods.findIndex((prod: any) => prod.id === product.id);
         if (prodIndex !== -1) {
             prods[prodIndex].categoryId = catId;
             setProducts(prods)
@@ -108,25 +112,47 @@ function Product() {
     }
 
     async function editProduct(product: any, productDetail: any) {
-        let prods = _.cloneDeep(products)
-        let prodIndex = prods.findIndex((prodDet: any) => prodDet.productId === product.id);
-        if (prodIndex !== -1) {
-            await updateProduct(product);
-            await updateProductDetail(productDetail);
+        if (productDetail || product.productDetails !== []) {
+            try {
+                let prods = _.cloneDeep(originalProducts)
+                let prodIndex = prods.findIndex((prod: any) => prod.id === product.id);
+                let prodDets = _.cloneDeep(originalProductDetails)
+                let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
+                if (prodIndex !== -1) {
+                    if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
+                        await updateProduct(product);
+                        await updateProductDetail(productDetail);
+                        showToastSuccess("Cập nhật thành công!")
+                    } else {
+                        return
+                    }
+                } else {
+                    await addProduct(product);
+                }
+                refreshProductList();
+                refreshProductDetails();
+            } catch (ex) {
+                showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+            }
         } else {
-            await addProduct(product);
+            return
+        }
+
+    }
+
+    async function removeProduct(product: any) {
+        try {
+            await deleteProduct(product);
+            showToastSuccess("Xóa thành công!")
+        } catch (ex) {
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
         refreshProductList();
         refreshProductDetails();
     }
 
-    async function removeProduct(product: any) {
-        await deleteProduct(product);
-        refreshProductList();
-        refreshProductDetails();
-    }
-
     async function addDefaultProduct() {
+        let prods = _.cloneDeep(products)
         let defaultProduct = {
             id: "",
             atomicPrice: 0,
@@ -139,7 +165,8 @@ function Product() {
                 storedQuantity: 100
             }]
         }
-        products.push(defaultProduct);
+        prods.push(defaultProduct);
+        setProducts(prods)
     }
 
     useEffect(() => {
@@ -184,24 +211,23 @@ function Product() {
                             let prodCat = category.find((cat: any) => cat.id === product?.categoryId);
                             return <TableRow key={i}>
                                 <TableCell>
-                                    <div className="flex items-center text-sm">
+                                    <div className="flex mt-4 items-center text-sm">
                                         {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
                                         <div>
-                                            <Input className="text-sm" type='text' value={product.name} css={""}
+                                            <Input className="text-sm" type='text' value={product?.name} css={""}
                                                 onChange={(e: any) => {
                                                     e.persist();
                                                     changeProductName(product, e.target.value);
                                                 }}
                                             />
                                             <p className="text-xs text-gray-600 dark:text-gray-400">
-                                                {prodCat}
+                                                {prodCat?.name}
                                             </p>
                                         </div>
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <span className="text-sm">$ </span>
-                                    <Input className="text-sm" type='number' value={curProdDetail.price} css={""}
+                                    <Input className="text-sm" type='number' value={curProdDetail?.price ? curProdDetail?.price : 0} css={""}
                                         onChange={(e: any) => {
                                             e.persist();
                                             changeProductPrice(product, e.target.value);
@@ -209,7 +235,7 @@ function Product() {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    <Input className="text-sm" type='number' value={curProdDetail.storedQuantity} css={""}
+                                    <Input className="text-sm" type='number' value={curProdDetail?.storedQuantity ? curProdDetail?.storedQuantity : 0} css={""}
                                         onChange={(e: any) => {
                                             e.persist();
                                             changeProductQuantity(product, e.target.value);
