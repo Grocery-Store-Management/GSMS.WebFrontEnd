@@ -14,6 +14,12 @@ export const addProduct = async (product: any) => {
     });
     return data;
 }
+export const addProductDetail = async (productDetail: any) => {
+    const { data } = await axios.post(baseApiUrl + "api/ProductDetail/", productDetail, {
+        ...GetApiConfig()
+    });
+    return data;
+}
 export const updateProduct = async (product: any) => {
     const { data } = await axios.put(baseApiUrl + "api/Product/" + product.id, product, {
         ...GetApiConfig()

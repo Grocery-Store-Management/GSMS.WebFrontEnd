@@ -22,21 +22,12 @@ import { IReceipt, Receipt as ReceiptModel } from "../models/Receipt";
 import { IReceiptDetail, ReceiptDetail } from "../models/ReceiptDetail";
 import { createNewReceipt } from '../Services/ReceiptService';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
-// make a copy of the data, for the second table
+import { pageLoader } from "../utils/PageLoadingUtility/PageLoader";
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Receipt() {
-  /**
-   * DISCLAIMER: This code could be badly improved, but for the sake of the example
-   * and readability, all the logic for both table are here.
-   * You would be better served by dividing each table in its own
-   * component, like Table(?) and TableWithActions(?) hiding the
-   * presentation details away from the page view.
-   */
 
-  // setup pages control for every table
   const [pageTableProducts, setPageTableProducts] = useState(1)
   const [pageTablePorductsInCart, setPageTableProductsInCart] = useState(1)
-  // setup data for every table
   const [products, setProducts] = useState<any[]>([])
   const [productsInCart, setProductsInCart] = useState<any[]>([])
   const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
@@ -44,7 +35,7 @@ function Receipt() {
   const [dataTableProductsInCart, setDataTableProductsInCart] = useState<any[]>([])
   const [category, setCategories] = useState<any>([])
   const [total, setTotal] = useState<number>()
-  // pagination setup
+  const [pageLoading, setPageLoading] = useState<boolean>(true);
   const resultsPerPage = 5;
 
   // pagination change control
@@ -57,25 +48,20 @@ function Receipt() {
     setPageTableProductsInCart(p)
   }
 
-  async function refreshProductList() {
+  async function refreshData() {
     let prodList = await getProductList();
     setDataTableProducts(prodList);
-    setProducts(prodList)
-  }
-
-  async function refreshProductDetails() {
+    setProducts(prodList);
     let prodDetList = await getProductDetaiList();
     setProductsDetails(prodDetList)
-  }
-
-  async function refresgCategoryList() {
     let catList = await getCategoryList();
     setCategories(catList);
+    setPageLoading(false);
   }
 
   function addToCart(product: any, productDetail: any) {
     let prodsInCart = _.cloneDeep(productsInCart);
-    let prodInCartIndex = prodsInCart.findIndex((prod: any) => prod.Id === product.Id)
+    let prodInCartIndex = prodsInCart.findIndex((prod: any) => prod.id === product.id)
     if (prodInCartIndex !== -1) {
       prodsInCart[prodInCartIndex].quantity++;
     } else {
@@ -110,9 +96,7 @@ function Receipt() {
   }
 
   useEffect(() => {
-    refreshProductList();
-    refreshProductDetails();
-    refresgCategoryList();
+    refreshData();
   }, [])
 
   useEffect(() => {
@@ -143,10 +127,12 @@ function Receipt() {
       newReceiptDetail.quantity = product.quantity;
       newReceipt.receiptDetails.push(newReceiptDetail);
     })
+    setPageLoading(true)
     try {
       let res = await createNewReceipt(newReceipt);
       setProductsInCart([])
       setDataTableProductsInCart([])
+      setPageLoading(false)
       showToastSuccess("Tạo đơn thành công!")
     } catch (ex: any) {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!")
@@ -165,6 +151,7 @@ function Receipt() {
 
   return (
     <div className="container mt-3">
+      {pageLoading && pageLoader()}
       <div className="row">
         <div className="col col-md-7">
           <div className='row'>

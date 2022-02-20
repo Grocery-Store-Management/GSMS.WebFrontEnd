@@ -16,7 +16,7 @@ function Login() {
     .then((response) => {
       const user = response.user;
       localStorage.setItem("USER", JSON.stringify(user));
-      history.push('/app');
+      history.push('/app/reports');
     })
     .catch((error) => {
       console.log(error);

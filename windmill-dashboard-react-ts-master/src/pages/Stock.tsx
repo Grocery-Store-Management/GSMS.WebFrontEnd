@@ -19,12 +19,11 @@ import {
 } from '@windmill/react-ui';
 import { STOCK_CONTENT } from '../Shared/Model';
 import { HeartIcon, TrashIcon, FireIcon, DropdownIcon } from '../icons';
-import response, { type, categories } from '../utils/demo/tableData';
+import { type } from '../utils/demo/tableData';
 import ImportOrder from "../pages/ImportOrder"
 import Product from "../pages/Product"
 import Category from './Category';
 // make a copy of the data, for the second table
-const response2 = categories;
 
 function Stock() {
   /**
@@ -40,50 +39,13 @@ function Stock() {
   const [currentContent, setCurrentContent] = useState<string>(STOCK_CONTENT.PRODUCTS);
 
 
-  const [pageTableProduct, setPageTableProduct] = useState(1)
-  const [pageTableCategory, setPageTableCategory] = useState(1)
-  const [pageTableImportOrder, setPageTableImportOrder] = useState(1)
-  // setup data for every table
-  const [dataProduct, setDataProduct] = useState<any[]>([])
-  const [dataCategory, setDataCategory] = useState<any[]>([])
-  const [dataImportOrder, setDataImportOrder] = useState<any[]>([])
-
 
   // pagination setup
   const resultsPerPage = 10;
-  const totalResults = response.length;
-  const totalResults2 = response2.length;
-
-  // pagination change control
-  function onPageChangeProduct(p: number) {
-    setPageTableProduct(p)
-  }
-
-  // pagination change control
-  function onPageChangeCategory(p: number) {
-    setPageTableCategory(p)
-  }
-
-  // pagination change control
-  function onPageChangeImportOrder(p: number) {
-    setPageTableImportOrder(p)
-  }
 
   function toggleNavDropdown() {
     setDropdownOpen(!dropDownOpen);
   }
-
-  // on page change, load new sliced data
-  // here you would make another server request for new data
-  useEffect(() => {
-    setDataProduct(response.slice((pageTableProduct - 1) * resultsPerPage, pageTableProduct * resultsPerPage))
-  }, [pageTableProduct])
-
-  // on page change, load new sliced data
-  // here you would make another server request for new data
-  useEffect(() => {
-    setDataCategory(response2.slice((pageTableCategory - 1) * resultsPerPage, pageTableCategory * resultsPerPage))
-  }, [pageTableCategory])
 
   return (
     <>

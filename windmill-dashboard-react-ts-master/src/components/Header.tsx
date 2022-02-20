@@ -134,7 +134,10 @@ function Header() {
                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Settings</span>
               </DropdownItem>
-              <DropdownItem onClick={() => alert('Log out!')}>
+              <DropdownItem onClick={() => {
+                localStorage.clear();
+                window.location.href = '/';
+              }}>
                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Log out</span>
               </DropdownItem>

@@ -15,20 +15,20 @@ interface IRoute {
 };
 
 const routes: IRoute[] = [
+  // {
+  //   path: '/app/dashboard', // the url
+  //   icon: 'HomeIcon', // the component being exported from icons/index.js
+  //   name: 'Trang chủ', // name that appear in Sidebar
+  // },
   {
-    path: '/app/dashboard', // the url
-    icon: 'HomeIcon', // the component being exported from icons/index.js
-    name: 'Trang chủ', // name that appear in Sidebar
+    path: '/app/reports',
+    icon: 'ChartsIcon',
+    name: 'Báo cáo',
   },
   {
     path: '/app/receipt',
     icon: 'TablesIcon',
     name: 'Xuất hóa đơn',
-  },
-  {
-    path: '/app/reports',
-    icon: 'ChartsIcon',
-    name: 'Báo cáo',
   },
   // {
   //   path: '/app/employee',

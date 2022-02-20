@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
-import { addProduct, getProductList, getProductDetaiList, updateProductDetail, updateProduct, deleteProduct } from "../Services/ProductService";
+import { addProduct, getProductList, getProductDetaiList, updateProductDetail, updateProduct, deleteProduct, addProductDetail } from "../Services/ProductService";
 import { getCategoryList } from "../Services/CategoryService";
 import Modal from "../pages/Modals";
 
@@ -24,6 +24,7 @@ import { showToastError, showToastSuccess } from "../utils/ToasterUtility/Toaste
 import { MODAL_TYPES } from '../Shared/Model';
 import { TYPE } from 'react-toastify/dist/utils';
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
+import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 // make a copy of the data, for the second table
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Product() {
@@ -46,6 +47,7 @@ function Product() {
     const [products, setProducts] = useState<any[]>([])
     const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
     const [category, setCategories] = useState<any>([])
+    const [pageLoading, setPageLoading] = useState<boolean>(true);
 
     // pagination setup
     const resultsPerPage = 5;
@@ -78,7 +80,7 @@ function Product() {
         if (prodDetIndex !== -1) {
             if (quantity === "0") {
                 prodDets[prodDetIndex].status = 2
-            }else{
+            } else {
                 prodDets[prodDetIndex].status = 1
             }
             prodDets[prodDetIndex].storedQuantity = quantity;
@@ -120,6 +122,7 @@ function Product() {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
+                        setPageLoading(true)
                         await updateProduct(product);
                         await updateProductDetail(productDetail);
                         showToastSuccess("Cập nhật thành công!")
@@ -142,42 +145,45 @@ function Product() {
 
     async function removeProduct(product: any) {
         try {
+            setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
-        refreshProductList();
-        refreshProductDetails();
+        refreshData();
     }
 
     async function addDefaultProduct() {
-        let prods = _.cloneDeep(products)
         let defaultProduct = {
             id: "",
             atomicPrice: 0,
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
-            productDetails: [{
-                id: "",
-                price: 0,
-                status: 1,
-                storedQuantity: 100
-            }]
         }
-        prods.push(defaultProduct);
-        setProducts(prods)
+        setPageLoading(true)
+        let addedProduct = await addProduct(defaultProduct)
+        await addProductDetail({
+            productId: addedProduct.id,
+            id: "",
+            price: 0,
+            status: 1,
+            storedQuantity: 100
+        })
+
+        refreshData();
+    }
+    async function refreshData() {
+        let prodList = await refreshProductList();
+        let prodDetList = await refreshProductDetails();
+        refresgCategoryList();
+        setOriginalProducts(prodList);
+        setOriginalProductDetails(prodDetList);
+        setPageLoading(false)
     }
 
     useEffect(() => {
-        async function initData() {
-            let prodList = await refreshProductList();
-            let prodDetList = await refreshProductDetails();
-            refresgCategoryList();
-            setOriginalProducts(prodList);
-            setOriginalProductDetails(prodDetList);
-        }
-        initData();
+        refreshData();
     }, [])
 
     useEffect(() => {
@@ -186,6 +192,7 @@ function Product() {
 
     return (
         <div className="col col-md-12">
+            {pageLoading && pageLoader()}
             <div>
                 <SectionTitle className='col col-md-3'>Danh sách hàng trong kho</SectionTitle>
                 <Button className='col col-md-2 mb-3' layout='primary' disabled={products === originalProducts && productDetails === originalProductDetails}>Lưu tất cả</Button>
@@ -248,7 +255,7 @@ function Product() {
                                     }{prodStatus}</Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Select css="" className="mt-1" defaultValue={prodCat} onChange={(e: any) => { e.persist(); changeProductCategory(product, e.target.value) }}>
+                                    <Select css="" className="mt-1" value={prodCat?.id} onChange={(e: any) => { e.persist(); changeProductCategory(product, e.target.value) }}>
                                         {category.map((cat: any, key: any) => {
                                             return <option key={key} value={cat.id}>{cat.name}</option>
                                         })}

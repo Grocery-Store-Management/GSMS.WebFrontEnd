@@ -32,7 +32,7 @@ import {
 import Employee from './Employee';
 
 
-function Dashboard() {
+function Dashboards() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<any[]>([]);
 
@@ -71,4 +71,4 @@ function Dashboard() {
   );
 };
 
-export default Dashboard;
+export default Dashboards;
