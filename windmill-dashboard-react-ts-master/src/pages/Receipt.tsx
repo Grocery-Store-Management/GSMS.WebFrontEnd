@@ -49,14 +49,18 @@ function Receipt() {
   }
 
   async function refreshData() {
-    let prodList = await getProductList();
-    setDataTableProducts(prodList);
-    setProducts(prodList);
-    let prodDetList = await getProductDetaiList();
-    setProductsDetails(prodDetList)
-    let catList = await getCategoryList();
-    setCategories(catList);
-    setPageLoading(false);
+    try {
+      let prodList = await getProductList();
+      setDataTableProducts(prodList);
+      setProducts(prodList);
+      let prodDetList = await getProductDetaiList();
+      setProductsDetails(prodDetList)
+      let catList = await getCategoryList();
+      setCategories(catList);
+    }
+    finally {
+      setPageLoading(false);
+    }
   }
 
   function addToCart(product: any, productDetail: any) {
@@ -129,14 +133,15 @@ function Receipt() {
     })
     setPageLoading(true)
     try {
-      let res = await createNewReceipt(newReceipt);
+      await createNewReceipt(newReceipt);
       setProductsInCart([])
       setDataTableProductsInCart([])
-      setPageLoading(false)
       showToastSuccess("Tạo đơn thành công!")
     } catch (ex: any) {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!")
-    };
+    } finally {
+      setPageLoading(false)
+    }
   }
 
   function searchProduct(searchPrompt: String) {
@@ -242,7 +247,6 @@ function Receipt() {
               </TableHeader>
               <TableBody>
                 {dataTableProductsInCart.map((product: any, i: any) => {
-                  let curProdDetail = productDetails.find((prodDet: any) => prodDet.productId === product.Id);
                   let prodCat = category.find((cat: any) => cat.Id === product.categoryId);
                   return (
                     <TableRow key={i}>

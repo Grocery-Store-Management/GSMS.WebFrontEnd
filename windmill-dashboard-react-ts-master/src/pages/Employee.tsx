@@ -9,8 +9,6 @@ import {
   TableFooter,
   TableContainer,
   Badge,
-  Avatar,
-  Button,
   Pagination,
 } from '@windmill/react-ui';
 import {  emp } from '../utils/demo/tableData';

@@ -3,7 +3,6 @@ import SectionTitle from '../components/Typography/SectionTitle';
 import { getProductDetaiList } from "../Services/ProductService";
 import { getImportOrderDetailList, getImportOrderList, removeImportOrder, createImportOrder } from "../Services/ImportOrderService";
 import Modal from "../pages/Modals";
-import _ from "lodash"
 import {
     Table,
     TableHeader,
@@ -20,7 +19,7 @@ import { TrashIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 import { MODAL_TYPES } from '../Shared/Model';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
-function ImportOrder() {
+function ImportOrder(props: any) {
 
 
     const [pageTableImportOrders, setPageTableImportOrders] = useState(1)
@@ -36,22 +35,35 @@ function ImportOrder() {
     }
 
     async function refreshImportOrderList() {
-        let importOrderList = await getImportOrderList();
-        let importOrderDetailsList = await getImportOrderDetailList();
-        let productDetailList = await getProductDetaiList();
-        setProductsDetails(productDetailList)
-        setImportOrder(importOrderList);
-        setImportOrderDetails(importOrderDetailsList)
-        setDataTableImportOrders(importOrderList);
+        props.setPageLoading(true)
+        try {
+            let importOrderList = await getImportOrderList();
+            let importOrderDetailsList = await getImportOrderDetailList();
+            let productDetailList = await getProductDetaiList();
+            setProductsDetails(productDetailList)
+            setImportOrder(importOrderList);
+            setImportOrderDetails(importOrderDetailsList)
+            setDataTableImportOrders(importOrderList);
+        } catch (ex) {
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+        }
+        finally {
+            props.pageLoading(false)
+        }
     }
 
     async function deleteImportOrder(order: any) {
         try {
+            props.setPageLoading(true)
             await removeImportOrder(order.id);
-            showToastSuccess("Đơn đã bị hủy");
             await refreshImportOrderList();
+            props.setPageLoading(false)
+            showToastSuccess("Đơn đã bị hủy");
+
         } catch (ex: any) {
-            showToastError(ex)
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+        } finally {
+            props.setPageLoading(false)
         }
     }
     function openCreateNewImportOrder() {
@@ -66,8 +78,17 @@ function ImportOrder() {
             importOrderDetails: importOrdersDetails,
             storeId: STORE_ID
         }
-        await createImportOrder(newImportOrder)
-        await refreshImportOrderList()
+        try {
+            props.setPageLoading(true)
+            await createImportOrder(newImportOrder)
+            await refreshImportOrderList()
+            showToastSuccess("Đơn tạo thành công!")
+        } catch (ex: any) {
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+        }finally {
+            props.setPageLoading(false)
+
+        }
         closeCreateNewImportOrder();
     }
     useEffect(() => {

@@ -22,7 +22,7 @@ import { showToastError, showToastSuccess } from "../utils/ToasterUtility/Toaste
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
-function Product() {
+function Product(props: any) {
     const [pageTableProducts, setPageTableProducts] = useState(1)
     const [originalProducts, setOriginalProducts] = useState<any[]>([])
     const [originalProductDetails, setOriginalProductDetails] = useState<any[]>([])
@@ -30,7 +30,6 @@ function Product() {
     const [products, setProducts] = useState<any[]>([])
     const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
     const [category, setCategories] = useState<any>([])
-    const [pageLoading, setPageLoading] = useState<boolean>(true);
 
     const resultsPerPage = 5;
 
@@ -94,6 +93,18 @@ function Product() {
         }
     }
 
+    function editAll() {
+        let prods = _.cloneDeep(products);
+        let prodDets = _.cloneDeep(productDetails);
+        prods.forEach((prod: any) => {
+            let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
+            if (curProdDet) {
+                editProduct(prod, curProdDet)
+            }
+        })
+        refreshData();
+    }
+
     async function editProduct(product: any, productDetail: any) {
         if (productDetail || product.productDetails !== []) {
             try {
@@ -103,7 +114,7 @@ function Product() {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        setPageLoading(true)
+                        props?.setPageLoading(true)
                         await updateProduct(product);
                         await updateProductDetail(productDetail);
                         showToastSuccess("Cập nhật thành công!")
@@ -117,6 +128,8 @@ function Product() {
                 refreshProductDetails();
             } catch (ex) {
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+            } finally {
+                props.setPageLoading(false)
             }
         } else {
             return
@@ -126,7 +139,7 @@ function Product() {
 
     async function removeProduct(product: any) {
         try {
-            setPageLoading(true)
+            props?.setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
@@ -142,7 +155,7 @@ function Product() {
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
         }
-        setPageLoading(true)
+        props?.setPageLoading(true)
         let addedProduct = await addProduct(defaultProduct)
         await addProductDetail({
             productId: addedProduct.id,
@@ -158,9 +171,11 @@ function Product() {
         let prodList = await refreshProductList();
         let prodDetList = await refreshProductDetails();
         refresgCategoryList();
+        setProducts(prodList);
+        setProductsDetails(prodDetList)
         setOriginalProducts(prodList);
         setOriginalProductDetails(prodDetList);
-        setPageLoading(false)
+        props?.setPageLoading(false)
     }
 
     useEffect(() => {
@@ -173,10 +188,9 @@ function Product() {
 
     return (
         <div className="col col-md-12">
-            {pageLoading && pageLoader()}
             <div>
                 <SectionTitle className='col col-md-3'>Danh sách hàng trong kho</SectionTitle>
-                <Button className='col col-md-2 mb-3' layout='primary' disabled={products === originalProducts && productDetails === originalProductDetails}>Lưu tất cả</Button>
+                <Button className='col col-md-2 mb-3' layout='primary' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
                 <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
             </div>
             <TableContainer className="mb-8">
@@ -218,7 +232,7 @@ function Product() {
                                     <Input className="text-sm" type='number' min={0} value={curProdDetail?.price ? curProdDetail?.price : 0} css={""}
                                         onChange={(e: any) => {
                                             e.persist();
-                                            changeProductPrice(product, e.target.value);
+                                            changeProductPrice(product, parseFloat(e.target.value));
                                         }}
                                     />
                                 </TableCell>
@@ -226,7 +240,7 @@ function Product() {
                                     <Input className="text-sm" type='number' min={0} value={curProdDetail?.storedQuantity ? curProdDetail?.storedQuantity : 0} css={""}
                                         onChange={(e: any) => {
                                             e.persist();
-                                            changeProductQuantity(product, e.target.value);
+                                            changeProductQuantity(product, parseInt(e.target.value));
                                         }}
                                     />
                                 </TableCell>

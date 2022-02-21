@@ -12,13 +12,13 @@ import {
     TableRow,
     TableFooter,
     TableContainer,
-    Badge,
     Button,
     Pagination,
     Input,
 } from '@windmill/react-ui';
+import { showToastError, showToastSuccess } from '../utils/ToasterUtility/ToasterUtility';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
-function Category() {
+function Category(props: any) {
 
 
     const [pageTableCategory, setPageTableCategory] = useState(1)
@@ -47,6 +47,7 @@ function Category() {
     async function refreshCategoryList() {
         let catList = await getCategoryList();
         setCategory(catList)
+        props?.setPageLoading(false);
         return catList;
     }
 
@@ -62,16 +63,35 @@ function Category() {
     async function editCategory(cat: any) {
         let cats = _.cloneDeep(Category)
         let catIndex = cats.findIndex((catDet: any) => catDet.CategoryId === cat.id);
-        if (catIndex !== -1) {
-            await updateCategory(cat);
-        } else {
-            await addCategory(cat);
+        try {
+            props?.setPageLoading(true)
+            if (catIndex !== -1) {
+                await updateCategory(cat);
+            } else {
+                await addCategory(cat);
+            }
+            showToastSuccess("Cập nhật thành công");
+        } catch (ex) {
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại");
+        }
+        finally {
+            props?.setPageLoading(false)
         }
         refreshCategoryList();
     }
 
     async function removeCategory(cat: any) {
-        await deleteCategory(cat)
+        try {
+            props?.pageLoading(true)
+            await deleteCategory(cat)
+            showToastSuccess("Xóa thành công")
+        }catch(ex){
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại");
+        } 
+        finally {
+            props?.pageLoading(false)
+
+        }
         refreshCategoryList();
     }
 
@@ -84,6 +104,7 @@ function Category() {
     }
 
     useEffect(() => {
+        props?.setPageLoading(true);
         refreshProductList();
         refreshProductDetails();
         refreshCategoryList();
@@ -112,9 +133,11 @@ function Category() {
                         {Category.map((cat, i) => {
                             let totalProductInCategory = 0;
                             products.forEach((prod: any) => {
-                                if (prod.CategoryId === cat.id) {
-                                    let prodInCat = productDetails.find((det: any) => prod.productId === det.id);
-                                    if (prodInCat) totalProductInCategory += prodInCat.quantity
+                                if (prod.categoryId === cat.id) {
+                                    let prodInCat = productDetails.find((prodDet: any) => prodDet.productId === prod.id);
+                                    if (prodInCat) totalProductInCategory += prodInCat.storedQuantity
+                                    console.log(prodInCat)
+                                    console.log(totalProductInCategory)
                                 }
                             })
 

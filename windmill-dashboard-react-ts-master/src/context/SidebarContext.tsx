@@ -23,13 +23,12 @@ export const SidebarProvider = ({ children }: ISidebarPovider) => {
   }
 
   const value = useMemo(
-
     () => ({
       isSidebarOpen,
       toggleSidebar,
       closeSidebar,
     }),
-    [isSidebarOpen, toggleSidebar, closeSidebar]
+    [isSidebarOpen, closeSidebar]
   )
 
   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>

@@ -184,7 +184,7 @@ function Reports() {
         setReportMonth(curDate);
         setReportYear(curYear);
         generateData(curDate, curYear);
-    }, [generateData])
+    }, [])
 
 
     return (

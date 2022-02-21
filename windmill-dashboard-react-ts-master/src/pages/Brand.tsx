@@ -9,11 +9,10 @@ import {
   TableFooter,
   TableContainer,
   Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui';
-import { HeartIcon, TrashIcon, FireIcon } from '../icons';
+import { HeartIcon, TrashIcon } from '../icons';
 import { type } from '../utils/demo/tableData';
 import { getBrandList } from '../Services/BrandService';
 
