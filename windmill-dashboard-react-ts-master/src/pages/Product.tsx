@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { addProduct, getProductList, getProductDetaiList, updateProductDetail, updateProduct, deleteProduct, addProductDetail } from "../Services/ProductService";
+import { getImportOrderDetailList, getImportOrderList } from "../Services/ImportOrderService";
 import { getCategoryList } from "../Services/CategoryService";
 import _ from "lodash"
 import {
@@ -28,6 +29,8 @@ function Product(props: any) {
     const [originalProductDetails, setOriginalProductDetails] = useState<any[]>([])
     const [productDetails, setProductsDetails] = useState<any[]>([])
     const [products, setProducts] = useState<any[]>([])
+    const [importOrders, setImportOrders] = useState<any[]>([])
+    const [importOrdersDetails, setImportOrdersDetails] = useState<any[]>([])
     const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
     const [category, setCategories] = useState<any>([])
 
@@ -49,7 +52,7 @@ function Product(props: any) {
         return prodDetList
     }
 
-    async function refresgCategoryList() {
+    async function refreshCategoryList() {
         let catList = await getCategoryList();
         setCategories(catList);
     }
@@ -96,16 +99,26 @@ function Product(props: any) {
     function editAll() {
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
-        prods.forEach((prod: any) => {
-            let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
-            if (curProdDet) {
-                editProduct(prod, curProdDet)
-            }
-        })
+        try {
+            props?.setPageLoading(true)
+            prods.forEach((prod: any) => {
+                let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
+                if (curProdDet) {
+                    editProduct(prod, curProdDet, false)
+                }
+            })
+            showToastSuccess("Cập nhật tất cả thành công!");
+        }
+        catch (ex) {
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+        }
+        finally {
+            props?.setPageLoading(false)
+        }
         refreshData();
     }
 
-    async function editProduct(product: any, productDetail: any) {
+    async function editProduct(product: any, productDetail: any, singleUpdate: boolean = true) {
         if (productDetail || product.productDetails !== []) {
             try {
                 let prods = _.cloneDeep(originalProducts)
@@ -117,7 +130,7 @@ function Product(props: any) {
                         props?.setPageLoading(true)
                         await updateProduct(product);
                         await updateProductDetail(productDetail);
-                        showToastSuccess("Cập nhật thành công!")
+                        if (singleUpdate) showToastSuccess("Cập nhật thành công!")
                     } else {
                         return
                     }
@@ -168,17 +181,23 @@ function Product(props: any) {
         refreshData();
     }
     async function refreshData() {
-        let prodList = await refreshProductList();
-        let prodDetList = await refreshProductDetails();
-        refresgCategoryList();
+        let prodList = await getProductList();
+        let prodDetList = await getProductDetaiList();
+        let importOrders = await getImportOrderList();
+        let importOrdersDetails = await getImportOrderDetailList();
+        let categoryList = await getCategoryList();
         setProducts(prodList);
         setProductsDetails(prodDetList)
         setOriginalProducts(prodList);
         setOriginalProductDetails(prodDetList);
+        setCategories(categoryList);
+        setImportOrders(importOrders);
+        setImportOrdersDetails(importOrdersDetails);
         props?.setPageLoading(false)
     }
 
     useEffect(() => {
+        props?.setPageLoading(true)
         refreshData();
     }, [])
 
@@ -190,15 +209,17 @@ function Product(props: any) {
         <div className="col col-md-12">
             <div>
                 <SectionTitle className='col col-md-3'>Danh sách hàng trong kho</SectionTitle>
-                <Button className='col col-md-2 mb-3' layout='primary' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
                 <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
+                <Button className='col col-md-2 mb-3 float-right' layout='primary' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
+
             </div>
             <TableContainer className="mb-8">
                 <Table>
                     <TableHeader>
                         <tr>
                             <TableCell>Tên hàng</TableCell>
-                            <TableCell>Giá</TableCell>
+                            <TableCell>Giá mua</TableCell>
+                            <TableCell>Giá bán</TableCell>
                             <TableCell>Số lượng</TableCell>
                             <TableCell>Tình trạng</TableCell>
                             <TableCell>Danh mục</TableCell>
@@ -226,6 +247,11 @@ function Product(props: any) {
                                                 {prodCat?.name}
                                             </p>
                                         </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <div>
+                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price}
                                     </div>
                                 </TableCell>
                                 <TableCell>

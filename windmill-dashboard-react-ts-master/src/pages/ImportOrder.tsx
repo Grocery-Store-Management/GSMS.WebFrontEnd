@@ -48,7 +48,7 @@ function ImportOrder(props: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
         finally {
-            props.pageLoading(false)
+            props.setPageLoading(false)
         }
     }
 

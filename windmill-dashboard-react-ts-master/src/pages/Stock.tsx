@@ -31,7 +31,7 @@ function Stock() {
           <Button onClick={toggleNavDropdown} aria-label="Notifications" aria-haspopup="true">
             {currentContent}<DropdownIcon className="w-5 h-5" />
           </Button>
-          <Dropdown isOpen={dropDownOpen} onClose={() => { }}>
+          <Dropdown style={{ position: "absolute" }} isOpen={dropDownOpen} onClose={() => { }}>
             <DropdownItem onClick={() => { setCurrentContent(STOCK_CONTENT.PRODUCTS); toggleNavDropdown() }}>
               <span>Hàng hóa</span>
             </DropdownItem>
@@ -45,7 +45,7 @@ function Stock() {
         </div>
         <div className="row">
           {currentContent === STOCK_CONTENT.PRODUCTS && (
-            <Product  setPageLoading={setPageLoading}/>
+            <Product setPageLoading={setPageLoading} />
           )}
           {currentContent === STOCK_CONTENT.CATEGORY && (
             <>

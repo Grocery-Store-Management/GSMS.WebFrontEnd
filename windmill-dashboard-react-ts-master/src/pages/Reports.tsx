@@ -49,7 +49,7 @@ function Reports() {
         return quantityReport
     }
 
-    function getBestSellerReportOfDay(day: any, productList: any, receipts: any, importOrders: any, receiptDetails: any, productDetails: any, importOrdersDetails: any) {
+    function getBestSellerReportOfDay(day: any, receipts: any, receiptDetails: any) {
         let quantityReportOfDay: any = [];
 
         let receiptsOfDay: any = receipts.filter((rec: any) => new Date(rec.createdDate).getDate() === day);
@@ -59,8 +59,7 @@ function Reports() {
                 let receiptDetailsOfDay = receiptDetails.filter((recDet: any) => recDet.receiptId === rec.id);
                 if (receiptDetails) {
                     receiptDetailsOfDay.forEach((recDet: any) => {
-                        let boughtProduct = productList.find((prod: any) => prod.id === recDet.productId);
-                        quantityReportOfDay.push([boughtProduct.name, recDet.quantity])
+                        quantityReportOfDay.push([recDet.name, recDet.quantity])
                     })
                 }
             })
@@ -68,7 +67,7 @@ function Reports() {
         return quantityReportOfDay;
     }
 
-    function getSalesReportOfDay(day: number, receipts: any, importOrders: any, receiptDetails: any, productDetails: any, importOrdersDetails: any) {
+    function getSalesReportOfDay(day: number, receipts: any, importOrders: any, receiptDetails: any, importOrdersDetails: any) {
         let salesReportOfDay: any = [];
         receipts.forEach((rec: any) => {
             let receiptCreatedDay = new Date(rec.createdDate).getDate()
@@ -76,11 +75,8 @@ function Reports() {
                 let sale = 0;
                 let curRecDetail = receiptDetails.find((recDet: any) => recDet.receiptId === rec.id);
                 if (curRecDetail) {
-                    let curProdDet = productDetails.find((prodDet: any) => curRecDetail.productId === prodDet.productId);
-                    if (curProdDet) {
-                        sale += curProdDet.price * curRecDetail.quantity
-                        salesReportOfDay.push([day, sale])
-                    }
+                    sale += curRecDetail.price * curRecDetail.quantity
+                    salesReportOfDay.push([day, sale])
                 }
             }
         })
@@ -91,11 +87,8 @@ function Reports() {
                 let expense = 0;
                 let curImportOrderDetail = importOrdersDetails.find((importDet: any) => importDet.orderId === importOrder.id);
                 if (curImportOrderDetail) {
-                    let curProdDet = productDetails.find((prodDet: any) => curImportOrderDetail.productId === prodDet.productId);
-                    if (curProdDet) {
-                        expense += curProdDet.price * curImportOrderDetail.quantity
-                        expensesReportOfDay.push([day, expense])
-                    }
+                    expense += curImportOrderDetail.price * curImportOrderDetail.quantity
+                    expensesReportOfDay.push([day, expense])
                 }
             }
         })
@@ -129,7 +122,7 @@ function Reports() {
         let categoryReport: any = _.cloneDeep(categoryReportList)
         //Line chart
         getDatesInMonth(month, year).forEach((day: number) => {
-            let quantityReport: any = getSalesReportOfDay(day, receiptList, importOrderList, receiptDetailList, productDetailList, importOrderDetailsList)
+            let quantityReport: any = getSalesReportOfDay(day, receiptList, importOrderList, receiptDetailList, importOrderDetailsList)
             quantityReport.forEach((entry: any) => {
                 let entIndex: number = salesReport.findIndex((ent: any) => entry[0] === ent[0])
                 if (entIndex !== -1) {
@@ -163,7 +156,7 @@ function Reports() {
 
         //Bar chart
         getDatesInMonth(month, year).forEach((day: number) => {
-            let bestSellerReportOfDay: any = getBestSellerReportOfDay(day, productList, receiptList, importOrderList, receiptDetailList, productDetailList, importOrderDetailsList)
+            let bestSellerReportOfDay: any = getBestSellerReportOfDay(day, receiptList, receiptDetailList)
             bestSellerReportOfDay.forEach((entry: any) => {
                 let entIndex: number = bestSellerReport.findIndex((ent: any) => entry[0] === ent[0])
                 if (entIndex !== -1) {
@@ -190,51 +183,53 @@ function Reports() {
     return (
         <>
             {pageLoading && pageLoader()}
-            <PageTitle>Báo cáo trạng thái tháng {reportMonth} năm {reportYear}</PageTitle>
-            <div className='row'>
-                <div className="col col-md-6 border-end">
-                    <SectionTitle> Top hàng hóa bán chạy của tháng</SectionTitle>
-                    <Chart
-                        chartType="ColumnChart"
-                        data={
-                            bestSellerReportList
-                        }
-                        width="100%"
-                        height="400px"
-                        legendToggle
-                    />
+            {!pageLoading && <>
+                <PageTitle>Báo cáo trạng thái tháng {reportMonth} năm {reportYear}</PageTitle>
+                <div className='row'>
+                    <div className="col col-md-6 border-end">
+                        <SectionTitle> Top hàng hóa bán chạy của tháng</SectionTitle>
+                        <Chart
+                            chartType="ColumnChart"
+                            data={
+                                bestSellerReportList
+                            }
+                            width="100%"
+                            height="400px"
+                            legendToggle
+                        />
+                    </div>
+                    <div className="col col-md-6">
+                        <SectionTitle> Các loại hàng đang có</SectionTitle>
+                        <Chart
+                            chartType="PieChart"
+                            data={
+                                categoryReportList
+                            }
+                            width="100%"
+                            height="400px"
+                            legendToggle
+                        />
+                    </div>
                 </div>
-                <div className="col col-md-6">
-                    <SectionTitle> Các loại hàng đang có</SectionTitle>
-                    <Chart
-                        chartType="PieChart"
-                        data={
-                            categoryReportList
-                        }
-                        width="100%"
-                        height="400px"
-                        legendToggle
-                    />
-                </div>
-            </div>
-            <div className="row">
-                <div className='col col-md-12 border-top'>
-                    <SectionTitle> Đơn bán ra/nhập hàng theo ngày trong tháng</SectionTitle>
-                    <SectionTitle> Tháng này đã bán được: {totalSales} VND </SectionTitle>
-                    <SectionTitle> Thàng này đã nhập:{totalImports} VND</SectionTitle>
-                    <SectionTitle> Tổng lợi nhuận tháng: {profit} VND</SectionTitle>
+                <div className="row">
+                    <div className='col col-md-12 border-top'>
+                        <SectionTitle> Đơn bán ra/nhập hàng theo ngày trong tháng</SectionTitle>
+                        <SectionTitle> Tháng này đã bán được: {totalSales} VND </SectionTitle>
+                        <SectionTitle> Thàng này đã nhập:{totalImports} VND</SectionTitle>
+                        <SectionTitle> Tổng lợi nhuận tháng: {profit} VND</SectionTitle>
 
-                    <Chart
-                        chartType="LineChart"
-                        data={
-                            salesReportList
-                        }
-                        width="100%"
-                        height="400px"
-                        legendToggle
-                    />
+                        <Chart
+                            chartType="LineChart"
+                            data={
+                                salesReportList
+                            }
+                            width="100%"
+                            height="400px"
+                            legendToggle
+                        />
+                    </div>
                 </div>
-            </div>
+            </>}
         </>
     )
 }

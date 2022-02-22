@@ -23,6 +23,7 @@ function Category(props: any) {
 
     const [pageTableCategory, setPageTableCategory] = useState(1)
     const [Category, setCategory] = useState<any[]>([])
+    const [originalCategory, setOriginalCategory] = useState<any[]>([])
     const [dataTableCategory, setDataTableCategory] = useState<any[]>([])
     const [productDetails, setProductsDetails] = useState<any[]>([])
     const [products, setProducts] = useState<any[]>([])
@@ -47,30 +48,31 @@ function Category(props: any) {
     async function refreshCategoryList() {
         let catList = await getCategoryList();
         setCategory(catList)
+        setOriginalCategory(catList)
         props?.setPageLoading(false);
         return catList;
     }
 
-    function changeCategoryName(cat: any, name: string) {
+    function changeCategoryName(category: any, name: string) {
         let cats = _.cloneDeep(Category)
-        let catIndex = cats.findIndex((catDet: any) => catDet.CategoryId === cat.id);
+        let catIndex = cats.findIndex((cat: any) => cat.id === category.id);
         if (catIndex !== -1) {
             cats[catIndex].name = name;
             setCategory(cats)
         }
     }
 
-    async function editCategory(cat: any) {
+    async function editCategory(category: any, singleUpdate: boolean = true) {
         let cats = _.cloneDeep(Category)
-        let catIndex = cats.findIndex((catDet: any) => catDet.CategoryId === cat.id);
+        let catIndex = cats.findIndex((cat: any) => cat.id === category.id);
         try {
             props?.setPageLoading(true)
             if (catIndex !== -1) {
-                await updateCategory(cat);
+                await updateCategory(category);
             } else {
-                await addCategory(cat);
+                await addCategory(category);
             }
-            showToastSuccess("Cập nhật thành công");
+            if (singleUpdate) showToastSuccess("Cập nhật thành công");
         } catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại");
         }
@@ -85,9 +87,9 @@ function Category(props: any) {
             props?.pageLoading(true)
             await deleteCategory(cat)
             showToastSuccess("Xóa thành công")
-        }catch(ex){
+        } catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại");
-        } 
+        }
         finally {
             props?.pageLoading(false)
 
@@ -101,6 +103,26 @@ function Category(props: any) {
             name: "Loại hàng mặc định",
         }
         Category.push(defaultCategory);
+    }
+
+    function editAll() {
+        let cats = _.cloneDeep(Category);
+        try {
+            props?.setPageLoading(true)
+            cats.forEach((cat: any) => {
+                editCategory(cat, false)
+            })
+            showToastSuccess("Cập nhật tất cả thành công!");
+        }
+        catch (ex) {
+            showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+        }
+        finally {
+            props?.setPageLoading(false)
+        }
+        refreshCategoryList();
+        refreshProductDetails();
+        refreshProductList();
     }
 
     useEffect(() => {
@@ -119,6 +141,7 @@ function Category(props: any) {
             <div>
                 <SectionTitle className='col col-md-3'>Danh sách loại hàng</SectionTitle>
                 <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultCategory}>Thêm loại hàng +</Button>
+                <Button className='col col-md-2 mb-3 float-right' layout='primary' disabled={JSON.stringify(Category) === JSON.stringify(originalCategory)} onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
                 <Table>
@@ -136,8 +159,6 @@ function Category(props: any) {
                                 if (prod.categoryId === cat.id) {
                                     let prodInCat = productDetails.find((prodDet: any) => prodDet.productId === prod.id);
                                     if (prodInCat) totalProductInCategory += prodInCat.storedQuantity
-                                    console.log(prodInCat)
-                                    console.log(totalProductInCategory)
                                 }
                             })
 

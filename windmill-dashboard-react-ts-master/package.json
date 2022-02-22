@@ -7,7 +7,7 @@
   "scripts": {
     "tailwind:dev": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.output.css",
     "tailwind:build": "cross-env NODE_ENV=development postcss src/assets/css/tailwind.css -o src/assets/css/tailwind.output.css",
-    "prestart": "npm run tailwind:dev",
+    "prestart": "npm run tailwind:build",
     "start": "react-scripts start",
     "prebuild": "npm run tailwind:build",
     "build": "react-scripts build",
