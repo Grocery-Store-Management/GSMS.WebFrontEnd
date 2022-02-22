@@ -8,8 +8,15 @@ import { getImportOrderList, getImportOrderDetailList } from "../Services/Import
 import _ from 'lodash';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
+import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from '@windmill/react-ui';
 
 function Reports() {
+    const [shownReceipt, setShownReciept] = useState<any>();
+    const [showReceiptDetail, setShowReceiptDetail] = useState<boolean>(false);
+    const [dataTableReceipts, setDataTableReceipts] = useState<any>([])
+    const [pageTableReceipts, setPageTableReceipts] = useState(1)
+    const [receipts, setReceipts] = useState<any>([]);
+    const [receiptDetails, setReceiptDetails] = useState<any>([]);
     const [salesReportList, setSalesReport] = useState<any>([["Ngày", "Bán ra", "Mua vào"], ['1', 0, 0]])
     const [categoryReportList, setCategoryReport] = useState<any>([["Loại hàng", "Tỉ trọng trong kho"], ["", 0]])
     const [bestSellerReportList, setBestSellerReportReport] = useState<any>([["Sản phẩm", "Số lượng bán ra"], ["", 0]])
@@ -20,7 +27,9 @@ function Reports() {
     const [reportYear, setReportYear] = useState<number>(0);
     const [pageLoading, setPageLoading] = useState<boolean>(true);
 
-
+    function onPageChangeTableReceipt(p: number) {
+        setPageTableReceipts(p)
+    }
     function getDatesInMonth(month: number, year: number) {
         var date = new Date(year, month, 1);
         var days: number[] = [];
@@ -120,6 +129,8 @@ function Reports() {
         let salesReport: any = _.cloneDeep(salesReportList);
         let bestSellerReport: any = _.cloneDeep(bestSellerReportList);
         let categoryReport: any = _.cloneDeep(categoryReportList)
+        setReceipts(receiptList)
+        setReceiptDetails(receiptDetailList)
         //Line chart
         getDatesInMonth(month, year).forEach((day: number) => {
             let quantityReport: any = getSalesReportOfDay(day, receiptList, importOrderList, receiptDetailList, importOrderDetailsList)
@@ -179,6 +190,18 @@ function Reports() {
         generateData(curDate, curYear);
     }, [])
 
+    useEffect(() => {
+        setDataTableReceipts(receipts.slice((pageTableReceipts - 1) * 5, pageTableReceipts * 5))
+    }, [pageTableReceipts, receipts])
+
+    function showReceiptDetails(receipt: any) {
+        if (receipt.id === shownReceipt?.id) {
+            setShowReceiptDetail(!showReceiptDetail)
+        } else {
+            setShowReceiptDetail(true)
+            setShownReciept(receipt)
+        }
+    }
 
     return (
         <>
@@ -229,6 +252,95 @@ function Reports() {
                         />
                     </div>
                 </div>
+                <SectionTitle>Lịch sử giao dịch</SectionTitle>
+                <TableContainer className="mb-8 mt-0">
+                    <Table>
+                        <TableHeader>
+                            <tr>
+                                <TableCell>Ngày xuất đơn</TableCell>
+                                <TableCell>Tổng tiền</TableCell>
+                                <TableCell>Tương tác</TableCell>
+                            </tr>
+                        </TableHeader>
+                        <TableBody>
+                            {dataTableReceipts.map((receipt: any, i: any) => {
+                                let totalPrice = 0;
+                                receiptDetails.forEach((recDet: any) => {
+                                    if (recDet.receiptId === receipt.id) totalPrice += recDet.price * recDet.quantity
+                                })
+                                return (
+                                    <React.Fragment key={i}>
+                                        <TableRow >
+                                            <TableCell>
+                                                <div className="flex items-center text-sm">
+                                                    <div>
+                                                        <p className="font-semibold">{(new Date(receipt.createdDate)).toString()}</p>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div><p className="font-semibold">{totalPrice}</p></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center space-x-4">
+                                                    <Button layout="primary" size="small" aria-label="Edit" onClick={() => showReceiptDetails(receipt)}>
+                                                        Xem chi tiết
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {showReceiptDetail && shownReceipt.id === receipt.id &&
+                                            <Table >
+                                                <TableHeader>
+                                                    <tr>
+                                                        <TableCell>Tên sản phẩm</TableCell>
+                                                        <TableCell>Giá bán</TableCell>
+                                                        <TableCell>Số lượng</TableCell>
+                                                    </tr>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {receiptDetails.filter((recDet: any) => recDet.receiptId === receipt.id).map((det: any, i2: any) => {
+                                                        return <> <TableRow key={i2}>
+                                                            <TableCell>
+                                                                <div className="flex items-center text-sm">
+                                                                    <div>
+                                                                        <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </TableCell><TableCell>
+                                                                <div className="flex items-center text-sm">
+                                                                    <div>
+                                                                        <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </TableCell><TableCell>
+                                                                <div className="flex items-center text-sm">
+                                                                    <div>
+                                                                        <p className="font-semibold">{det.quantity ? det.quantity : "Không rõ"}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                        </>
+                                                    })}
+                                                </TableBody>
+                                            </Table>
+                                        }
+                                    </React.Fragment>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                    <TableFooter>
+                        <Pagination
+                            totalResults={receipts.length}
+                            resultsPerPage={5}
+                            onChange={onPageChangeTableReceipt}
+                            label="Table navigation"
+                        />
+                    </TableFooter>
+                </TableContainer>
+
             </>}
         </>
     )

@@ -133,8 +133,8 @@ function Category(props: any) {
     }, [])
 
     useEffect(() => {
-        setDataTableCategory(dataTableCategory.slice((pageTableCategory - 1) * resultsPerPage, pageTableCategory * resultsPerPage))
-    }, [pageTableCategory])
+        setDataTableCategory(Category.slice((pageTableCategory - 1) * resultsPerPage, pageTableCategory * resultsPerPage))
+    }, [pageTableCategory, Category])
 
     return (
         <div className="col col-md-12">
@@ -153,7 +153,7 @@ function Category(props: any) {
                         </tr>
                     </TableHeader>
                     <TableBody>
-                        {Category.map((cat, i) => {
+                        {dataTableCategory.map((cat, i) => {
                             let totalProductInCategory = 0;
                             products.forEach((prod: any) => {
                                 if (prod.categoryId === cat.id) {

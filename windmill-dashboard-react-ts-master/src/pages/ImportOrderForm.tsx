@@ -86,7 +86,7 @@ function ImportOrderForm(props: any) {
 }
 
 const ProductNameCustomSelect = (props: any) => {
-    return <Select css="" className="mt-1" defaultValue={props.curProduct} onChange={props.onProductNameChange}>
+    return <Select style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}  css="" className="mt-1" defaultValue={props.curProduct} onChange={props.onProductNameChange}>
         {props.products.map((prod: any, key: any) => {
             return <option key={key} value={prod.id}>{prod.name}</option>
         })}

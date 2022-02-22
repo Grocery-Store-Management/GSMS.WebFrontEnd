@@ -173,7 +173,7 @@ function Product(props: any) {
         await addProductDetail({
             productId: addedProduct.id,
             id: "",
-            price: 0,
+            price: 1000,
             status: 1,
             storedQuantity: 100
         })
@@ -202,8 +202,8 @@ function Product(props: any) {
     }, [])
 
     useEffect(() => {
-        setDataTableProducts(dataTableProducts.slice((pageTableProducts - 1) * resultsPerPage, pageTableProducts * resultsPerPage))
-    }, [pageTableProducts])
+        setDataTableProducts(products.slice((pageTableProducts - 1) * resultsPerPage, pageTableProducts * resultsPerPage))
+    }, [pageTableProducts, products])
 
     return (
         <div className="col col-md-12">
@@ -227,7 +227,7 @@ function Product(props: any) {
                         </tr>
                     </TableHeader>
                     <TableBody>
-                        {products.map((product, i) => {
+                        {dataTableProducts.map((product, i) => {
                             let curProdDetail = productDetails.find((prodDet: any) => prodDet?.productId === product.id);
                             let prodStatus = status_mapping[curProdDetail?.status];
                             let prodType = type_mapping[curProdDetail?.status];
@@ -276,7 +276,7 @@ function Product(props: any) {
                                     }{prodStatus}</Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Select css="" className="mt-1" value={prodCat?.id} onChange={(e: any) => { e.persist(); changeProductCategory(product, e.target.value) }}>
+                                    <Select style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} css=""  className="mt-1" value={prodCat?.id} onChange={(e: any) => { e.persist(); changeProductCategory(product, e.target.value) }}>
                                         {category.map((cat: any, key: any) => {
                                             return <option key={key} value={cat.id}>{cat.name}</option>
                                         })}

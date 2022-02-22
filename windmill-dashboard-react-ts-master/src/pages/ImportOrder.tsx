@@ -96,8 +96,8 @@ function ImportOrder(props: any) {
     }, [])
 
     useEffect(() => {
-        setDataTableImportOrders(dataTableImportOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
-    }, [pageTableImportOrders])
+        setDataTableImportOrders(importOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
+    }, [pageTableImportOrders, importOrders])
 
     return (
         <div className="container mt-3">
@@ -122,7 +122,7 @@ function ImportOrder(props: any) {
                                 </tr>
                             </TableHeader>
                             <TableBody>
-                                {importOrders.map((order, i) => {
+                                {dataTableImportOrders.map((order, i) => {
                                     let totalPrice = 0;
                                     let importOrderDetailOfCurrentOrder = importOrdersDetails.filter((det: any) => det.orderId === order.id);
                                     importOrderDetailOfCurrentOrder.forEach((importOrderDetail: any) => {
