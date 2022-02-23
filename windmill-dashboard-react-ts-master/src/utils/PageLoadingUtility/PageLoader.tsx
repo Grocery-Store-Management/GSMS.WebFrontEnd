@@ -5,7 +5,8 @@ export const pageLoader = () => {
     return <div className="absolute" >
         <Backdrop />
         <div className='relative' style={{ left: "25vw", top:"30vh"}}>
-            <Oval height="60%"
+            Đang tải dữ liệu! Xin vui lòng chờ!
+            <Oval height="50%"
                 width="60%"
                 color='red'
                 ariaLabel='loading' />
