@@ -183,11 +183,11 @@ function Reports() {
     }
 
     useEffect(() => {
-        let curDate = (new Date()).getMonth();
+        let curMonth = (new Date()).getMonth();
         let curYear = (new Date()).getFullYear()
-        setReportMonth(curDate);
+        setReportMonth(curMonth + 1);
         setReportYear(curYear);
-        generateData(curDate, curYear);
+        generateData(curMonth, curYear);
     }, [])
 
     useEffect(() => {
