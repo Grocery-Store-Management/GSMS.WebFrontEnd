@@ -1,4 +1,4 @@
-export const baseApiUrl = "https://gsms-api.azurewebsites.net/";
+export const baseApiUrl = "https://gsms-api.azurewebsites.net/api/v1/";
 export const GetApiConfig = () => {
     return {
         headers:{
