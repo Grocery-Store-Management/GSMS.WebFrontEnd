@@ -15,8 +15,10 @@ import {
 import { HeartIcon, TrashIcon } from '../icons';
 import { type } from '../utils/demo/tableData';
 import { getBrandList } from '../Services/BrandService';
+import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 
 function Brand() {
+  const [pageLoading, setPageLoading] = useState<boolean>(false);
 
   const [response, setResponse] = useState<any>();
   const [totalResults, setResult] = useState<any>();
@@ -30,8 +32,9 @@ function Brand() {
     setPageTable1(p)
   }
   useEffect(() => {
+    setPageLoading(true)
     getBrandList().then((res: any) => {
-      if (res) { setResponse(res); setResult(res.length) }
+      if (res) { setResponse(res); setResult(res.length); setPageLoading(false) }
     })
   }, [])
 
@@ -43,6 +46,8 @@ function Brand() {
 
   return (
     <div className="container mt-3">
+      {pageLoading && pageLoader()}
+
       <div className="row">
         <div className="col col-md-7">
           <SectionTitle>Quản lý chuỗi cửa hàng</SectionTitle>
@@ -52,7 +57,7 @@ function Brand() {
                 <tr>
                   <TableCell>Tên chuỗi Cửa hàng</TableCell>
                   <TableCell>Tình trạng</TableCell>
-                  <TableCell>Tương tác</TableCell>
+                  {/* <TableCell>Tương tác</TableCell> */}
                 </tr>
               </TableHeader>
               <TableBody>
@@ -72,7 +77,7 @@ function Brand() {
                         {brand.isDeleted ? "Đang hoạt động" : "Đã đóng cửa"}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <div className="flex items-center space-x-4">
                         <Button layout="link" size="small" aria-label="Edit">
                           <HeartIcon className="w-5 h-5" aria-hidden="true" />
@@ -81,7 +86,7 @@ function Brand() {
                           <TrashIcon className="w-5 h-5" aria-hidden="true" />
                         </Button>
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>

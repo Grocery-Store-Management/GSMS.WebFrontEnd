@@ -161,7 +161,7 @@ function Receipt() {
         <div className="col col-md-7">
           <div className='row'>
             <SectionTitle className="col col-md-5">Danh sách hàng hóa </SectionTitle>
-            <Input css={undefined} className="col col-md-6 ms-5 mb-2 float-left" placeholder='Tìm kiếm sản phẩm' onChange={(e: any) => {
+            <Input css={undefined} className="col col-md-6 mb-2 " placeholder='Tìm kiếm sản phẩm' onChange={(e: any) => {
               e.persist();
               searchProduct(e.target.value)
             }}

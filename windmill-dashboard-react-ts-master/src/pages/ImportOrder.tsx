@@ -18,9 +18,12 @@ import {
 import { TrashIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 import { MODAL_TYPES } from '../Shared/Model';
+import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
+import { type } from '../utils/demo/tableData';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function ImportOrder(props: any) {
 
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
 
     const [pageTableImportOrders, setPageTableImportOrders] = useState(1)
     const [importOrders, setImportOrder] = useState<any[]>([])
@@ -35,7 +38,7 @@ function ImportOrder(props: any) {
     }
 
     async function refreshImportOrderList() {
-        props.setPageLoading(true)
+        setPageLoading(true)
         try {
             let importOrderList = await getImportOrderList();
             let importOrderDetailsList = await getImportOrderDetailList();
@@ -48,22 +51,22 @@ function ImportOrder(props: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
         finally {
-            props.setPageLoading(false)
+            setPageLoading(false)
         }
     }
 
     async function deleteImportOrder(order: any) {
         try {
-            props.setPageLoading(true)
+            setPageLoading(true)
             await removeImportOrder(order.id);
             await refreshImportOrderList();
-            props.setPageLoading(false)
+            setPageLoading(false)
             showToastSuccess("Đơn đã bị hủy");
 
         } catch (ex: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         } finally {
-            props.setPageLoading(false)
+            setPageLoading(false)
         }
     }
     function openCreateNewImportOrder() {
@@ -79,14 +82,14 @@ function ImportOrder(props: any) {
             storeId: STORE_ID
         }
         try {
-            props.setPageLoading(true)
+            setPageLoading(true)
             await createImportOrder(newImportOrder)
             await refreshImportOrderList()
             showToastSuccess("Đơn tạo thành công!")
         } catch (ex: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }finally {
-            props.setPageLoading(false)
+            setPageLoading(false)
 
         }
         closeCreateNewImportOrder();
@@ -101,6 +104,7 @@ function ImportOrder(props: any) {
 
     return (
         <div className="container mt-3">
+            {pageLoading && pageLoader()}
             {<Modal modalType={MODAL_TYPES.IMPORT_ORDER} cancel="Hủy" accept="Gửi đơn" header="Tạo đơn" callback={(value: any) => setImportOrderDetails(value)} acceptModal={sendImportOrder} closeModal={closeCreateNewImportOrder} showModal={showCreateOrder} />}
             <div className="row">
                 <div className="col col-md-12">
@@ -133,8 +137,8 @@ function ImportOrder(props: any) {
                                     })
                                     return <TableRow key={i}>
                                         <TableCell>
-                                            <Badge type={order.type}>
-                                                {order.status}
+                                            <Badge type={order.type ? order.type : type.PRIMARY}>
+                                                {order.status ? order.status : "Đang giao"}
                                             </Badge>
                                         </TableCell>
                                         <TableCell>

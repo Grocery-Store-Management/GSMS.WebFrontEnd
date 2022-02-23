@@ -24,6 +24,7 @@ import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Product(props: any) {
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
     const [pageTableProducts, setPageTableProducts] = useState(1)
     const [originalProducts, setOriginalProducts] = useState<any[]>([])
     const [originalProductDetails, setOriginalProductDetails] = useState<any[]>([])
@@ -100,7 +101,7 @@ function Product(props: any) {
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
         try {
-            props?.setPageLoading(true)
+            setPageLoading(true)
             prods.forEach((prod: any) => {
                 let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
                 if (curProdDet) {
@@ -113,7 +114,7 @@ function Product(props: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
         finally {
-            props?.setPageLoading(false)
+            setPageLoading(false)
         }
         refreshData();
     }
@@ -127,7 +128,7 @@ function Product(props: any) {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        props?.setPageLoading(true)
+                        setPageLoading(true)
                         await updateProduct(product);
                         await updateProductDetail(productDetail);
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
@@ -142,7 +143,7 @@ function Product(props: any) {
             } catch (ex) {
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
             } finally {
-                props.setPageLoading(false)
+                setPageLoading(false)
             }
         } else {
             return
@@ -152,7 +153,7 @@ function Product(props: any) {
 
     async function removeProduct(product: any) {
         try {
-            props?.setPageLoading(true)
+            setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
@@ -168,7 +169,7 @@ function Product(props: any) {
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
         }
-        props?.setPageLoading(true)
+        setPageLoading(true)
         let addedProduct = await addProduct(defaultProduct)
         await addProductDetail({
             productId: addedProduct.id,
@@ -193,11 +194,11 @@ function Product(props: any) {
         setCategories(categoryList);
         setImportOrders(importOrders);
         setImportOrdersDetails(importOrdersDetails);
-        props?.setPageLoading(false)
+        setPageLoading(false)
     }
 
     useEffect(() => {
-        props?.setPageLoading(true)
+        setPageLoading(true)
         refreshData();
     }, [])
 
@@ -207,6 +208,7 @@ function Product(props: any) {
 
     return (
         <div className="col col-md-12">
+            {pageLoading && pageLoader()}
             <div>
                 <SectionTitle className='col col-md-3'>Danh sách hàng trong kho</SectionTitle>
                 <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
@@ -276,7 +278,7 @@ function Product(props: any) {
                                     }{prodStatus}</Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Select style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} css=""  className="mt-1" value={prodCat?.id} onChange={(e: any) => { e.persist(); changeProductCategory(product, e.target.value) }}>
+                                    <Select style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} css="" className="mt-1" value={prodCat?.id} onChange={(e: any) => { e.persist(); changeProductCategory(product, e.target.value) }}>
                                         {category.map((cat: any, key: any) => {
                                             return <option key={key} value={cat.id}>{cat.name}</option>
                                         })}

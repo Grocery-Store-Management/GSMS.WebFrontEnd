@@ -17,9 +17,11 @@ import {
     Input,
 } from '@windmill/react-ui';
 import { showToastError, showToastSuccess } from '../utils/ToasterUtility/ToasterUtility';
+import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Category(props: any) {
 
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
 
     const [pageTableCategory, setPageTableCategory] = useState(1)
     const [Category, setCategory] = useState<any[]>([])
@@ -49,7 +51,7 @@ function Category(props: any) {
         let catList = await getCategoryList();
         setCategory(catList)
         setOriginalCategory(catList)
-        props?.setPageLoading(false);
+        setPageLoading(false);
         return catList;
     }
 
@@ -66,7 +68,7 @@ function Category(props: any) {
         let cats = _.cloneDeep(Category)
         let catIndex = cats.findIndex((cat: any) => cat.id === category.id);
         try {
-            props?.setPageLoading(true)
+            setPageLoading(true)
             if (catIndex !== -1) {
                 await updateCategory(category);
             } else {
@@ -77,7 +79,7 @@ function Category(props: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại");
         }
         finally {
-            props?.setPageLoading(false)
+            setPageLoading(false)
         }
         refreshCategoryList();
     }
@@ -108,7 +110,7 @@ function Category(props: any) {
     function editAll() {
         let cats = _.cloneDeep(Category);
         try {
-            props?.setPageLoading(true)
+            setPageLoading(true)
             cats.forEach((cat: any) => {
                 editCategory(cat, false)
             })
@@ -118,7 +120,7 @@ function Category(props: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
         finally {
-            props?.setPageLoading(false)
+            setPageLoading(false)
         }
         refreshCategoryList();
         refreshProductDetails();
@@ -126,7 +128,7 @@ function Category(props: any) {
     }
 
     useEffect(() => {
-        props?.setPageLoading(true);
+        setPageLoading(true);
         refreshProductList();
         refreshProductDetails();
         refreshCategoryList();
@@ -138,6 +140,8 @@ function Category(props: any) {
 
     return (
         <div className="col col-md-12">
+            {pageLoading && pageLoader()}
+
             <div>
                 <SectionTitle className='col col-md-3'>Danh sách loại hàng</SectionTitle>
                 <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultCategory}>Thêm loại hàng +</Button>
