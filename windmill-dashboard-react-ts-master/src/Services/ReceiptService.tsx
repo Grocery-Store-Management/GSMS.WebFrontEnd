@@ -1,8 +1,6 @@
 import axios from "axios"
 import { IReceipt } from "../models/Receipt";
-import { GetApiConfig } from "../utils/ApiUtility/ApiConfig";
-
-const baseApiUrl = "https://gsms-api.azurewebsites.net/";
+import { GetApiConfig, baseApiUrl } from "../utils/ApiUtility/ApiConfig";
 export const getReceiptList = async () => {
     const { data } = await axios.get(baseApiUrl + "api/Receipt", {
         ...GetApiConfig()
