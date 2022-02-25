@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, Input, Select } from '@windmill/react-ui'
-import { getProductList } from "../Services/ProductService";
+import { getProductDetaiList, getProductList } from "../Services/ProductService";
 import _ from 'lodash';
 function ImportOrderForm(props: any) {
-
+    const [productDetails, setProductDetails] = useState<any>([]);
     const [ImportOrderDetails, setImportOrderDetails] = useState<any>([]);
     const [products, setProducts] = useState<any>([]);
 
     async function refreshProductList() {
+        let prodDetList = await getProductDetaiList();
         let prodList = await getProductList();
         setProducts(prodList)
+        setProductDetails(prodDetList)
     }
 
     function addProductToImportOrder() {
         let importOrderDetails = _.cloneDeep(ImportOrderDetails);
         let initImportOrderDetails: any = [{
             id: "",
-            productId: products[0].id ? products[0].id : "",
+            productId: products[0]?.id ? products[0]?.id : "",
+            name: products[0]?.name,
+            price: productDetails?.find((prodDet: any) => prodDet.productId === products[0].id)?.price,
             quantity: 1
         }];
         importOrderDetails.push(initImportOrderDetails[0]);
@@ -34,10 +38,16 @@ function ImportOrderForm(props: any) {
     }
     function onProductNameChange(newProductId: any, importOrderDetail: any) {
         let importOrderDetails = _.cloneDeep(ImportOrderDetails);
+        let prodDets = _.cloneDeep(productDetails);
         let ordDetIndex = importOrderDetails.findIndex((detail: any) => detail.id === importOrderDetail.id);
+        let prodDet = prodDets.find((prodDet: any) => prodDet.productId === newProductId);
         if (ordDetIndex !== -1) {
-            importOrderDetails[ordDetIndex].productId = newProductId;
-            setImportOrderDetails(importOrderDetails)
+            if (prodDet) {
+                importOrderDetails[ordDetIndex].productId = newProductId;
+                importOrderDetails[ordDetIndex].name = prodDet.name;
+                importOrderDetails[ordDetIndex].price = prodDet.price;
+                setImportOrderDetails(importOrderDetails)
+            }
         }
     }
     useEffect(() => {
@@ -86,7 +96,7 @@ function ImportOrderForm(props: any) {
 }
 
 const ProductNameCustomSelect = (props: any) => {
-    return <Select style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}  css="" className="mt-1" defaultValue={props.curProduct} onChange={props.onProductNameChange}>
+    return <Select style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} css="" className="mt-1" defaultValue={props.curProduct} onChange={props.onProductNameChange}>
         {props.products.map((prod: any, key: any) => {
             return <option key={key} value={prod.id}>{prod.name}</option>
         })}

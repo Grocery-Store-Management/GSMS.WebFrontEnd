@@ -76,6 +76,8 @@ function ImportOrder(props: any) {
         setShowCreateOrder(false)
     }
     async function sendImportOrder() {
+        closeCreateNewImportOrder();
+
         let newImportOrder = {
             name: `Đơn hàng số ${importOrders.length + 1}`,
             importOrderDetails: importOrdersDetails,
@@ -88,11 +90,9 @@ function ImportOrder(props: any) {
             showToastSuccess("Đơn tạo thành công!")
         } catch (ex: any) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
-        }finally {
+        } finally {
             setPageLoading(false)
-
         }
-        closeCreateNewImportOrder();
     }
     useEffect(() => {
         refreshImportOrderList();
@@ -128,12 +128,8 @@ function ImportOrder(props: any) {
                             <TableBody>
                                 {dataTableImportOrders.map((order, i) => {
                                     let totalPrice = 0;
-                                    let importOrderDetailOfCurrentOrder = importOrdersDetails.filter((det: any) => det.orderId === order.id);
-                                    importOrderDetailOfCurrentOrder.forEach((importOrderDetail: any) => {
-                                        let prodInList = productDetails.find((productDetail: any) =>
-                                            productDetail.productId === importOrderDetail.productId
-                                        )
-                                        totalPrice += prodInList?.price * importOrderDetail.quantity
+                                    order?.importOrderDetails.forEach((importOrderDet : any) => {
+                                        totalPrice += importOrderDet.price * importOrderDet.quantity;
                                     })
                                     return <TableRow key={i}>
                                         <TableCell>
