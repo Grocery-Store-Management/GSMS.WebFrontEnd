@@ -24,7 +24,8 @@ const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NO
 function ImportOrder(props: any) {
 
     const [pageLoading, setPageLoading] = useState<boolean>(false);
-
+    const [shownOrder, setShownOrder] = useState<any>();
+    const [showOrderDetail, setShowOrderDetail] = useState<boolean>(false);
     const [pageTableImportOrders, setPageTableImportOrders] = useState(1)
     const [importOrders, setImportOrder] = useState<any[]>([])
     const [importOrdersDetails, setImportOrderDetails] = useState<any[]>([])
@@ -102,6 +103,16 @@ function ImportOrder(props: any) {
         setDataTableImportOrders(importOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
     }, [pageTableImportOrders, importOrders])
 
+
+    function showOrderDetails(order: any) {
+        if (order.id === shownOrder?.id) {
+            setShowOrderDetail(!showOrderDetail)
+        } else {
+            setShowOrderDetail(true)
+            setShownOrder(order)
+        }
+    }
+
     return (
         <div className="container mt-3">
             {pageLoading && pageLoader()}
@@ -109,7 +120,7 @@ function ImportOrder(props: any) {
             <div className="row">
                 <div className="col col-md-12">
                     <div className='row'>
-                        <SectionTitle className="col col-md-9">Đơn hàng nhập kho</SectionTitle>
+                        <SectionTitle className="col col-md-9">Hàng nhập/xuất kho</SectionTitle>
                         <Button className='col col-md-2 mb-3' layout='primary' onClick={openCreateNewImportOrder}>
                             Tạo đơn mới
                         </Button>
@@ -128,35 +139,81 @@ function ImportOrder(props: any) {
                             <TableBody>
                                 {dataTableImportOrders.map((order, i) => {
                                     let totalPrice = 0;
-                                    order?.importOrderDetails.forEach((importOrderDet : any) => {
+                                    order?.importOrderDetails.forEach((importOrderDet: any) => {
                                         totalPrice += importOrderDet.price * importOrderDet.quantity;
                                     })
-                                    return <TableRow key={i}>
-                                        <TableCell>
-                                            <Badge type={order.type ? order.type : type.PRIMARY}>
-                                                {order.status ? order.status : "Đang giao"}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-sm"> {order.name} </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="text-sm"> {totalPrice} </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            {new Date(order.createdDate).toISOString().slice(0, 10)}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center space-x-4">
-                                                <Button layout="link" size="small" aria-label="Delete" onClick={() => deleteImportOrder(order)}>
-                                                    <TrashIcon className="w-5 h-5" aria-hidden="true" /> Hủy đơn
-                                                </Button>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
+                                    return <React.Fragment key={i}>
+                                        <TableRow >
+                                            <TableCell>
+                                                <Badge type={order.type ? order.type : type.PRIMARY}>
+                                                    {order.status ? order.status : "Đang giao"}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="text-sm"> {order.name} </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span className="text-sm"> {totalPrice} </span>
+                                            </TableCell>
+                                            <TableCell>
+                                                {new Date(order.createdDate).toISOString().slice(0, 10)}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center space-x-4">
+                                                    <Button layout="primary" size="small" aria-label="Edit" onClick={() => showOrderDetails(order)}>
+                                                        Xem chi tiết
+                                                    </Button>
+                                                    <Button layout="link" size="small" aria-label="Delete" onClick={() => deleteImportOrder(order)}>
+                                                        <TrashIcon className="w-5 h-5" aria-hidden="true" /> Hủy đơn
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        {showOrderDetail && shownOrder.id === order.id &&
+                                            <TableRow>
+                                                <TableCell>
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <tr>
+                                                                <TableCell>Tên sản phẩm</TableCell>
+                                                                <TableCell>Giá bán</TableCell>
+                                                                <TableCell>Số lượng</TableCell>
+                                                            </tr>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {importOrdersDetails.filter((ordDet: any) => ordDet.importOrderId === order.id).map((det: any, i2: any) => {
+                                                                return <TableRow key={i2}>
+                                                                    <TableCell>
+                                                                        <div className="flex items-center text-sm">
+                                                                            <div>
+                                                                                <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </TableCell><TableCell>
+                                                                        <div className="flex items-center text-sm">
+                                                                            <div>
+                                                                                <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </TableCell><TableCell>
+                                                                        <div className="flex items-center text-sm">
+                                                                            <div>
+                                                                                <p className="font-semibold">{det.quantity ? det.quantity : "Không rõ"}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            })}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableCell>
+                                            </TableRow>
+                                        }
+                                    </React.Fragment>
                                 })}
                             </TableBody>
                         </Table>
+
                         <TableFooter>
                             <Pagination
                                 totalResults={importOrders.length}

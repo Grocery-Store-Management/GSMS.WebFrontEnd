@@ -290,41 +290,44 @@ function Reports() {
                                             </TableCell>
                                         </TableRow>
                                         {showReceiptDetail && shownReceipt.id === receipt.id &&
-                                            <Table >
-                                                <TableHeader>
-                                                    <tr>
-                                                        <TableCell>Tên sản phẩm</TableCell>
-                                                        <TableCell>Giá bán</TableCell>
-                                                        <TableCell>Số lượng</TableCell>
-                                                    </tr>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {receiptDetails.filter((recDet: any) => recDet.receiptId === receipt.id).map((det: any, i2: any) => {
-                                                        return <> <TableRow key={i2}>
-                                                            <TableCell>
-                                                                <div className="flex items-center text-sm">
-                                                                    <div>
-                                                                        <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </TableCell><TableCell>
-                                                                <div className="flex items-center text-sm">
-                                                                    <div>
-                                                                        <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </TableCell><TableCell>
-                                                                <div className="flex items-center text-sm">
-                                                                    <div>
-                                                                        <p className="font-semibold">{det.quantity ? det.quantity : "Không rõ"}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                        </>
-                                                    })}
-                                                </TableBody>
-                                            </Table>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <tr>
+                                                                <TableCell>Tên sản phẩm</TableCell>
+                                                                <TableCell>Giá bán</TableCell>
+                                                                <TableCell>Số lượng</TableCell>
+                                                            </tr>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {receiptDetails.filter((recDet: any) => recDet.receiptId === receipt.id).map((det: any, i2: any) => {
+                                                                return <TableRow key={i2}>
+                                                                    <TableCell>
+                                                                        <div className="flex items-center text-sm">
+                                                                            <div>
+                                                                                <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </TableCell><TableCell>
+                                                                        <div className="flex items-center text-sm">
+                                                                            <div>
+                                                                                <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </TableCell><TableCell>
+                                                                        <div className="flex items-center text-sm">
+                                                                            <div>
+                                                                                <p className="font-semibold">{det.quantity ? det.quantity : "Không rõ"}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            })}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableCell>
+                                            </TableRow>
                                         }
                                     </React.Fragment>
                                 )
