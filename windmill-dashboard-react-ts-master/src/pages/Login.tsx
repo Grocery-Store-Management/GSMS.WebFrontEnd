@@ -13,9 +13,11 @@ function Login() {
     var google_provider = new firebase.auth.GoogleAuthProvider();
 
     firebase.auth().signInWithPopup(google_provider)
-    .then((response) => {
+    .then(async (response) => {
       const user = response.user;
+      const token : any = await user?.getIdToken();
       localStorage.setItem("USER", JSON.stringify(user));
+      localStorage.setItem("token", token);
       history.push('/app/reports');
     })
     .catch((error) => {
