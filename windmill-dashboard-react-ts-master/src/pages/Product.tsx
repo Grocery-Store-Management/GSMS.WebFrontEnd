@@ -178,7 +178,7 @@ function Product(props: any) {
             status: 1,
             storedQuantity: 100
         })
-
+        showToastSuccess("Sản phẩm mặc định tạo thành công!")
         refreshData();
     }
     async function refreshData() {
@@ -187,7 +187,13 @@ function Product(props: any) {
         let importOrders = await getImportOrderList();
         let importOrdersDetails = await getImportOrderDetailList();
         let categoryList = await getCategoryList();
-        setProducts(prodList);
+
+        let prods = [
+            ...prodList.filter((p: any) => p.name.includes("Sản phẩm mặc định")),
+            ...prodList.filter((p: any) => !p.name.includes("Sản phẩm mặc định"))
+        ]
+
+        setProducts(prods);
         setProductsDetails(prodDetList)
         setOriginalProducts(prodList);
         setOriginalProductDetails(prodDetList);
@@ -213,7 +219,6 @@ function Product(props: any) {
                 <SectionTitle className='col col-md-3'>Danh sách hàng trong kho</SectionTitle>
                 <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
                 <Button className='col col-md-2 mb-3 float-right' layout='primary' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
-
             </div>
             <TableContainer className="mb-8">
                 <Table>
