@@ -6,4 +6,5 @@ export const STOCK_CONTENT = {
 
 export const MODAL_TYPES = {
     IMPORT_ORDER: "IMPORT_ORDER",
+    EXPORT_ORDER: "EXPORT_ORDER",
 }

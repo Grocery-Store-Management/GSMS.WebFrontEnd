@@ -23,6 +23,7 @@ import { type } from '../utils/demo/tableData';
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function ImportOrder(props: any) {
 
+    const [modalType, setModalType] = useState<any>();
     const [pageLoading, setPageLoading] = useState<boolean>(false);
     const [shownOrder, setShownOrder] = useState<any>();
     const [showOrderDetail, setShowOrderDetail] = useState<boolean>(false);
@@ -35,8 +36,14 @@ function ImportOrder(props: any) {
     const [dataTableImportOrders, setDataTableImportOrders] = useState<any[]>([])
     const [dataTableExportOrders, setDataTableExportOrders] = useState<any[]>([])
     const [showCreateOrder, setShowCreateOrder] = useState<boolean>(false);
+    const [filteredImportOrders, setFilteredImportOrder] = useState<any[]>([])
+    const [filteredExportOrders, setFilteredExportOrder] = useState<any[]>([])
+
     const resultsPerPage = 5;
 
+    function onPageChangeTableExportOrders(p: number) {
+        setPageTableExportOrders(p)
+    }
     function onPageChangeTableImportOrders(p: number) {
         setPageTableImportOrders(p)
     }
@@ -52,7 +59,6 @@ function ImportOrder(props: any) {
             setProducts(prodList);
             setImportOrder(importOrderList);
             setImportOrderDetails(importOrderDetailsList)
-            setDataTableImportOrders(importOrderList);
         } catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
         }
@@ -85,7 +91,7 @@ function ImportOrder(props: any) {
         closeCreateNewImportOrder();
 
         let newImportOrder = {
-            name: `Đơn hàng số ${importOrders.length + 1}`,
+            name: modalType === MODAL_TYPES.IMPORT_ORDER ? `Đơn nhập hàng số ${filteredImportOrders.length + 1}` : `Đơn xuất hàng số ${filteredExportOrders.length + 1}`,
             importOrderDetails: importOrdersDetails,
             storeId: STORE_ID
         }
@@ -105,22 +111,23 @@ function ImportOrder(props: any) {
     }, [])
 
     useEffect(() => {
-        var filteredImportOrders: any[] = [];
+        var filteredOrders: any[] = [];
         importOrders.forEach((ord: any) => {
-            var ordDet = importOrdersDetails.find((det: any) => det.importOrderId === ord.Id && det.quantity > 0);
-            if (ordDet) filteredImportOrders.push(ord)
+            if (ord.importOrderDetails && ord.importOrderDetails[0].quantity > 0) filteredOrders.push(ord)
         })
-        setDataTableImportOrders(filteredImportOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
+        setFilteredImportOrder(filteredOrders);
+        setDataTableImportOrders(filteredOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
     }, [pageTableImportOrders, importOrders])
 
     useEffect(() => {
-        var filteredImportOrders: any[] = [];
+        var filteredOrders: any[] = [];
         importOrders.forEach((ord: any) => {
-            var ordDet = importOrdersDetails.find((det: any) => det.importOrderId === ord.Id && det.quantity < 0);
-            if (ordDet) filteredImportOrders.push(ord)
+            if (ord.importOrderDetails && ord.importOrderDetails[0].quantity < 0) filteredOrders.push(ord)
         })
-        setDataTableImportOrders(filteredImportOrders.slice((pageTableExportOrders - 1) * resultsPerPage, pageTableExportOrders * resultsPerPage))
+        setFilteredExportOrder(filteredOrders)
+        setDataTableExportOrders(filteredOrders.slice((pageTableExportOrders - 1) * resultsPerPage, pageTableExportOrders * resultsPerPage))
     }, [pageTableExportOrders, importOrders])
+
     function showOrderDetails(order: any) {
         if (order.id === shownOrder?.id) {
             setShowOrderDetail(!showOrderDetail)
@@ -134,7 +141,7 @@ function ImportOrder(props: any) {
         <div className="container mt-3">
             {pageLoading && pageLoader()}
             {<Modal
-                modalType={MODAL_TYPES.IMPORT_ORDER}
+                modalType={modalType}
                 cancel="Hủy" accept="Gửi đơn" header="Tạo đơn"
                 callback={(value: any) => setImportOrderDetails(value)}
                 acceptModal={sendImportOrder}
@@ -147,7 +154,10 @@ function ImportOrder(props: any) {
                 <div className="col col-md-12">
                     <div className='row'>
                         <SectionTitle className="col col-md-9">Hàng nhập kho</SectionTitle>
-                        <Button className='col col-md-2 mb-3' layout='primary' onClick={openCreateNewImportOrder}>
+                        <Button className='col col-md-2 mb-3' layout='primary' onClick={() => {
+                            setModalType(MODAL_TYPES.IMPORT_ORDER)
+                            openCreateNewImportOrder()
+                        }}>
                             Tạo đơn nhập hàng mới
                         </Button>
                     </div>
@@ -242,7 +252,7 @@ function ImportOrder(props: any) {
 
                         <TableFooter>
                             <Pagination
-                                totalResults={importOrders.length}
+                                totalResults={importOrders.filter((order: any) => order.importOrderDetails && order.importOrderDetails[0]?.quantity > 0).length}
                                 resultsPerPage={resultsPerPage}
                                 onChange={onPageChangeTableImportOrders}
                                 label="Table navigation"
@@ -251,11 +261,15 @@ function ImportOrder(props: any) {
                     </TableContainer>
                 </div>
             </div>
+
             <div className="row">
                 <div className="col col-md-12">
                     <div className='row'>
                         <SectionTitle className="col col-md-9">Hàng xuất kho</SectionTitle>
-                        <Button className='col col-md-2 mb-3' layout='primary' onClick={openCreateNewImportOrder}>
+                        <Button className='col col-md-2 mb-3' layout='primary' onClick={() => {
+                            setModalType(MODAL_TYPES.EXPORT_ORDER)
+                            openCreateNewImportOrder()
+                        }}>
                             Tạo đơn xuất hàng mới
                         </Button>
                     </div>
@@ -347,9 +361,9 @@ function ImportOrder(props: any) {
 
                         <TableFooter>
                             <Pagination
-                                totalResults={importOrders.length}
+                                totalResults={importOrders.filter((order: any) => order.importOrderDetails && order.importOrderDetails[0]?.quantity < 0).length}
                                 resultsPerPage={resultsPerPage}
-                                onChange={onPageChangeTableImportOrders}
+                                onChange={onPageChangeTableExportOrders}
                                 label="Table navigation"
                             />
                         </TableFooter>

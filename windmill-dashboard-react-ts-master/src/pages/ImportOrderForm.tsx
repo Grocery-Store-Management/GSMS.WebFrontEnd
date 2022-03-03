@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, Input, Select } from '@windmill/react-ui'
 import { getProductDetaiList, getProductList } from "../Services/ProductService";
 import _ from 'lodash';
+import { MODAL_TYPES } from '../Shared/Model';
 function ImportOrderForm(props: any) {
     const [productDetails, setProductDetails] = useState<any>(props.productDetails);
     const [ImportOrderDetails, setImportOrderDetails] = useState<any>([]);
@@ -23,7 +24,7 @@ function ImportOrderForm(props: any) {
             productId: products[0]?.id ? products[0]?.id : "",
             name: products[0]?.name,
             price: productDetails?.find((prodDet: any) => prodDet.productId === products[0].id)?.price,
-            quantity: 1
+            quantity: props.modalType === MODAL_TYPES.IMPORT_ORDER ? 1 : -1
         }];
         importOrderDetails.push(initImportOrderDetails[0]);
         setImportOrderDetails(importOrderDetails);
@@ -34,7 +35,8 @@ function ImportOrderForm(props: any) {
         let importOrderDetails = _.cloneDeep(ImportOrderDetails);
         let ordDetIndex = importOrderDetailIndex;
         if (ordDetIndex !== -1) {
-            importOrderDetails[ordDetIndex].quantity = quantity;
+            if (props.modalType === MODAL_TYPES.IMPORT_ORDER) importOrderDetails[ordDetIndex].quantity = quantity;
+            else importOrderDetails[ordDetIndex].quantity = -quantity;
             setImportOrderDetails(importOrderDetails)
         }
     }
@@ -73,7 +75,7 @@ function ImportOrderForm(props: any) {
                                     </p>
                                     <p className="col col-md-3 text-sm text-gray-600 dark:text-gray-400">
                                         Số lượng:
-                                        <Input className="text-sm" type='number' min={0} value={importOrderDetail.quantity} css={""}
+                                        <Input className="text-sm" type='number' min={0} value={importOrderDetail.quantity > 0 ? importOrderDetail.quantity : -importOrderDetail.quantity} css={""}
                                             onChange={(e: any) => {
                                                 e.persist();
                                                 changeOrderQuantity(key, e.target.value);
