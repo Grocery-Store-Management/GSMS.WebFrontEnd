@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
-import { getProductDetaiList } from "../Services/ProductService";
+import { getProductDetaiList, getProductList } from "../Services/ProductService";
 import { getImportOrderDetailList, getImportOrderList, removeImportOrder, createImportOrder } from "../Services/ImportOrderService";
 import Modal from "../pages/Modals";
 import {
@@ -28,7 +28,7 @@ function ImportOrder(props: any) {
     const [showOrderDetail, setShowOrderDetail] = useState<boolean>(false);
     const [pageTableImportOrders, setPageTableImportOrders] = useState(1)
     const [pageTableExportOrders, setPageTableExportOrders] = useState(1)
-
+    const [products, setProducts] = useState<any>([]);
     const [importOrders, setImportOrder] = useState<any[]>([])
     const [importOrdersDetails, setImportOrderDetails] = useState<any[]>([])
     const [productDetails, setProductsDetails] = useState<any[]>([])
@@ -47,7 +47,9 @@ function ImportOrder(props: any) {
             let importOrderList = await getImportOrderList();
             let importOrderDetailsList = await getImportOrderDetailList();
             let productDetailList = await getProductDetaiList();
-            setProductsDetails(productDetailList)
+            let prodList = await getProductList();
+            setProductsDetails(productDetailList);
+            setProducts(prodList);
             setImportOrder(importOrderList);
             setImportOrderDetails(importOrderDetailsList)
             setDataTableImportOrders(importOrderList);
@@ -131,13 +133,22 @@ function ImportOrder(props: any) {
     return (
         <div className="container mt-3">
             {pageLoading && pageLoader()}
-            {<Modal modalType={MODAL_TYPES.IMPORT_ORDER} cancel="Hủy" accept="Gửi đơn" header="Tạo đơn" callback={(value: any) => setImportOrderDetails(value)} acceptModal={sendImportOrder} closeModal={closeCreateNewImportOrder} showModal={showCreateOrder} />}
+            {<Modal
+                modalType={MODAL_TYPES.IMPORT_ORDER}
+                cancel="Hủy" accept="Gửi đơn" header="Tạo đơn"
+                callback={(value: any) => setImportOrderDetails(value)}
+                acceptModal={sendImportOrder}
+                closeModal={closeCreateNewImportOrder}
+                showModal={showCreateOrder}
+                products={products}
+                productDetails={productDetails}
+            />}
             <div className="row">
                 <div className="col col-md-12">
                     <div className='row'>
                         <SectionTitle className="col col-md-9">Hàng nhập kho</SectionTitle>
                         <Button className='col col-md-2 mb-3' layout='primary' onClick={openCreateNewImportOrder}>
-                            Tạo đơn mới
+                            Tạo đơn nhập hàng mới
                         </Button>
                     </div>
                     <TableContainer className="mb-8">
@@ -245,7 +256,7 @@ function ImportOrder(props: any) {
                     <div className='row'>
                         <SectionTitle className="col col-md-9">Hàng xuất kho</SectionTitle>
                         <Button className='col col-md-2 mb-3' layout='primary' onClick={openCreateNewImportOrder}>
-                            Tạo đơn mới
+                            Tạo đơn xuất hàng mới
                         </Button>
                     </div>
                     <TableContainer className="mb-8">
@@ -285,9 +296,6 @@ function ImportOrder(props: any) {
                                                 <div className="flex items-center space-x-4">
                                                     <Button layout="primary" size="small" aria-label="Edit" onClick={() => showOrderDetails(order)}>
                                                         Xem chi tiết
-                                                    </Button>
-                                                    <Button layout="link" size="small" aria-label="Delete" onClick={() => deleteImportOrder(order)}>
-                                                        <TrashIcon className="w-5 h-5" aria-hidden="true" /> Hủy đơn
                                                     </Button>
                                                 </div>
                                             </TableCell>

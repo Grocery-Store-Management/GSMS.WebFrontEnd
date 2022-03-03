@@ -10,7 +10,7 @@ function Modals(props: any) {
       <Modal style={{ width: "50%" }} isOpen={props.showModal} onClose={props.closeModal}>
         <ModalHeader>{props.header}</ModalHeader>
         <ModalBody>
-          {props.modalType === MODAL_TYPES.IMPORT_ORDER && <ImportOrderForm callback={props.callback} />}
+          {props.modalType === MODAL_TYPES.IMPORT_ORDER && <ImportOrderForm {...props} callback={props.callback} />}
         </ModalBody>
         <ModalFooter>
           <div className="hidden sm:block">
