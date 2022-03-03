@@ -4,6 +4,7 @@ import { addProduct, getProductList, getProductDetaiList, updateProductDetail, u
 import { getImportOrderDetailList, getImportOrderList } from "../Services/ImportOrderService";
 import { getCategoryList } from "../Services/CategoryService";
 import _ from "lodash"
+import { storage } from "../utils/firebase/firebase";
 import {
     Table,
     TableHeader,
@@ -34,7 +35,6 @@ function Product(props: any) {
     const [importOrdersDetails, setImportOrdersDetails] = useState<any[]>([])
     const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
     const [category, setCategories] = useState<any>([])
-
     const resultsPerPage = 5;
 
     function onPageChangeTableProducts(p: number) {
@@ -119,7 +119,7 @@ function Product(props: any) {
         refreshData();
     }
 
-    async function editProduct(product: any, productDetail: any, singleUpdate: boolean = true) {
+    async function editProduct(product: any, productDetail: any = [], singleUpdate: boolean = true) {
         if (productDetail || product.productDetails !== []) {
             try {
                 let prods = _.cloneDeep(originalProducts)
@@ -212,6 +212,27 @@ function Product(props: any) {
         setDataTableProducts(products.slice((pageTableProducts - 1) * resultsPerPage, pageTableProducts * resultsPerPage))
     }, [pageTableProducts, products])
 
+
+    const handleFireBaseUpload = (e: any, product: any) => {
+        const imageAsFile = e.target.files[0]
+        e.preventDefault();
+        console.log('start of upload')
+        if (imageAsFile === '') {
+            console.error(`not an image, the image file is a ${typeof (imageAsFile)}`)
+        }
+        const uploadTask = storage.ref(`/images/products/${imageAsFile.name}`).put(imageAsFile)
+        uploadTask.on('state_changed',
+            (snapShot) => {
+            }, (err) => {
+                console.log(err)
+            }, () => {
+                storage.ref('images').child(imageAsFile.name).getDownloadURL()
+                    .then(fireBaseUrl => {
+                        // product.imageUrl = fireBaseUrl;
+                        // editProduct(product)
+                    })
+            })
+    }
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
@@ -224,6 +245,7 @@ function Product(props: any) {
                 <Table>
                     <TableHeader>
                         <tr>
+                            <TableCell>Hình ảnh</TableCell>
                             <TableCell>Tên hàng</TableCell>
                             <TableCell>Giá mua</TableCell>
                             <TableCell>Giá bán</TableCell>
@@ -241,8 +263,20 @@ function Product(props: any) {
                             let prodCat = category.find((cat: any) => cat.id === product?.categoryId);
                             return <TableRow key={i}>
                                 <TableCell>
+                                    <div className="App">
+                                        <label htmlFor='file-upload' >
+                                            <input
+                                                hidden
+                                                id="file-upload"
+                                                type="file"
+                                                onChange={(e: any) => handleFireBaseUpload(e, product)}
+                                            />
+                                            <img alt="imageProduct" width={50} height={50} src={`${product.imageUrl ? product.imageUrl : "/placeholder.jpg"}`} />
+                                        </label>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
                                     <div className="flex mt-4 items-center text-sm">
-                                        {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
                                         <div>
                                             <Input className="text-sm" type='text' value={product?.name} css={""}
                                                 onChange={(e: any) => {
