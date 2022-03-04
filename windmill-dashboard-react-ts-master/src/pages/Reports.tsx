@@ -20,7 +20,7 @@ function Reports() {
     const [receiptDetails, setReceiptDetails] = useState<any>([]);
     const [salesReportList, setSalesReport] = useState<any>([["Ngày", "Bán ra", "Mua vào"], ['1', 0, 0]])
     const [categoryReportList, setCategoryReport] = useState<any>([["Loại hàng", "Tỉ trọng trong kho"], ["", 0]])
-    const [bestSellerReportList, setBestSellerReportReport] = useState<any>([["Sản phẩm", "Số lượng bán ra"], ["", 0]])
+    const [bestSellerReportList, setBestSellerReportReport] = useState<any>([["Sản phẩm", "Số lượng bán ra"], [null, 0]])
     const [totalSales, setTotalSale] = useState<number>(0);
     const [totalImports, setTotalImport] = useState<number>(0);
     const [profit, setProfit] = useState<number>(0);
@@ -184,6 +184,7 @@ function Reports() {
     }
 
     useEffect(() => {
+        setPageLoading(true)
         let curMonth = (new Date()).getMonth();
         let curYear = (new Date()).getFullYear()
         setReportMonth(curMonth + 1);
@@ -207,7 +208,7 @@ function Reports() {
     return (
         <>
             {pageLoading && pageLoader()}
-            {!pageLoading && <>
+            {<>
                 <SectionTitle className='text-blue-400 mt-4 ml-2'>Báo cáo trạng thái tháng {reportMonth} năm {reportYear}</SectionTitle>
                 <div className='row'>
                     <div className="col col-md-6 border-end">
@@ -215,7 +216,7 @@ function Reports() {
                         <Chart
                             chartType="ColumnChart"
                             data={
-                                bestSellerReportList
+                                bestSellerReportList ? bestSellerReportList : []
                             }
                             width="100%"
                             height="400px"
@@ -227,7 +228,7 @@ function Reports() {
                         <Chart
                             chartType="PieChart"
                             data={
-                                categoryReportList
+                                categoryReportList ? categoryReportList : []
                             }
                             width="100%"
                             height="400px"
@@ -256,7 +257,7 @@ function Reports() {
                             className='mt-4'
                             chartType="LineChart"
                             data={
-                                salesReportList
+                                salesReportList ? salesReportList : []
                             }
                             width="100%"
                             height="400px"

@@ -103,7 +103,7 @@ function Product(props: any) {
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
         try {
-            // setPageLoading(true)
+            setPageLoading(true)
             prods.forEach((prod: any) => {
                 let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
                 if (curProdDet) {
@@ -121,7 +121,7 @@ function Product(props: any) {
         refreshData();
     }
 
-    async function editProduct(product: any, productDetail: any = [], singleUpdate: boolean = true) {
+    async function editProduct(product: any, productDetail: any = null, singleUpdate: boolean = true) {
         if (productDetail || product.productDetails !== []) {
             try {
                 let prods = _.cloneDeep(originalProducts)
@@ -130,9 +130,9 @@ function Product(props: any) {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        // setPageLoading(true)
+                        setPageLoading(true)
                         await updateProduct(product);
-                        await updateProductDetail(productDetail);
+                        if (productDetail) await updateProductDetail(productDetail);
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
                     } else {
                         return
@@ -143,6 +143,7 @@ function Product(props: any) {
                 refreshProductList();
                 refreshProductDetails();
             } catch (ex) {
+                console.log(ex)
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
             } finally {
                 setPageLoading(false)
@@ -155,7 +156,7 @@ function Product(props: any) {
 
     async function removeProduct(product: any) {
         try {
-            // setPageLoading(true)
+            setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
@@ -171,7 +172,7 @@ function Product(props: any) {
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
         }
-        // setPageLoading(true)
+        setPageLoading(true)
         let addedProduct = await addProduct(defaultProduct)
         await addProductDetail({
             productId: addedProduct.id,
@@ -206,7 +207,7 @@ function Product(props: any) {
     }
 
     useEffect(() => {
-        // setPageLoading(true)
+        setPageLoading(true)
         refreshData();
     }, [])
 
@@ -230,8 +231,8 @@ function Product(props: any) {
             }, () => {
                 storage.ref('images').child(imageAsFile.name).getDownloadURL()
                     .then(fireBaseUrl => {
-                        // product.imageUrl = fireBaseUrl;
-                        // editProduct(product)
+                        product.imageUrl = fireBaseUrl;
+                        editProduct(product);
                     })
             })
     }
@@ -266,7 +267,8 @@ function Product(props: any) {
                             return <TableRow key={i}>
                                 <TableCell>
                                     <div className="App">
-                                        <label htmlFor='file-upload' >
+                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"} htmlFor='file-upload'
+                                        >
                                             <input
                                                 hidden
                                                 id="file-upload"
@@ -294,7 +296,7 @@ function Product(props: any) {
                                 </TableCell>
                                 <TableCell>
                                     <div>
-                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price}
+                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price ? importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price : "Không có dữ liệu"}
                                     </div>
                                 </TableCell>
                                 <TableCell>

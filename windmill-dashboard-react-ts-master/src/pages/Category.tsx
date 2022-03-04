@@ -130,7 +130,7 @@ function Category(props: any) {
     }
 
     useEffect(() => {
-        // setPageLoading(true);
+        setPageLoading(true);
         refreshProductList();
         refreshProductDetails();
         refreshCategoryList();
