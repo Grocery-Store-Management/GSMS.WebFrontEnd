@@ -121,7 +121,7 @@ function Product(props: any) {
         refreshData();
     }
 
-    async function editProduct(product: any, productDetail: any = [], singleUpdate: boolean = true) {
+    async function editProduct(product: any, productDetail: any = null, singleUpdate: boolean = true) {
         if (productDetail || product.productDetails !== []) {
             try {
                 let prods = _.cloneDeep(originalProducts)
@@ -132,7 +132,7 @@ function Product(props: any) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
                         setPageLoading(true)
                         await updateProduct(product);
-                        await updateProductDetail(productDetail);
+                        if (productDetail) await updateProductDetail(productDetail);
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
                     } else {
                         return
@@ -143,6 +143,7 @@ function Product(props: any) {
                 refreshProductList();
                 refreshProductDetails();
             } catch (ex) {
+                console.log(ex)
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
             } finally {
                 setPageLoading(false)
@@ -266,7 +267,8 @@ function Product(props: any) {
                             return <TableRow key={i}>
                                 <TableCell>
                                     <div className="App">
-                                        <label htmlFor='file-upload' >
+                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"} htmlFor='file-upload'
+                                        >
                                             <input
                                                 hidden
                                                 id="file-upload"
@@ -294,7 +296,7 @@ function Product(props: any) {
                                 </TableCell>
                                 <TableCell>
                                     <div>
-                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price}
+                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price ? importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price : "Không có dữ liệu"}
                                     </div>
                                 </TableCell>
                                 <TableCell>
