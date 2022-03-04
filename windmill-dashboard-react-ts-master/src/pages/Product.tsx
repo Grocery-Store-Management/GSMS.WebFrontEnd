@@ -226,10 +226,11 @@ function Product(props: any) {
         const uploadTask = storage.ref(`/images/products/${imageAsFile.name}`).put(imageAsFile)
         uploadTask.on('state_changed',
             (snapShot) => {
+                setPageLoading(true)
             }, (err) => {
                 console.log(err)
             }, () => {
-                storage.ref('images').child(imageAsFile.name).getDownloadURL()
+                storage.ref('images/products').child(imageAsFile.name).getDownloadURL()
                     .then(fireBaseUrl => {
                         product.imageUrl = fireBaseUrl;
                         editProduct(product);
@@ -275,7 +276,7 @@ function Product(props: any) {
                                                 type="file"
                                                 onChange={(e: any) => handleFireBaseUpload(e, product)}
                                             />
-                                            <img alt="imageProduct" width={50} height={50} src={`${product.imageUrl ? product.imageUrl : "/placeholder.jpg"}`} />
+                                            <img alt="imageProduct" width={100} height={100} src={`${product.imageUrl ? product.imageUrl : "/placeholder.jpg"}`} />
                                         </label>
                                     </div>
                                 </TableCell>
