@@ -103,7 +103,7 @@ function Product(props: any) {
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
         try {
-            // setPageLoading(true)
+            setPageLoading(true)
             prods.forEach((prod: any) => {
                 let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
                 if (curProdDet) {
@@ -130,7 +130,7 @@ function Product(props: any) {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        // setPageLoading(true)
+                        setPageLoading(true)
                         await updateProduct(product);
                         await updateProductDetail(productDetail);
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
@@ -155,7 +155,7 @@ function Product(props: any) {
 
     async function removeProduct(product: any) {
         try {
-            // setPageLoading(true)
+            setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
@@ -171,7 +171,7 @@ function Product(props: any) {
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
         }
-        // setPageLoading(true)
+        setPageLoading(true)
         let addedProduct = await addProduct(defaultProduct)
         await addProductDetail({
             productId: addedProduct.id,
@@ -206,7 +206,7 @@ function Product(props: any) {
     }
 
     useEffect(() => {
-        // setPageLoading(true)
+        setPageLoading(true)
         refreshData();
     }, [])
 
@@ -230,8 +230,8 @@ function Product(props: any) {
             }, () => {
                 storage.ref('images').child(imageAsFile.name).getDownloadURL()
                     .then(fireBaseUrl => {
-                        // product.imageUrl = fireBaseUrl;
-                        // editProduct(product)
+                        product.imageUrl = fireBaseUrl;
+                        editProduct(product);
                     })
             })
     }
