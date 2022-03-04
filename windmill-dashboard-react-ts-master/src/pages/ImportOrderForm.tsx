@@ -3,6 +3,8 @@ import { Button, Card, CardBody, Input, Select } from '@windmill/react-ui'
 import { getProductDetaiList, getProductList } from "../Services/ProductService";
 import _ from 'lodash';
 import { MODAL_TYPES } from '../Shared/Model';
+import '../styles/General.css';
+
 function ImportOrderForm(props: any) {
     const [productDetails, setProductDetails] = useState<any>(props.productDetails);
     const [ImportOrderDetails, setImportOrderDetails] = useState<any>([]);

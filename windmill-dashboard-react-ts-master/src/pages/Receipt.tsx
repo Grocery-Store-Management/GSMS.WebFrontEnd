@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { getProductList, getProductDetaiList } from "../Services/ProductService";
 import { getCategoryList } from "../Services/CategoryService";
-import _ from "lodash"
+import _, { findIndex } from "lodash"
 import {
   Table,
   TableHeader,
@@ -12,9 +12,9 @@ import {
   TableFooter,
   TableContainer,
   Badge,
-  Button,
   Pagination,
   Input,
+  Button,
 } from '@windmill/react-ui';
 import { TrashIcon, FireIcon } from '../icons';
 import { type, status_mapping, status, type_mapping } from '../utils/demo/tableData';
@@ -23,6 +23,9 @@ import { IReceiptDetail, ReceiptDetail } from "../models/ReceiptDetail";
 import { createNewReceipt } from '../Services/ReceiptService';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 import { pageLoader } from "../utils/PageLoadingUtility/PageLoader";
+import '../styles/General.css';
+import '../styles/Receipt.css';
+
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Receipt() {
 
@@ -35,7 +38,7 @@ function Receipt() {
   const [dataTableProductsInCart, setDataTableProductsInCart] = useState<any[]>([])
   const [category, setCategories] = useState<any>([])
   const [total, setTotal] = useState<number>()
-  const [pageLoading, setPageLoading] = useState<boolean>(true);
+  const [pageLoading, setPageLoading] = useState<boolean>(false);
   const resultsPerPage = 5;
 
   // pagination change control
@@ -159,23 +162,27 @@ function Receipt() {
       {pageLoading && pageLoader()}
       <div className="row">
         <div className="col col-md-7">
-          <div className='row'>
-            <SectionTitle className="col col-md-5">Danh sách hàng hóa </SectionTitle>
-            <Input css={undefined} className="col col-md-6 mb-2 " placeholder='Tìm kiếm sản phẩm' onChange={(e: any) => {
+          <SectionTitle className="col col-md-6">Danh sách hàng hóa </SectionTitle>
+          <div className="row">
+            <Input css={undefined} className="col col-md-6 mb-2 ml-3" placeholder='Tìm kiếm sản phẩm' onChange={(e: any) => {
               e.persist();
-              searchProduct(e.target.value)
+              searchProduct(e.target.value);
             }}
             />
+            <div className='col col-md-3 mb-2'>
+              <Button style={{ backgroundColor: "#73C4FF" }} size="regular">Tìm kiếm</Button>
+            </div>
           </div>
-          <TableContainer className="mb-8">
+
+          <TableContainer>
             <Table>
               <TableHeader>
-                <tr>
+                <TableRow>
                   <TableCell>Tên hàng</TableCell>
                   <TableCell>Giá</TableCell>
                   <TableCell>Tình trạng</TableCell>
                   <TableCell>Tương tác</TableCell>
-                </tr>
+                </TableRow>
               </TableHeader>
               <TableBody>
                 {dataTableProducts.map((product: any, i: any) => {
@@ -229,21 +236,23 @@ function Receipt() {
 
         <div className="col col-md-5">
           <div className='row'>
-            <SectionTitle className={"col col-5"}>
-              <Button disabled={dataTableProductsInCart.length === 0} style={{ backgroundColor: "green" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
-                XUẤT ĐƠN
-              </Button>
-            </SectionTitle>
-            {dataTableProductsInCart?.length > 0 && <SectionTitle className={"col col-5"}> Tổng tiền: {total} </SectionTitle>}
+            <SectionTitle className="col col-md-7">Chi tiết đơn </SectionTitle>
           </div>
-          <TableContainer className="mb-8 mt-0">
-            <Table>
+          <div className='col col-md-5 mb-2'>
+            <Button disabled={dataTableProductsInCart.length === 0} style={{ backgroundColor: "#73C4FF" }} size="regular" aria-label="Remove From Cart" onClick={createReceipt}>
+              XUẤT ĐƠN
+            </Button>
+          </div>
+          
+          {dataTableProductsInCart?.length > 0 && <SectionTitle className={"col col-5 mb-2"}> Tổng tiền: {total} </SectionTitle>}
+          <TableContainer>
+            <Table >
               <TableHeader>
-                <tr>
+                <TableRow>
                   <TableCell>Tên hàng</TableCell>
                   <TableCell>Số lượng</TableCell>
                   <TableCell>Tương tác</TableCell>
-                </tr>
+                </TableRow>
               </TableHeader>
               <TableBody>
                 {dataTableProductsInCart.map((product: any, i: any) => {

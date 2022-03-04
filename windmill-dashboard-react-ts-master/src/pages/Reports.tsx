@@ -9,6 +9,7 @@ import _ from 'lodash';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from '@windmill/react-ui';
+import '../styles/General.css';
 
 function Reports() {
     const [shownReceipt, setShownReciept] = useState<any>();
@@ -25,7 +26,7 @@ function Reports() {
     const [profit, setProfit] = useState<number>(0);
     const [reportMonth, setReportMonth] = useState<number>(0);
     const [reportYear, setReportYear] = useState<number>(0);
-    const [pageLoading, setPageLoading] = useState<boolean>(true);
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
 
     function onPageChangeTableReceipt(p: number) {
         setPageTableReceipts(p)
@@ -207,10 +208,10 @@ function Reports() {
         <>
             {pageLoading && pageLoader()}
             {!pageLoading && <>
-                <PageTitle>Báo cáo trạng thái tháng {reportMonth} năm {reportYear}</PageTitle>
+                <SectionTitle className='text-blue-400 mt-4 ml-2'>Báo cáo trạng thái tháng {reportMonth} năm {reportYear}</SectionTitle>
                 <div className='row'>
                     <div className="col col-md-6 border-end">
-                        <SectionTitle> Top hàng hóa bán chạy của tháng</SectionTitle>
+                        <SectionTitle className='ml-2'> Top hàng hóa bán chạy của tháng</SectionTitle>
                         <Chart
                             chartType="ColumnChart"
                             data={
@@ -222,7 +223,7 @@ function Reports() {
                         />
                     </div>
                     <div className="col col-md-6">
-                        <SectionTitle> Các loại hàng đang có</SectionTitle>
+                        <SectionTitle className='ml-2'> Các loại hàng đang có</SectionTitle>
                         <Chart
                             chartType="PieChart"
                             data={
@@ -235,13 +236,24 @@ function Reports() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className='col col-md-12 border-top'>
-                        <SectionTitle> Đơn bán ra/nhập hàng theo ngày trong tháng</SectionTitle>
-                        <SectionTitle> Tháng này đã bán được: {totalSales} VND </SectionTitle>
-                        <SectionTitle> Thàng này đã nhập:{totalImports} VND</SectionTitle>
-                        <SectionTitle> Tổng lợi nhuận tháng: {profit} VND</SectionTitle>
-
+                    <div className='col col-md-12 border-top mt-4'>
+                        {/* <SectionTitle> Đơn bán ra/nhập hàng theo ngày trong tháng</SectionTitle> */}
+                        <div className='row'>
+                            <div className='panel panel-md bg-default ml-4'>
+                                <SectionTitle className='mt-4'> Tháng này đã bán</SectionTitle>
+                                <SectionTitle>{totalSales} VND</SectionTitle>
+                            </div>
+                            <div className='panel panel-md bg-default ml-4'>
+                                <SectionTitle className='mt-4'>Tháng này đã nhập</SectionTitle>
+                                <SectionTitle>{totalImports} VND</SectionTitle>
+                            </div>
+                            <div className='panel panel-md bg-default ml-4'>
+                                <SectionTitle className='mt-4'>Tổng lợi nhuận tháng</SectionTitle>
+                                <SectionTitle>{profit} VND</SectionTitle>
+                            </div>
+                        </div>
                         <Chart
+                            className='mt-4'
                             chartType="LineChart"
                             data={
                                 salesReportList
@@ -252,98 +264,99 @@ function Reports() {
                         />
                     </div>
                 </div>
-                <SectionTitle>Lịch sử giao dịch</SectionTitle>
-                <TableContainer className="mb-8 mt-0">
-                    <Table>
-                        <TableHeader>
-                            <tr>
-                                <TableCell>Ngày xuất đơn</TableCell>
-                                <TableCell>Tổng tiền</TableCell>
-                                <TableCell>Tương tác</TableCell>
-                            </tr>
-                        </TableHeader>
-                        <TableBody>
-                            {dataTableReceipts.map((receipt: any, i: any) => {
-                                let totalPrice = 0;
-                                receiptDetails.forEach((recDet: any) => {
-                                    if (recDet.receiptId === receipt.id) totalPrice += recDet.price * recDet.quantity
-                                })
-                                return (
-                                    <React.Fragment key={i}>
-                                        <TableRow >
-                                            <TableCell>
-                                                <div className="flex items-center text-sm">
-                                                    <div>
-                                                        <p className="font-semibold">{(new Date(receipt.createdDate)).toString()}</p>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div><p className="font-semibold">{totalPrice}</p></div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center space-x-4">
-                                                    <Button layout="primary" size="small" aria-label="Edit" onClick={() => showReceiptDetails(receipt)}>
-                                                        Xem chi tiết
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                        {showReceiptDetail && shownReceipt.id === receipt.id &&
-                                            <TableRow>
+                <div className='mt-4'>
+                    <SectionTitle className='ml-2'>Lịch sử giao dịch</SectionTitle>
+                    <TableContainer className="mb-8 mt-0">
+                        <Table>
+                            <TableHeader>
+                                <tr>
+                                    <TableCell>Ngày xuất đơn</TableCell>
+                                    <TableCell>Tổng tiền</TableCell>
+                                    <TableCell>Tương tác</TableCell>
+                                </tr>
+                            </TableHeader>
+                            <TableBody>
+                                {dataTableReceipts.map((receipt: any, i: any) => {
+                                    let totalPrice = 0;
+                                    receiptDetails.forEach((recDet: any) => {
+                                        if (recDet.receiptId === receipt.id) totalPrice += recDet.price * recDet.quantity
+                                    })
+                                    return (
+                                        <React.Fragment key={i}>
+                                            <TableRow >
                                                 <TableCell>
-                                                    <Table>
-                                                        <TableHeader>
-                                                            <tr>
-                                                                <TableCell>Tên sản phẩm</TableCell>
-                                                                <TableCell>Giá bán</TableCell>
-                                                                <TableCell>Số lượng</TableCell>
-                                                            </tr>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {receiptDetails.filter((recDet: any) => recDet.receiptId === receipt.id).map((det: any, i2: any) => {
-                                                                return <TableRow key={i2}>
-                                                                    <TableCell>
-                                                                        <div className="flex items-center text-sm">
-                                                                            <div>
-                                                                                <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </TableCell><TableCell>
-                                                                        <div className="flex items-center text-sm">
-                                                                            <div>
-                                                                                <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </TableCell><TableCell>
-                                                                        <div className="flex items-center text-sm">
-                                                                            <div>
-                                                                                <p className="font-semibold">{det.quantity ? det.quantity : "Không rõ"}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            })}
-                                                        </TableBody>
-                                                    </Table>
+                                                    <div className="flex items-center text-sm">
+                                                        <div>
+                                                            <p className="font-semibold">{(new Date(receipt.createdDate)).toString()}</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div><p className="font-semibold">{totalPrice}</p></div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center space-x-4">
+                                                        <Button layout="primary" size="small" aria-label="Edit" onClick={() => showReceiptDetails(receipt)}>
+                                                            Xem chi tiết
+                                                        </Button>
+                                                    </div>
                                                 </TableCell>
                                             </TableRow>
-                                        }
-                                    </React.Fragment>
-                                )
-                            })}
-                        </TableBody>
-                    </Table>
-                    <TableFooter>
-                        <Pagination
-                            totalResults={receipts.length}
-                            resultsPerPage={5}
-                            onChange={onPageChangeTableReceipt}
-                            label="Table navigation"
-                        />
-                    </TableFooter>
-                </TableContainer>
-
+                                            {showReceiptDetail && shownReceipt.id === receipt.id &&
+                                                <TableRow>
+                                                    <TableCell>
+                                                        <Table>
+                                                            <TableHeader>
+                                                                <tr>
+                                                                    <TableCell>Tên sản phẩm</TableCell>
+                                                                    <TableCell>Giá bán</TableCell>
+                                                                    <TableCell>Số lượng</TableCell>
+                                                                </tr>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                {receiptDetails.filter((recDet: any) => recDet.receiptId === receipt.id).map((det: any, i2: any) => {
+                                                                    return <TableRow key={i2}>
+                                                                        <TableCell>
+                                                                            <div className="flex items-center text-sm">
+                                                                                <div>
+                                                                                    <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </TableCell><TableCell>
+                                                                            <div className="flex items-center text-sm">
+                                                                                <div>
+                                                                                    <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </TableCell><TableCell>
+                                                                            <div className="flex items-center text-sm">
+                                                                                <div>
+                                                                                    <p className="font-semibold">{det.quantity ? det.quantity : "Không rõ"}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                })}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableCell>
+                                                </TableRow>
+                                            }
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+                        <TableFooter>
+                            <Pagination
+                                totalResults={receipts.length}
+                                resultsPerPage={5}
+                                onChange={onPageChangeTableReceipt}
+                                label="Table navigation"
+                            />
+                        </TableFooter>
+                    </TableContainer>
+                </div>
             </>}
         </>
     )

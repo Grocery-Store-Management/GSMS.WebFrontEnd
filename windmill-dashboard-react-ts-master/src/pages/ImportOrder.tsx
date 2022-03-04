@@ -20,6 +20,8 @@ import { showToastError, showToastSuccess } from "../utils/ToasterUtility/Toaste
 import { MODAL_TYPES } from '../Shared/Model';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import { type } from '../utils/demo/tableData';
+import '../styles/General.css';
+
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function ImportOrder(props: any) {
 
@@ -154,7 +156,7 @@ function ImportOrder(props: any) {
                 <div className="col col-md-12">
                     <div className='row'>
                         <SectionTitle className="col col-md-9">Hàng nhập kho</SectionTitle>
-                        <Button className='col col-md-2 mb-3' layout='primary' onClick={() => {
+                        <Button className='col col-md-3 mb-3 theme-bg' onClick={() => {
                             setModalType(MODAL_TYPES.IMPORT_ORDER)
                             openCreateNewImportOrder()
                         }}>
@@ -266,7 +268,7 @@ function ImportOrder(props: any) {
                 <div className="col col-md-12">
                     <div className='row'>
                         <SectionTitle className="col col-md-9">Hàng xuất kho</SectionTitle>
-                        <Button className='col col-md-2 mb-3' layout='primary' onClick={() => {
+                        <Button className='col col-md-3 mb-3 theme-bg' onClick={() => {
                             setModalType(MODAL_TYPES.EXPORT_ORDER)
                             openCreateNewImportOrder()
                         }}>

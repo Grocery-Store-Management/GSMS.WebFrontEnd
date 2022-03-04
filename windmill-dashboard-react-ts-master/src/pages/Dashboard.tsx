@@ -30,6 +30,7 @@ import {
   barLegends,
 } from '../utils/demo/chartsData';
 import Employee from './Employee';
+import '../styles/General.css';
 
 
 function Dashboards() {

@@ -23,6 +23,8 @@ import { FireIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
+import '../styles/General.css';
+
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Product(props: any) {
     const [pageLoading, setPageLoading] = useState<boolean>(false);
@@ -101,7 +103,7 @@ function Product(props: any) {
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
         try {
-            setPageLoading(true)
+            // setPageLoading(true)
             prods.forEach((prod: any) => {
                 let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
                 if (curProdDet) {
@@ -128,7 +130,7 @@ function Product(props: any) {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        setPageLoading(true)
+                        // setPageLoading(true)
                         await updateProduct(product);
                         await updateProductDetail(productDetail);
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
@@ -153,7 +155,7 @@ function Product(props: any) {
 
     async function removeProduct(product: any) {
         try {
-            setPageLoading(true)
+            // setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
@@ -169,7 +171,7 @@ function Product(props: any) {
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
         }
-        setPageLoading(true)
+        // setPageLoading(true)
         let addedProduct = await addProduct(defaultProduct)
         await addProductDetail({
             productId: addedProduct.id,
@@ -204,7 +206,7 @@ function Product(props: any) {
     }
 
     useEffect(() => {
-        setPageLoading(true)
+        // setPageLoading(true)
         refreshData();
     }, [])
 
@@ -236,10 +238,10 @@ function Product(props: any) {
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
-            <div>
-                <SectionTitle className='col col-md-3'>Danh sách hàng trong kho</SectionTitle>
-                <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
-                <Button className='col col-md-2 mb-3 float-right' layout='primary' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
+            <div className=''>
+                <SectionTitle className='col col-md-3 mt-3'>Danh sách hàng trong kho</SectionTitle>
+                <Button className='col col-md-2 mb-3 theme-bg' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
+                <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
                 <Table>

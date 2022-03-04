@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import ImportOrderForm from "../pages/ImportOrderForm"
 import { MODAL_TYPES } from '../Shared/Model';
+import '../styles/General.css';
 
 function Modals(props: any) {
 

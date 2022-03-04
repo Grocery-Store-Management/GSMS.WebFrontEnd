@@ -12,6 +12,8 @@ import {
   Pagination,
 } from '@windmill/react-ui';
 import {  emp } from '../utils/demo/tableData';
+import '../styles/General.css';
+
 function Employee() {
  
   const [pageTableEmployee, setPageTableEmployee] = useState(1)

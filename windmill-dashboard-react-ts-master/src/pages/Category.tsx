@@ -18,6 +18,8 @@ import {
 } from '@windmill/react-ui';
 import { showToastError, showToastSuccess } from '../utils/ToasterUtility/ToasterUtility';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
+import '../styles/General.css';
+
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Category(props: any) {
 
@@ -128,7 +130,7 @@ function Category(props: any) {
     }
 
     useEffect(() => {
-        setPageLoading(true);
+        // setPageLoading(true);
         refreshProductList();
         refreshProductDetails();
         refreshCategoryList();
@@ -143,12 +145,12 @@ function Category(props: any) {
             {pageLoading && pageLoader()}
 
             <div>
-                <SectionTitle className='col col-md-3'>Danh sách loại hàng</SectionTitle>
-                <Button className='col col-md-2 mb-3' layout='primary' onClick={addDefaultCategory}>Thêm loại hàng +</Button>
-                <Button className='col col-md-2 mb-3 float-right' layout='primary' disabled={JSON.stringify(Category) === JSON.stringify(originalCategory)} onClick={editAll}>Lưu tất cả</Button>
+                <SectionTitle className='col col-md-3 mt-3'>Danh sách loại hàng</SectionTitle>
+                <Button className='col col-md-2 theme-bg' onClick={addDefaultCategory}>Thêm loại hàng +</Button>
+                <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(Category) === JSON.stringify(originalCategory)} onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
-                <Table>
+                <Table style={{backgroundColor: "#fff"}}>
                     <TableHeader>
                         <tr>
                             <TableCell>Tên</TableCell>

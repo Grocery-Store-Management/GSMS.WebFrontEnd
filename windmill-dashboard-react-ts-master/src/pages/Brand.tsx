@@ -16,6 +16,7 @@ import { HeartIcon, TrashIcon } from '../icons';
 import { type } from '../utils/demo/tableData';
 import { getBrandList } from '../Services/BrandService';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
+import '../styles/General.css';
 
 function Brand() {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
