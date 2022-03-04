@@ -1,15 +1,15 @@
 import React, { useState, useMemo } from 'react';
 
 // create context
-interface ISidebarContext{
+interface ISidebarContext {
   isSidebarOpen: boolean
   closeSidebar: () => void
   toggleSidebar: () => void
 }
 
-export const SidebarContext = React.createContext<ISidebarContext>({ isSidebarOpen: false, closeSidebar: () => {  }, toggleSidebar: () => {} });
+export const SidebarContext = React.createContext<ISidebarContext>({ isSidebarOpen: false, closeSidebar: () => { }, toggleSidebar: () => { } });
 
-interface ISidebarPovider{ children: React.ReactNode }
+interface ISidebarPovider { children: React.ReactNode }
 
 export const SidebarProvider = ({ children }: ISidebarPovider) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -23,13 +23,12 @@ export const SidebarProvider = ({ children }: ISidebarPovider) => {
   }
 
   const value = useMemo(
-    
     () => ({
       isSidebarOpen,
       toggleSidebar,
       closeSidebar,
     }),
-    [isSidebarOpen, toggleSidebar]
+    [isSidebarOpen, closeSidebar]
   )
 
   return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>

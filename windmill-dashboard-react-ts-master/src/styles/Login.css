@@ -1,0 +1,40 @@
+.circle-background {
+  width: 90%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.line-break {
+  background-color: #333;
+  width: 50%;
+  height: 2px;
+  margin-top: 14px;
+}
+
+.b-10 {
+  border-radius: 10px;
+}
+
+/* override */
+.text-changed {
+  background-color: #fff;
+  border: #73C4FF solid 1px;
+  padding: .4em 0;
+  font-weight: bold;
+  color: #73C4FF;
+  transition: .3s;
+  cursor: pointer;
+}
+.text-changed:hover {
+  background-color: #73C4FF;
+  color: #FFF;
+}
+
+.login-box {
+  margin-left: 30vw;
+  position: relative;
+  left: 20vw;
+  border-radius: 8px;
+}

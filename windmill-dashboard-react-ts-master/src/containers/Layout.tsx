@@ -23,7 +23,6 @@ function Layout() {
       className={`flex h-screen bg-gray-50 dark:bg-gray-900 ${isSidebarOpen && 'overflow-hidden'}`}
     >
       <Sidebar />
-
       <div className="flex flex-col flex-1 w-full">
         <Header />
         <Main>
@@ -39,7 +38,7 @@ function Layout() {
                   />
                 ) : null
               })}
-              <Redirect exact from="/app" to="/app/dashboard" />
+              <Redirect exact from="/app" to="/app/receipt" />
               <Route component={Page404} />
             </Switch>
           </Suspense>

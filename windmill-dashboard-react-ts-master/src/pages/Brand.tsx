@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PageTitle from '../components/Typography/PageTitle';
 import SectionTitle from '../components/Typography/SectionTitle';
-import CTA from '../components/CTA';
 import {
   Table,
   TableHeader,
@@ -11,46 +9,35 @@ import {
   TableFooter,
   TableContainer,
   Badge,
-  Avatar,
   Button,
   Pagination,
 } from '@windmill/react-ui';
-import { HeartIcon, TrashIcon, FireIcon } from '../icons';
+import { HeartIcon, TrashIcon } from '../icons';
 import { type } from '../utils/demo/tableData';
 import { getBrandList } from '../Services/BrandService';
-// make a copy of the data, for the second table
+import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
+import '../styles/General.css';
 
 function Brand() {
-  /**
-   * DISCLAIMER: This code could be badly improved, but for the sake of the example
-   * and readability, all the logic for both table are here.
-   * You would be better served by dividing each table in its own
-   * component, like Table(?) and TableWithActions(?) hiding the
-   * presentation details away from the page view.
-   */
+  const [pageLoading, setPageLoading] = useState<boolean>(false);
 
-  // setup pages control for every table
   const [response, setResponse] = useState<any>();
   const [totalResults, setResult] = useState<any>();
   const [pageTable1, setPageTable1] = useState(1)
 
-  // setup data for every table
   const [dataTable1, setDataTable1] = useState<any[]>([])
 
-  // pagination setup
   const resultsPerPage = 10;
 
-  // pagination change control
   function onPageChangeTable1(p: number) {
     setPageTable1(p)
   }
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
+    setPageLoading(true)
     getBrandList().then((res: any) => {
-      if (res) { setResponse(res); setResult(res.length) }
+      if (res) { setResponse(res); setResult(res.length); setPageLoading(false) }
     })
-  })
+  }, [])
 
   useEffect(() => {
     if (response) {
@@ -60,16 +47,18 @@ function Brand() {
 
   return (
     <div className="container mt-3">
+      {pageLoading && pageLoader()}
+
       <div className="row">
         <div className="col col-md-7">
-          <SectionTitle>brands List</SectionTitle>
+          <SectionTitle>Quản lý chuỗi cửa hàng</SectionTitle>
           <TableContainer className="mb-8">
             <Table>
               <TableHeader>
                 <tr>
                   <TableCell>Tên chuỗi Cửa hàng</TableCell>
                   <TableCell>Tình trạng</TableCell>
-                  <TableCell>Tương tác</TableCell>
+                  {/* <TableCell>Tương tác</TableCell> */}
                 </tr>
               </TableHeader>
               <TableBody>
@@ -89,7 +78,7 @@ function Brand() {
                         {brand.isDeleted ? "Đang hoạt động" : "Đã đóng cửa"}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <div className="flex items-center space-x-4">
                         <Button layout="link" size="small" aria-label="Edit">
                           <HeartIcon className="w-5 h-5" aria-hidden="true" />
@@ -98,7 +87,7 @@ function Brand() {
                           <TrashIcon className="w-5 h-5" aria-hidden="true" />
                         </Button>
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>

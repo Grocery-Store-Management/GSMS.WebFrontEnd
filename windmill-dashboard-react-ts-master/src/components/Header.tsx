@@ -33,8 +33,8 @@ function Header() {
   };
 
   return (
-    <header className="z-40 py-4 bg-white shadow-bottom dark:bg-gray-800">
-      <div className="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
+    <div className="z-40 bg-white shadow-bottom dark:bg-gray-800">
+      <div className="container flex items-center justify-between h-full px-4 mx-auto text-blue-400 dark:text-blue-300 dark:bg-gray-800">
         {/* <!-- Mobile hamburger --> */}
         <button
           className="p-1 mr-5 -ml-1 rounded-md lg:hidden focus:outline-none focus:shadow-outline-purple"
@@ -45,19 +45,9 @@ function Header() {
         </button>
         {/* <!-- Search input --> */}
         <div className="flex justify-center flex-1 lg:mr-32">
-          <div className="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
-            <div className="absolute inset-y-0 flex items-center pl-2">
-              <SearchIcon className="w-4 h-4" aria-hidden="true" />
-            </div>
-            <Input
-              css=""
-              className="pl-8 text-gray-700"
-              placeholder="Search for projects"
-              aria-label="Search"
-            />
-          </div>
+          
         </div>
-        <ul className="flex items-center flex-shrink-0 space-x-6">
+        <ul className="flex items-center justify-center flex-shrink-0 space-x-6 mt-3">
           {/* <!-- Theme toggler --> */}
           <li className="flex">
             <button
@@ -134,7 +124,12 @@ function Header() {
                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Settings</span>
               </DropdownItem>
-              <DropdownItem onClick={() => alert('Log out!')}>
+              <DropdownItem onClick={() => {
+                var theme = localStorage.getItem("theme") || '';
+                localStorage.clear();
+                localStorage.setItem("theme", theme);
+                window.location.href = '/';
+              }}>
                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Log out</span>
               </DropdownItem>
@@ -142,7 +137,7 @@ function Header() {
           </li>
         </ul>
       </div>
-    </header>
+    </div>
   );
 };
 

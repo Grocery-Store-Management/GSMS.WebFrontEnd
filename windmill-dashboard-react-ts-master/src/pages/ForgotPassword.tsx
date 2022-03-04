@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
 
 import React from 'react'
-import ImageLight from '../assets/img/forgot-password-office.jpeg'
-import ImageDark from '../assets/img/forgot-password-office-dark.jpeg'
-import { Label, Input, Button } from '@windmill/react-ui'
+import ImageLight from '../assets/img/forgot-password-office.jpeg';
+import ImageDark from '../assets/img/forgot-password-office-dark.jpeg';
+import { Label, Input, Button } from '@windmill/react-ui';
+import '../styles/General.css';
 
 function ForgotPassword() {
   return (

@@ -1,5 +1,5 @@
 import firebase from "firebase";
-
+import 'firebase/storage'
 const firebaseConfig = {
   apiKey: "AIzaSyAfVhEHmTxFDWsBLqC9o2kHg3w7hhVsVKA",
   authDomain: "gsms-41f9a.firebaseapp.com",
@@ -12,5 +12,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-export { firebase }
+const storage = firebase.storage()
+export { firebase, storage }

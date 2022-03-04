@@ -16,29 +16,29 @@ interface IRoute {
 
 const routes: IRoute[] = [
   {
-    path: '/app/dashboard', // the url
-    icon: 'HomeIcon', // the component being exported from icons/index.js
-    name: 'Trang chủ', // name that appear in Sidebar
-  },
-  {
-    path: '/app/tables',
+    path: '/app/receipt',
     icon: 'TablesIcon',
     name: 'Xuất hóa đơn',
   },
   {
-    path: '/app/charts',
+    path: '/app/reports',
     icon: 'ChartsIcon',
     name: 'Báo cáo',
   },
   {
-    path: '/app/employee',
-    icon: 'ModalsIcon',
-    name: 'Nhân viên',
+    path: '/app/product',
+    icon: 'FormsIcon',
+    name: 'Hàng Hóa', 
   },
   {
-    path: '/app/stock',
-    icon: 'FormsIcon',
-    name: 'Kho', 
+    path: '/app/category',
+    icon: 'ModalsIcon',
+    name: 'Danh mục', 
+  },
+  {
+    path: '/app/importOrder',
+    icon: 'CardsIcon',
+    name: 'Đơn nhập hàng', 
   },
   {
     path: '/app/brand',

@@ -1,49 +1,40 @@
 import { lazy } from 'react';
 
 // use lazy for better code splitting, a.k.a. load faster
-const Dashboard = lazy(() => import('../pages/Dashboard'));
-const Forms = lazy(() => import('../pages/Forms'));
-const Cards = lazy(() => import('../pages/Cards'));
-const Charts = lazy(() => import('../pages/Charts'));
-const Buttons = lazy(() => import('../pages/Buttons'));
-const Modals = lazy(() => import('../pages/Modals'));
-const Tables = lazy(() => import('../pages/Tables'));
 const Page404 = lazy(() => import('../pages/404'));
 const Blank = lazy(() => import('../pages/Blank'));
-const Stock = lazy(() => import('../pages/Stock'));
 const Employee = lazy(() => import('../pages/Employee'));
 const Brand = lazy(() => import('../pages/Brand'));
+const Receipt = lazy(() => import('../pages/Receipt'));
+const Reports = lazy(() => import('../pages/Reports'));
+const Product = lazy(() => import('../pages/Product'));
+const Category = lazy(() => import('../pages/Category'));
+const ImportOrder = lazy(() => import('../pages/ImportOrder'));
 
-/**
- * ⚠ These are internal routes!
- * They will be rendered inside the app, using the default `containers/Layout`.
- * If you want to add a route to, let's say, a landing page, you should add
- * it to the `App`'s router, exactly like `Login`, `CreateAccount` and other pages
- * are routed.
- *
- * If you're looking for the links rendered in the SidebarContent, go to
- * `routes/sidebar.js`
- */
 const routes = [
-  {
-    path: '/dashboard', // the url
-    component: Dashboard, // view rendered
-  },
   {
     path: '/employee', // the url
     component: Employee, // view rendered
   },
   {
-    path: '/stock', // the url
-    component: Stock, // view rendered
+    path: '/product', // the url
+    component: Product, // view rendered
   },
   {
-    path: '/tables',
-    component: Tables,
+    path: '/category', // the url
+    component: Category, // view rendered
   },
   {
-    path: '/charts',
-    component: Charts,
+    path: '/importOrder', // the url
+    component: ImportOrder, // view rendered
+  },
+  {
+    path: '/receipt',
+    component: Receipt,
+  },
+  {
+    path: '/reports',
+    component: Reports,
   },
   {
     path: '/404',
@@ -57,7 +48,6 @@ const routes = [
     path: '/brand',
     component: Brand,
   }
-
 ];
 
 export default routes;

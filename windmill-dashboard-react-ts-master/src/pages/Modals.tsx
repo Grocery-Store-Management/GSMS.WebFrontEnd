@@ -1,57 +1,27 @@
-import { useState } from 'react';
 import React from 'react';
-import PageTitle from '../components/Typography/PageTitle';
-import CTA from '../components/CTA';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
+import ImportOrderForm from "../pages/ImportOrderForm"
+import { MODAL_TYPES } from '../Shared/Model';
+import '../styles/General.css';
 
-function Modals() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  function openModal() {
-    setIsModalOpen(true);
-  }
-
-  function closeModal() {
-    setIsModalOpen(false);
-  }
+function Modals(props: any) {
 
   return (
     <>
-      <PageTitle>Modals</PageTitle>
-      <CTA />
-
-      <div>
-        <Button onClick={openModal}>Open modal</Button>
-      </div>
-
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <ModalHeader>Modal header</ModalHeader>
+      <Modal style={{ width: "50%" }} isOpen={props.showModal} onClose={props.closeModal}>
+        <ModalHeader>{props.header}</ModalHeader>
         <ModalBody>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum et eligendi repudiandae
-          voluptatem tempore!
+          {(props.modalType === MODAL_TYPES.IMPORT_ORDER || props.modalType === MODAL_TYPES.EXPORT_ORDER) && <ImportOrderForm {...props} callback={props.callback} />}
         </ModalBody>
         <ModalFooter>
-          {/* I don't like this approach. Consider passing a prop to ModalFooter
-           * that if present, would duplicate the buttons in a way similar to this.
-           * Or, maybe find some way to pass something like size="large md:regular"
-           * to Button
-           */}
           <div className="hidden sm:block">
-            <Button layout="outline" onClick={closeModal}>
-              Cancel
+            <Button layout="outline" onClick={props.closeModal}>
+              {props.cancel ? props.cancel : "Cancel"}
             </Button>
           </div>
           <div className="hidden sm:block">
-            <Button>Accept</Button>
-          </div>
-          <div className="block w-full sm:hidden">
-            <Button block size="large" layout="outline" onClick={closeModal}>
-              Cancel
-            </Button>
-          </div>
-          <div className="block w-full sm:hidden">
-            <Button block size="large">
-              Accept
+            <Button onClick={props.acceptModal}>
+              {props.accept ? props.accept : "Accept"}
             </Button>
           </div>
         </ModalFooter>

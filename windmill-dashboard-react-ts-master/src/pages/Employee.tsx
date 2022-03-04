@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PageTitle from '../components/Typography/PageTitle';
 import SectionTitle from '../components/Typography/SectionTitle';
-import CTA from '../components/CTA';
 import {
   Table,
   TableHeader,
@@ -11,39 +9,24 @@ import {
   TableFooter,
   TableContainer,
   Badge,
-  Avatar,
-  Button,
   Pagination,
 } from '@windmill/react-ui';
-import { HeartIcon, TrashIcon, FireIcon } from '../icons';
-import { type, emp, category } from '../utils/demo/tableData';
-// make a copy of the data, for the second table
-function Employee() {
-  /**
-   * DISCLAIMER: This code could be badly improved, but for the sake of the example
-   * and readability, all the logic for both table are here.
-   * You would be better served by dividing each table in its own
-   * component, like Table(?) and TableWithActions(?) hiding the
-   * presentation details away from the page view.
-   */
+import {  emp } from '../utils/demo/tableData';
+import '../styles/General.css';
 
-  // setup pages control for every table
+function Employee() {
+ 
   const [pageTableEmployee, setPageTableEmployee] = useState(1)
 
-  // setup data for every table
   const [dataTableEmployee, setDataTableEmployee] = useState<any[]>(emp)
 
-  // pagination setup
   const resultsPerPage = 10;
   const totalResults = emp.length;
 
-  // pagination change control
   function onPageChangeTableEmployee(p: number) {
     setPageTableEmployee(p)
   }
 
-  // on page change, load new sliced data
-  // here you would make another server request for new data
   useEffect(() => {
     setDataTableEmployee(emp.slice((pageTableEmployee - 1) * resultsPerPage, pageTableEmployee * resultsPerPage))
   }, [pageTableEmployee])
