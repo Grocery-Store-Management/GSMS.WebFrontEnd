@@ -8,3 +8,10 @@ export const getStoreList = async () => {
     return data;
 }
 
+export const updateStore = async (store : any) => {
+    const { data } = await axios.put(baseApiUrl + "stores/" + store.id, store, {
+        ...GetApiConfig(), timeout: 60000
+    });
+    return data;
+}
+
