@@ -10,6 +10,7 @@ import BackgroundCircle from '../assets/img/background-circle-min.png';
 import { useFirestore } from '../utils/firebase/firestore';
 import { User } from '../models/User';
 import '../styles/General.css';
+import { ROLE } from '../Shared/Model';
 
 function Login() {
   const history = useHistory();
@@ -29,7 +30,11 @@ function Login() {
             if (doc.exists) {
               localStorage.setItem("role", JSON.stringify(doc.data()));
               console.log("Document data:", doc.data());
-              history.push('/app/reports');
+              if (doc.data()?.role == ROLE.admin) {
+                history.push('/app/reports');
+              } else {
+                history.push('/app/receipt');
+              }
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");

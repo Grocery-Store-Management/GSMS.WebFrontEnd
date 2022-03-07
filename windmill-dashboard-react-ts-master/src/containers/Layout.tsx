@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import Main from './Main';
 import ThemedSuspense from '../components/ThemedSuspense';
 import { SidebarContext } from '../context/SidebarContext';
+import { ROLE } from '../Shared/Model';
 
 const Page404 = lazy(() => import('../pages/404'));
 
@@ -27,20 +28,37 @@ function Layout() {
         <Header />
         <Main>
           <Suspense fallback={<ThemedSuspense />}>
-            <Switch>
-              {routes.map((route, i) => {
-                return route.component ? (
-                  <Route
-                    key={i}
-                    exact={true}
-                    path={`/app${route.path}`}
-                    render={(props) => <route.component />}
-                  />
-                ) : null
-              })}
-              <Redirect exact from="/app" to="/app/receipt" />
-              <Route component={Page404} />
-            </Switch>
+            {localStorage.getItem("role") && JSON.parse(localStorage.getItem("role") as any)?.role === ROLE.staff &&
+              <Switch>
+                {routes.filter(r => r.path.includes("receipt")).map((route, i) => {
+                  return route.component ? (
+                    <Route
+                      key={i}
+                      exact={true}
+                      path={`/app${route.path}`}
+                      render={(props) => <route.component />}
+                    />
+                  ) : null
+                })}
+                <Route component={Page404} />
+              </Switch>
+            }
+            {localStorage.getItem("role") && JSON.parse(localStorage.getItem("role") as any)?.role === ROLE.admin &&
+              <Switch>
+                {routes.map((route, i) => {
+                  return route.component ? (
+                    <Route
+                      key={i}
+                      exact={true}
+                      path={`/app${route.path}`}
+                      render={(props) => <route.component />}
+                    />
+                  ) : null
+                })}
+                <Route component={Page404} />
+              </Switch>
+            }
+
           </Suspense>
         </Main>
       </div>
