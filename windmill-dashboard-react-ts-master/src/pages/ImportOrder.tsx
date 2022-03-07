@@ -21,10 +21,12 @@ import { MODAL_TYPES } from '../Shared/Model';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import { type } from '../utils/demo/tableData';
 import '../styles/General.css';
+import ConfirmModal from './ConfirmModal';
 
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function ImportOrder(props: any) {
-
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deletedItem, setDeletedItem] = useState<any>(null);
     const [modalType, setModalType] = useState<any>();
     const [pageLoading, setPageLoading] = useState<boolean>(false);
     const [shownOrder, setShownOrder] = useState<any>();
@@ -139,9 +141,25 @@ function ImportOrder(props: any) {
         }
     }
 
+    function handleDeleteImportOrder(order: any) {
+        setShowDeleteModal(true);
+        setDeletedItem(order);
+    }
+
     return (
         <div className="container mt-3">
             {pageLoading && pageLoader()}
+            <ConfirmModal modalOpen={showDeleteModal}
+                callback={() => {
+                    deleteImportOrder(deletedItem)
+                    setShowDeleteModal(false)
+                }}
+                onClose={() => setShowDeleteModal(false)}
+                header={`Hủy đơn`}
+                body={`Bạn có chắc là muốn hủy đơn này?`}
+                accept={`Có`}
+                cancel={`Không`}
+            />
             {<Modal
                 modalType={modalType}
                 cancel="Hủy" accept="Gửi đơn" header="Tạo đơn"
@@ -201,7 +219,7 @@ function ImportOrder(props: any) {
                                                     <Button layout="primary" size="small" aria-label="Edit" onClick={() => showOrderDetails(order)}>
                                                         Xem chi tiết
                                                     </Button>
-                                                    <Button layout="link" size="small" aria-label="Delete" onClick={() => deleteImportOrder(order)}>
+                                                    <Button layout="link" size="small" aria-label="Delete" onClick={() => handleDeleteImportOrder(order)}>
                                                         <TrashIcon className="w-5 h-5" aria-hidden="true" /> Hủy đơn
                                                     </Button>
                                                 </div>

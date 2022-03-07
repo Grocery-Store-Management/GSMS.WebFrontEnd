@@ -24,9 +24,12 @@ import { showToastError, showToastSuccess } from "../utils/ToasterUtility/Toaste
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import '../styles/General.css';
+import ConfirmModal from './ConfirmModal';
 
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Product(props: any) {
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deletedItem, setDeletedItem] = useState<any>(null);
     const [pageLoading, setPageLoading] = useState<boolean>(false);
     const [pageTableProducts, setPageTableProducts] = useState(1)
     const [originalProducts, setOriginalProducts] = useState<any[]>([])
@@ -153,6 +156,11 @@ function Product(props: any) {
         }
 
     }
+    
+    function handleRemoveProduct(product : any) {
+        setShowDeleteModal(true);
+        setDeletedItem(product);
+    }
 
     async function removeProduct(product: any) {
         try {
@@ -240,6 +248,18 @@ function Product(props: any) {
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
+            <ConfirmModal modalOpen={showDeleteModal} 
+            callback={() => 
+                {
+                    removeProduct(deletedItem)
+                    setShowDeleteModal(false)
+                }}
+            onClose={() => setShowDeleteModal(false)}
+            header={`Xóa sản phẩm`} 
+            body={`Bạn có chắc là muốn xóa sản phẩm này?`}
+            accept={`Có`}
+            cancel={`Không`}
+            />
             <div className=''>
                 <SectionTitle className='col col-md-3 mt-3'>Danh sách hàng trong kho</SectionTitle>
                 <Button className='col col-md-2 mb-3 theme-bg' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
@@ -333,7 +353,7 @@ function Product(props: any) {
                                         <Button disabled={product.categoryId === ""} layout="primary" size="small" aria-label="Edit" onClick={() => editProduct(product, curProdDetail)}>
                                             Lưu
                                         </Button>
-                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => removeProduct(product)}>
+                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveProduct(product)}>
                                             Xóa
                                         </Button>
                                     </div>
