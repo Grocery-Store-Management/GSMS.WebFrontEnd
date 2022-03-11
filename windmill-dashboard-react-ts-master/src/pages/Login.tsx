@@ -2,7 +2,7 @@ import { Link, useHistory } from 'react-router-dom';
 import React from 'react';
 import ImageLight from '../assets/img/login-office.jpeg';
 import ImageDark from '../assets/img/login-office-dark.jpeg';
-import { GithubIcon, GoogleIcon } from '../icons';
+import { FacebookIcon, GithubIcon, GoogleIcon } from '../icons';
 import { Label, Input, Button } from '@windmill/react-ui';
 import { firebase } from '../utils/firebase/firebase';
 import '../styles/Login.css';
@@ -29,7 +29,33 @@ function Login() {
             if (doc.exists) {
               localStorage.setItem("role", JSON.stringify(doc.data()));
               console.log("Document data:", doc.data());
-              history.push('/app/reports');
+              history.push('/app');
+            } else {
+              // doc.data() will be undefined in this case
+              console.log("No such document!");
+            }
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+  const SignInWithFacebook = () => {
+    var facebook_provider = new firebase.auth.FacebookAuthProvider();
+
+    firebase.auth().signInWithPopup(facebook_provider)
+      .then(async (response) => {
+        const user = response.user;
+        const token: any = await user?.getIdToken();
+        localStorage.setItem("USER", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        firestore.collection("gsms-employee").doc(user?.uid).get()
+          .then((doc) => {
+            if (doc.exists) {
+              localStorage.setItem("role", JSON.stringify(doc.data()));
+              console.log("Document data:", doc.data());
+              history.push('/app');
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
@@ -54,7 +80,7 @@ function Login() {
           .then((doc) => {
             if (doc.exists) {
               console.log("Document data:", doc.data());
-              history.push('/app/reports');
+              history.push('/app');
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
@@ -117,7 +143,7 @@ function Login() {
                   <button className="col col-md-12 mt-4 b-10 text-changed">
                     LOGIN
                   </button>
-                </Link>
+                </Link> 
 
                 <div className="d-flex flex-row my-8 mt-4" >
                   <span className='line-break mr-4'></span>
@@ -129,9 +155,15 @@ function Login() {
                   <GoogleIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                   Google
                 </Button>
+
                 <Button className="button mt-4" block layout="outline" onClick={SignInWithGitHub}>
                   <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                   Github
+                </Button>
+
+                <Button className="button mt-4" block layout="outline" onClick={SignInWithFacebook}>
+                  <FacebookIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+                  Facebook
                 </Button>
 
               </div>
