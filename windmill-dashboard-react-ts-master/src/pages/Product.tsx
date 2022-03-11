@@ -285,10 +285,15 @@ function Product(props: any) {
                             let prodStatus = status_mapping[curProdDetail?.status];
                             let prodType = type_mapping[curProdDetail?.status];
                             let prodCat = category.find((cat: any) => cat.id === product?.categoryId);
-                            return <TableRow key={i}>
-                                <TableCell>
-                                    <div className="App">
-                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"} htmlFor='file-upload'
+                            return <TableRow key={i} 
+                            >
+                                <TableCell
+                            
+                                
+                                >
+                                    <div className="App"
+                                    >
+                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"} 
                                         >
                                             <input
                                                 hidden
