@@ -21,4 +21,19 @@ export const useFirestore = () => {
         console.log(doc);
       });
   };
+
+  const set = (collectionId: string)  => {
+    // const { uid, photoURL } = auth.currentUser;
+    var getOptions = {
+      source: "cache",
+    };
+    var parameter: any = [];
+    const document = firestore
+      .collection(collectionId)
+      .doc("uid")
+      .set(parameter)
+      .then((doc) => {
+        console.log(doc);
+      });
+  };
 };
