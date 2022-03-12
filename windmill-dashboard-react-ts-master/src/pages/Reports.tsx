@@ -288,7 +288,7 @@ function Reports() {
                                                 <TableCell>
                                                     <div className="flex items-center text-sm">
                                                         <div>
-                                                            <p className="font-semibold">{(new Date(receipt.createdDate)).toString()}</p>
+                                                            <p className="font-semibold">{(new Date(receipt.createdDate)).toLocaleString("vi-VN")}</p>
                                                         </div>
                                                     </div>
                                                 </TableCell>
