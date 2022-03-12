@@ -2,16 +2,14 @@ import React from 'react'
 import { useContext, useState } from 'react';
 import { SidebarContext } from '../context/SidebarContext';
 import {
-  SearchIcon,
   MoonIcon,
   SunIcon,
-  BellIcon,
   MenuIcon,
   OutlinePersonIcon,
   OutlineCogIcon,
   OutlineLogoutIcon,
 } from '../icons';
-import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui';
+import { Avatar, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui';
 
 function Header() {
   var userItem = localStorage.getItem("USER");
@@ -21,12 +19,7 @@ function Header() {
   const { mode, toggleMode } = useContext(WindmillContext);
   const { toggleSidebar } = useContext(SidebarContext);
 
-  const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-
-  function handleNotificationsClick() {
-    setIsNotificationsMenuOpen(!isNotificationsMenuOpen);
-  };
 
   function handleProfileClick() {
     setIsProfileMenuOpen(!isProfileMenuOpen);
@@ -43,10 +36,6 @@ function Header() {
         >
           <MenuIcon className="w-6 h-6" aria-hidden="true" />
         </button>
-        {/* <!-- Search input --> */}
-        <div className="flex justify-center flex-1 lg:mr-32">
-          
-        </div>
         <ul className="flex items-center justify-center flex-shrink-0 space-x-6 mt-3">
           {/* <!-- Theme toggler --> */}
           <li className="flex">
@@ -61,40 +50,6 @@ function Header() {
                 <MoonIcon className="w-5 h-5" aria-hidden="true" />
               )}
             </button>
-          </li>
-          {/* <!-- Notifications menu --> */}
-          <li className="relative">
-            <button
-              className="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
-              onClick={handleNotificationsClick}
-              aria-label="Notifications"
-              aria-haspopup="true"
-            >
-              <BellIcon className="w-5 h-5" aria-hidden="true" />
-              {/* <!-- Notification badge --> */}
-              <span
-                aria-hidden="true"
-                className="absolute top-0 right-0 inline-block w-3 h-3 transform translate-x-1 -translate-y-1 bg-red-600 border-2 border-white rounded-full dark:border-gray-800"
-              ></span>
-            </button>
-
-            <Dropdown
-              align="right"
-              isOpen={isNotificationsMenuOpen}
-              onClose={() => setIsNotificationsMenuOpen(false)}
-            >
-              <DropdownItem tag="a" href="#" className="justify-between">
-                <span>Messages</span>
-                <Badge type="danger">13</Badge>
-              </DropdownItem>
-              <DropdownItem tag="a" href="#" className="justify-between">
-                <span>Sales</span>
-                <Badge type="danger">2</Badge>
-              </DropdownItem>
-              <DropdownItem onClick={() => alert('Alerts!')}>
-                <span>Alerts</span>
-              </DropdownItem>
-            </Dropdown>
           </li>
           {/* <!-- Profile menu --> */}
           <li className="relative">
@@ -119,10 +74,6 @@ function Header() {
               <DropdownItem tag="a" href="#">
                 <OutlinePersonIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Profile</span>
-              </DropdownItem>
-              <DropdownItem tag="a" href="#">
-                <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
-                <span>Settings</span>
               </DropdownItem>
               <DropdownItem onClick={() => {
                 var theme = localStorage.getItem("theme") || '';
