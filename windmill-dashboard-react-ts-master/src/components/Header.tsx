@@ -27,7 +27,7 @@ function Header() {
 
   return (
     <div className="z-40 bg-white shadow-bottom dark:bg-gray-800">
-      <div className="container flex items-center justify-between h-full px-4 mx-auto text-blue-400 dark:text-blue-300 dark:bg-gray-800">
+      <div className="container h-full px-4 mx-auto text-blue-400 dark:text-blue-300 dark:bg-gray-800">
         {/* <!-- Mobile hamburger --> */}
         <button
           className="p-1 mr-5 -ml-1 rounded-md lg:hidden focus:outline-none focus:shadow-outline-purple"
