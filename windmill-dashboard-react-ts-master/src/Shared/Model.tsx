@@ -8,3 +8,8 @@ export const MODAL_TYPES = {
     IMPORT_ORDER: "IMPORT_ORDER",
     EXPORT_ORDER: "EXPORT_ORDER",
 }
+
+export const ROLE = {
+    staff:"staff",
+    admin:"admin"
+}

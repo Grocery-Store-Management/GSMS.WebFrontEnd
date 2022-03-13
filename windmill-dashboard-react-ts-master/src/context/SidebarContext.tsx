@@ -12,7 +12,7 @@ export const SidebarContext = React.createContext<ISidebarContext>({ isSidebarOp
 interface ISidebarPovider { children: React.ReactNode }
 
 export const SidebarProvider = ({ children }: ISidebarPovider) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false)
 
   function toggleSidebar() {
     setIsSidebarOpen(!isSidebarOpen)
@@ -22,14 +22,9 @@ export const SidebarProvider = ({ children }: ISidebarPovider) => {
     setIsSidebarOpen(false)
   }
 
-  const value = useMemo(
-    () => ({
-      isSidebarOpen,
-      toggleSidebar,
-      closeSidebar,
-    }),
-    [isSidebarOpen, closeSidebar]
-  )
-
-  return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
+  return <SidebarContext.Provider value={{
+    isSidebarOpen,
+    toggleSidebar,
+    closeSidebar,
+  }}>{children}</SidebarContext.Provider>
 }

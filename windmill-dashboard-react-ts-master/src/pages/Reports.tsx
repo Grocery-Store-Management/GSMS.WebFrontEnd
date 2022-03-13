@@ -8,7 +8,7 @@ import { getImportOrderList, getImportOrderDetailList } from "../Services/Import
 import _ from 'lodash';
 import SectionTitle from '../components/Typography/SectionTitle';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
-import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from '@windmill/react-ui';
+import { Button, Input, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHeader, TableRow } from '@windmill/react-ui';
 import '../styles/General.css';
 
 function Reports() {
@@ -20,7 +20,7 @@ function Reports() {
     const [receiptDetails, setReceiptDetails] = useState<any>([]);
     const [salesReportList, setSalesReport] = useState<any>([["Ngày", "Bán ra", "Mua vào"], ['1', 0, 0]])
     const [categoryReportList, setCategoryReport] = useState<any>([["Loại hàng", "Tỉ trọng trong kho"], ["", 0]])
-    const [bestSellerReportList, setBestSellerReportReport] = useState<any>([["Sản phẩm", "Số lượng bán ra"], ["", 0]])
+    const [bestSellerReportList, setBestSellerReportReport] = useState<any>([["Sản phẩm", "Số lượng bán ra"], [null, 0]])
     const [totalSales, setTotalSale] = useState<number>(0);
     const [totalImports, setTotalImport] = useState<number>(0);
     const [profit, setProfit] = useState<number>(0);
@@ -59,10 +59,10 @@ function Reports() {
         return quantityReport
     }
 
-    function getBestSellerReportOfDay(day: any, receipts: any, receiptDetails: any) {
+    function getBestSellerReportOfDay(day: number, month: number, year: number, receipts: any, receiptDetails: any) {
         let quantityReportOfDay: any = [];
 
-        let receiptsOfDay: any = receipts.filter((rec: any) => new Date(rec.createdDate).getDate() === day);
+        let receiptsOfDay: any = receipts.filter((rec: any) => new Date(rec.createdDate).getDate() === day && new Date(rec.createdDate).getMonth() + 1 === month && new Date(rec.createdDate).getFullYear() === year);
 
         if (receiptsOfDay.length > 0) {
             receiptsOfDay.forEach((rec: any) => {
@@ -77,11 +77,12 @@ function Reports() {
         return quantityReportOfDay;
     }
 
-    function getSalesReportOfDay(day: number, receipts: any, importOrders: any, receiptDetails: any, importOrdersDetails: any) {
+    function getSalesReportOfDay(day: number, month: number, year: number, receipts: any, importOrders: any, receiptDetails: any, importOrdersDetails: any) {
         let salesReportOfDay: any = [];
+
         receipts.forEach((rec: any) => {
-            let receiptCreatedDay = new Date(rec.createdDate).getDate()
-            if (receiptCreatedDay === day) {
+            let receiptCreatedDay = new Date(rec.createdDate)
+            if (receiptCreatedDay.getDate() === day && (receiptCreatedDay.getMonth() + 1) === month && receiptCreatedDay.getFullYear() === year) {
                 let sale = 0;
                 let curRecDetail = receiptDetails.find((recDet: any) => recDet.receiptId === rec.id);
                 if (curRecDetail) {
@@ -92,11 +93,11 @@ function Reports() {
         })
         let expensesReportOfDay: any = []
         importOrders.forEach((importOrder: any) => {
-            let importOrderCreatedDay = new Date(importOrder.createdDate).getDate()
-            if (importOrderCreatedDay === day) {
+            let importOrderCreatedDay = new Date(importOrder.createdDate)
+            if (importOrderCreatedDay.getDate() === day && importOrderCreatedDay.getMonth() + 1 === month && importOrderCreatedDay.getFullYear() === year) {
                 let expense = 0;
                 let curImportOrderDetail = importOrdersDetails.find((importDet: any) => importDet.orderId === importOrder.id);
-                if (curImportOrderDetail) {
+                if (curImportOrderDetail && curImportOrderDetail.quantity > 0) {
                     expense += curImportOrderDetail.price * curImportOrderDetail.quantity
                     expensesReportOfDay.push([day, expense])
                 }
@@ -120,6 +121,8 @@ function Reports() {
     }
 
     async function generateData(month: number, year: number) {
+        setPageLoading(true)
+
         let importOrderList = await getImportOrderList();
         let importOrderDetailsList = await getImportOrderDetailList();
         let productList = await getProductList();
@@ -127,24 +130,30 @@ function Reports() {
         let receiptList = await getReceiptList();
         let receiptDetailList = await getReceiptDetailList();
         let categoryList = await getCategoryList();
-        let salesReport: any = _.cloneDeep(salesReportList);
-        let bestSellerReport: any = _.cloneDeep(bestSellerReportList);
-        let categoryReport: any = _.cloneDeep(categoryReportList)
+        let salesReport: any = [["Ngày", "Bán ra", "Mua vào"], ['1', 0, 0]];
+        let bestSellerReport: any = [["Sản phẩm", "Số lượng bán ra"], [null, 0]];
+        let categoryReport: any = [["Loại hàng", "Tỉ trọng trong kho"], ["", 0]];
         setReceipts(receiptList)
         setReceiptDetails(receiptDetailList)
         //Line chart
+        if (typeof (month) !== "number") month = Number.parseInt(month);
+        if (typeof (year) !== "number") month = Number.parseInt(year);
+
         getDatesInMonth(month, year).forEach((day: number) => {
-            let quantityReport: any = getSalesReportOfDay(day, receiptList, importOrderList, receiptDetailList, importOrderDetailsList)
-            quantityReport.forEach((entry: any) => {
-                let entIndex: number = salesReport.findIndex((ent: any) => entry[0] === ent[0])
-                if (entIndex !== -1) {
-                    salesReport[entIndex][0] = entry[0];
-                    salesReport[entIndex][1] = salesReport[entIndex][1] + entry[1];
-                    salesReport[entIndex][2] = salesReport[entIndex][2] + entry[2];
-                } else {
-                    salesReport.push(entry);
-                }
-            })
+
+            if (month > 0 && year > 0) {
+                let quantityReport: any = getSalesReportOfDay(day, month, year, receiptList, importOrderList, receiptDetailList, importOrderDetailsList)
+                quantityReport.forEach((entry: any) => {
+                    let entIndex: number = salesReport.findIndex((ent: any) => entry[0] === ent[0])
+                    if (entIndex !== -1) {
+                        salesReport[entIndex][0] = entry[0];
+                        salesReport[entIndex][1] = salesReport[entIndex][1] + entry[1];
+                        salesReport[entIndex][2] = salesReport[entIndex][2] + entry[2];
+                    } else {
+                        salesReport.push(entry);
+                    }
+                })
+            }
         })
         let totalSale = _.cloneDeep(totalSales);
         let totalImport = _.cloneDeep(totalImports);
@@ -168,7 +177,7 @@ function Reports() {
 
         //Bar chart
         getDatesInMonth(month, year).forEach((day: number) => {
-            let bestSellerReportOfDay: any = getBestSellerReportOfDay(day, receiptList, receiptDetailList)
+            let bestSellerReportOfDay: any = getBestSellerReportOfDay(day, month, year, receiptList, receiptDetailList)
             bestSellerReportOfDay.forEach((entry: any) => {
                 let entIndex: number = bestSellerReport.findIndex((ent: any) => entry[0] === ent[0])
                 if (entIndex !== -1) {
@@ -184,12 +193,15 @@ function Reports() {
     }
 
     useEffect(() => {
-        let curMonth = (new Date()).getMonth();
-        let curYear = (new Date()).getFullYear()
+        let curMonth: number = (new Date()).getMonth();
+        let curYear: number = (new Date()).getFullYear()
         setReportMonth(curMonth + 1);
         setReportYear(curYear);
-        generateData(curMonth, curYear);
     }, [])
+
+    useEffect(() => {
+        generateData(reportMonth, reportYear);
+    }, [reportMonth, reportYear])
 
     useEffect(() => {
         setDataTableReceipts(receipts.slice((pageTableReceipts - 1) * 5, pageTableReceipts * 5))
@@ -207,15 +219,37 @@ function Reports() {
     return (
         <>
             {pageLoading && pageLoader()}
-            {!pageLoading && <>
-                <SectionTitle className='text-blue-400 mt-4 ml-2'>Báo cáo trạng thái tháng {reportMonth} năm {reportYear}</SectionTitle>
+            {<>
+                <SectionTitle className='text-blue-400 mt-4 ml-2'>Báo cáo trạng thái tháng
+                    <Input
+                        css={""}
+                        type='number'
+                        max={12}
+                        min={1}
+                        value={reportMonth}
+                        onChange={(e: any) => {
+                            e.persist()
+                            setReportMonth(e.target.value);
+                        }}
+                    />
+                    năm
+                    <Input
+                        css={""}
+                        type='number'
+                        value={reportYear}
+                        onChange={(e: any) => {
+                            e.persist()
+                            setReportYear(e.target.value);
+                        }}
+                    />
+                </SectionTitle>
                 <div className='row'>
                     <div className="col col-md-6 border-end">
                         <SectionTitle className='ml-2'> Top hàng hóa bán chạy của tháng</SectionTitle>
                         <Chart
                             chartType="ColumnChart"
                             data={
-                                bestSellerReportList
+                                bestSellerReportList ? bestSellerReportList : []
                             }
                             width="100%"
                             height="400px"
@@ -227,7 +261,7 @@ function Reports() {
                         <Chart
                             chartType="PieChart"
                             data={
-                                categoryReportList
+                                categoryReportList ? categoryReportList : []
                             }
                             width="100%"
                             height="400px"
@@ -256,7 +290,7 @@ function Reports() {
                             className='mt-4'
                             chartType="LineChart"
                             data={
-                                salesReportList
+                                salesReportList ? salesReportList : []
                             }
                             width="100%"
                             height="400px"
@@ -287,7 +321,7 @@ function Reports() {
                                                 <TableCell>
                                                     <div className="flex items-center text-sm">
                                                         <div>
-                                                            <p className="font-semibold">{(new Date(receipt.createdDate)).toString()}</p>
+                                                            <p className="font-semibold">{(new Date(receipt.createdDate)).toLocaleString("vi-VN")}</p>
                                                         </div>
                                                     </div>
                                                 </TableCell>

@@ -19,12 +19,14 @@ import {
 import { showToastError, showToastSuccess } from '../utils/ToasterUtility/ToasterUtility';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import '../styles/General.css';
+import ConfirmModal from './ConfirmModal';
 
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Category(props: any) {
 
     const [pageLoading, setPageLoading] = useState<boolean>(false);
-
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deletedItem, setDeletedItem] = useState<any>(null);
     const [pageTableCategory, setPageTableCategory] = useState(1)
     const [Category, setCategory] = useState<any[]>([])
     const [originalCategory, setOriginalCategory] = useState<any[]>([])
@@ -88,14 +90,14 @@ function Category(props: any) {
 
     async function removeCategory(cat: any) {
         try {
-            props?.pageLoading(true)
+            setPageLoading(true)
             await deleteCategory(cat)
             showToastSuccess("Xóa thành công")
         } catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại");
         }
         finally {
-            props?.pageLoading(false)
+            setPageLoading(false)
 
         }
         refreshCategoryList();
@@ -130,7 +132,7 @@ function Category(props: any) {
     }
 
     useEffect(() => {
-        // setPageLoading(true);
+        setPageLoading(true);
         refreshProductList();
         refreshProductDetails();
         refreshCategoryList();
@@ -140,9 +142,25 @@ function Category(props: any) {
         setDataTableCategory(Category.slice((pageTableCategory - 1) * resultsPerPage, pageTableCategory * resultsPerPage))
     }, [pageTableCategory, Category])
 
+    function handleRemoveCategory(cat: any) {
+        setShowDeleteModal(true);
+        setDeletedItem(cat);
+    }
+
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
+            <ConfirmModal modalOpen={showDeleteModal}
+                callback={() => {
+                    removeCategory(deletedItem)
+                    setShowDeleteModal(false)
+                }}
+                onClose={() => setShowDeleteModal(false)}
+                header={`Xóa hạng mục`}
+                body={`Bạn có chắc là xóa hạng mục này?`}
+                accept={`Có`}
+                cancel={`Không`}
+            />
 
             <div>
                 <SectionTitle className='col col-md-3 mt-3'>Danh sách loại hàng</SectionTitle>
@@ -190,7 +208,7 @@ function Category(props: any) {
                                         <Button layout="primary" size="small" aria-label="Edit" onClick={() => editCategory(cat)}>
                                             Lưu
                                         </Button>
-                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => removeCategory(cat)}>
+                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveCategory(cat)}>
                                             Xóa
                                         </Button>
                                     </div>
