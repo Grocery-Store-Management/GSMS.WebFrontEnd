@@ -117,7 +117,7 @@ function ImportOrder(props: any) {
     useEffect(() => {
         var filteredOrders: any[] = [];
         importOrders.forEach((ord: any) => {
-            if (ord.importOrderDetails && ord.importOrderDetails[0].quantity > 0) filteredOrders.push(ord)
+            if (ord.importOrderDetails && ord.importOrderDetails[0]?.quantity > 0) filteredOrders.push(ord)
         })
         setFilteredImportOrder(filteredOrders);
         setDataTableImportOrders(filteredOrders.slice((pageTableImportOrders - 1) * resultsPerPage, pageTableImportOrders * resultsPerPage))
@@ -126,7 +126,7 @@ function ImportOrder(props: any) {
     useEffect(() => {
         var filteredOrders: any[] = [];
         importOrders.forEach((ord: any) => {
-            if (ord.importOrderDetails && ord.importOrderDetails[0].quantity < 0) filteredOrders.push(ord)
+            if (ord.importOrderDetails && ord.importOrderDetails[0]?.quantity < 0) filteredOrders.push(ord)
         })
         setFilteredExportOrder(filteredOrders)
         setDataTableExportOrders(filteredOrders.slice((pageTableExportOrders - 1) * resultsPerPage, pageTableExportOrders * resultsPerPage))
