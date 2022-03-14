@@ -29,6 +29,7 @@ import { ReactComponent as OutlineCogIcon } from './outlineCog.svg'
 import { ReactComponent as OutlineLogoutIcon } from './outlineLogout.svg'
 import { ReactComponent as FireIcon } from './flame-danger-svgrepo-com.svg'
 import { ReactComponent as DropdownListIcon } from './Dropdown-SVG-Icon-0sfe.svg'
+import { ReactComponent as FacebookIcon } from './facebook.svg'
 
 export {
   ButtonsIcon,
@@ -62,4 +63,5 @@ export {
   OutlineLogoutIcon,
   FireIcon,
   DropdownListIcon,
+  FacebookIcon,
 }
