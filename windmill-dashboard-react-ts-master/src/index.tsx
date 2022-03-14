@@ -8,13 +8,14 @@ import { Windmill } from '@windmill/react-ui'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
-  <SidebarProvider>
-    <Suspense fallback={<ThemedSuspense />}>
+  <Suspense fallback={<ThemedSuspense />}>
+    <SidebarProvider>
       <Windmill usePreferences>
         <App />
       </Windmill>
-    </Suspense>
-  </SidebarProvider>,
+    </SidebarProvider>
+  </Suspense>
+  ,
   document.getElementById('root')
 )
 

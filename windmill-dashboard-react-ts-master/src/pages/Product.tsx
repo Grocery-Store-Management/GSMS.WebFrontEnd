@@ -24,9 +24,12 @@ import { showToastError, showToastSuccess } from "../utils/ToasterUtility/Toaste
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import '../styles/General.css';
+import ConfirmModal from './ConfirmModal';
 
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Product(props: any) {
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deletedItem, setDeletedItem] = useState<any>(null);
     const [pageLoading, setPageLoading] = useState<boolean>(false);
     const [pageTableProducts, setPageTableProducts] = useState(1)
     const [originalProducts, setOriginalProducts] = useState<any[]>([])
@@ -103,7 +106,7 @@ function Product(props: any) {
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
         try {
-            // setPageLoading(true)
+            setPageLoading(true)
             prods.forEach((prod: any) => {
                 let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
                 if (curProdDet) {
@@ -121,7 +124,7 @@ function Product(props: any) {
         refreshData();
     }
 
-    async function editProduct(product: any, productDetail: any = [], singleUpdate: boolean = true) {
+    async function editProduct(product: any, productDetail: any = null, singleUpdate: boolean = true) {
         if (productDetail || product.productDetails !== []) {
             try {
                 let prods = _.cloneDeep(originalProducts)
@@ -130,9 +133,9 @@ function Product(props: any) {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        // setPageLoading(true)
+                        setPageLoading(true)
                         await updateProduct(product);
-                        await updateProductDetail(productDetail);
+                        if (productDetail) await updateProductDetail(productDetail);
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
                     } else {
                         return
@@ -143,6 +146,7 @@ function Product(props: any) {
                 refreshProductList();
                 refreshProductDetails();
             } catch (ex) {
+                console.log(ex)
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
             } finally {
                 setPageLoading(false)
@@ -152,10 +156,15 @@ function Product(props: any) {
         }
 
     }
+    
+    function handleRemoveProduct(product : any) {
+        setShowDeleteModal(true);
+        setDeletedItem(product);
+    }
 
     async function removeProduct(product: any) {
         try {
-            // setPageLoading(true)
+            setPageLoading(true)
             await deleteProduct(product);
             showToastSuccess("Xóa thành công!")
         } catch (ex) {
@@ -171,7 +180,7 @@ function Product(props: any) {
             name: "Sản phẩm mặc định",
             categoryId: category[0].id ? category[0].id : "",
         }
-        // setPageLoading(true)
+        setPageLoading(true)
         let addedProduct = await addProduct(defaultProduct)
         await addProductDetail({
             productId: addedProduct.id,
@@ -206,7 +215,7 @@ function Product(props: any) {
     }
 
     useEffect(() => {
-        // setPageLoading(true)
+        setPageLoading(true)
         refreshData();
     }, [])
 
@@ -225,19 +234,32 @@ function Product(props: any) {
         const uploadTask = storage.ref(`/images/products/${imageAsFile.name}`).put(imageAsFile)
         uploadTask.on('state_changed',
             (snapShot) => {
+                setPageLoading(true)
             }, (err) => {
                 console.log(err)
             }, () => {
-                storage.ref('images').child(imageAsFile.name).getDownloadURL()
+                storage.ref('images/products').child(imageAsFile.name).getDownloadURL()
                     .then(fireBaseUrl => {
-                        // product.imageUrl = fireBaseUrl;
-                        // editProduct(product)
+                        product.imageUrl = fireBaseUrl;
+                        editProduct(product);
                     })
             })
     }
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
+            <ConfirmModal modalOpen={showDeleteModal} 
+            callback={() => 
+                {
+                    removeProduct(deletedItem)
+                    setShowDeleteModal(false)
+                }}
+            onClose={() => setShowDeleteModal(false)}
+            header={`Xóa sản phẩm`} 
+            body={`Bạn có chắc là muốn xóa sản phẩm này?`}
+            accept={`Có`}
+            cancel={`Không`}
+            />
             <div className=''>
                 <SectionTitle className='col col-md-3 mt-3'>Danh sách hàng trong kho</SectionTitle>
                 <Button className='col col-md-2 mb-3 theme-bg' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
@@ -263,17 +285,23 @@ function Product(props: any) {
                             let prodStatus = status_mapping[curProdDetail?.status];
                             let prodType = type_mapping[curProdDetail?.status];
                             let prodCat = category.find((cat: any) => cat.id === product?.categoryId);
-                            return <TableRow key={i}>
-                                <TableCell>
-                                    <div className="App">
-                                        <label htmlFor='file-upload' >
+                            return <TableRow key={i} 
+                            >
+                                <TableCell
+                            
+                                
+                                >
+                                    <div className="App"
+                                    >
+                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"} 
+                                        >
                                             <input
                                                 hidden
                                                 id="file-upload"
                                                 type="file"
                                                 onChange={(e: any) => handleFireBaseUpload(e, product)}
                                             />
-                                            <img alt="imageProduct" width={50} height={50} src={`${product.imageUrl ? product.imageUrl : "/placeholder.jpg"}`} />
+                                            <img alt="imageProduct" width={100} height={100} src={`${product.imageUrl ? product.imageUrl : "/placeholder.jpg"}`} />
                                         </label>
                                     </div>
                                 </TableCell>
@@ -294,7 +322,7 @@ function Product(props: any) {
                                 </TableCell>
                                 <TableCell>
                                     <div>
-                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price}
+                                        {importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price ? importOrdersDetails.find((importOrderDet: any) => importOrderDet.productId === product.id)?.price : "Không có dữ liệu"}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -330,7 +358,7 @@ function Product(props: any) {
                                         <Button disabled={product.categoryId === ""} layout="primary" size="small" aria-label="Edit" onClick={() => editProduct(product, curProdDetail)}>
                                             Lưu
                                         </Button>
-                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => removeProduct(product)}>
+                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveProduct(product)}>
                                             Xóa
                                         </Button>
                                     </div>
