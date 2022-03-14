@@ -220,8 +220,11 @@ function Reports() {
         <>
             {pageLoading && pageLoader()}
             {<>
-                <SectionTitle className='text-blue-400 mt-4 ml-2'>Báo cáo trạng thái tháng
+                <SectionTitle 
+                    className='row text-blue-400 mt-4 ml-4'>
+                    Báo cáo trạng thái tháng
                     <Input
+                        className='mr-2 ml-2 col col-sm-1'
                         css={""}
                         type='number'
                         max={12}
@@ -234,6 +237,7 @@ function Reports() {
                     />
                     năm
                     <Input
+                        className='mr-2 ml-2 col col-sm-1'
                         css={""}
                         type='number'
                         value={reportYear}
