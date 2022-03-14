@@ -34,9 +34,9 @@ function Header() {
           onClick={toggleSidebar}
           aria-label="Menu"
         >
-          <MenuIcon className="w-6 h-6" aria-hidden="true" />
+          <MenuIcon className="w-6 h-6" />
         </button>
-        <ul className="flex items-center justify-center flex-shrink-0 space-x-6 mt-3 mb-3">
+        <ul className="flex items-center justify-center flex-shrink-0 space-x-6 mt-3 float-right">
           {/* <!-- Theme toggler --> */}
           <li className="flex">
             <button
@@ -62,7 +62,7 @@ function Header() {
               <Avatar
                 className="align-middle"
                 src={user?.photoURL}
-                alt=""
+                alt="this is avatar"
                 aria-hidden="true"
               />
             </button>

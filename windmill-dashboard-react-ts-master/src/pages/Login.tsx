@@ -60,6 +60,11 @@ function Login() {
             if (doc.exists) {
               localStorage.setItem("role", JSON.stringify(doc.data()));
               console.log("Document data:", doc.data());
+              if (doc.data()?.role == ROLE.admin) {
+                history.push('/app/reports');
+              } else {
+                history.push('/app/receipt');
+              }
               history.push('/app');
             } else {
               // doc.data() will be undefined in this case
@@ -143,12 +148,9 @@ function Login() {
                     Forgot your password?
                   </Link>
                 </p>
-
-                <Link to="/app">
-                  <button className="col col-md-12 mt-4 b-10 text-changed">
-                    LOGIN
-                  </button>
-                </Link> 
+                <button type='submit' className="col col-md-12 mt-4 b-10 text-changed">
+                  LOGIN
+                </button>
 
                 <div className="d-flex flex-row my-8 mt-4" >
                   <span className='line-break mr-4'></span>
@@ -161,10 +163,10 @@ function Login() {
                   Google
                 </Button>
 
-                <Button className="button mt-4" block layout="outline" onClick={SignInWithGitHub}>
+                {/* <Button className="button mt-4" block layout="outline" onClick={SignInWithGitHub}>
                   <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                   Github
-                </Button>
+                </Button> */}
 
                 <Button className="button mt-4" block layout="outline" onClick={SignInWithFacebook}>
                   <FacebookIcon className="w-5 h-5 mr-2" aria-hidden="true" />
