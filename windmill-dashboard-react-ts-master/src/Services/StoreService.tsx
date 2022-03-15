@@ -2,7 +2,7 @@ import axios from "axios"
 import { GetApiConfig, baseApiUrl } from "../utils/ApiUtility/ApiConfig";
 
 export const getStoreList = async () => {
-    const { data } = await axios.get(baseApiUrl + "stores", {
+    const { data } = await axios.get(baseApiUrl + "stores?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;

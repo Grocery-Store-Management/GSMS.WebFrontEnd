@@ -1,7 +1,7 @@
 import axios from "axios"
 import { GetApiConfig, baseApiUrl } from "../utils/ApiUtility/ApiConfig";
 export const getProductList = async () => {
-    const { data } = await axios.get(baseApiUrl + "products", {
+    const { data } = await axios.get(baseApiUrl + "products?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;
@@ -39,7 +39,7 @@ export const deleteProduct = async (product: any) => {
 }
 
 export const getProductDetaiList = async () => {
-    const { data } = await axios.get(baseApiUrl + "product-details", {
+    const { data } = await axios.get(baseApiUrl + "product-details?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;

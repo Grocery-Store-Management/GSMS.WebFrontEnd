@@ -2,7 +2,7 @@ import axios from "axios"
 import { IReceipt } from "../models/Receipt";
 import { GetApiConfig, baseApiUrl } from "../utils/ApiUtility/ApiConfig";
 export const getReceiptList = async () => {
-    const { data } = await axios.get(baseApiUrl + "receipts", {
+    const { data } = await axios.get(baseApiUrl + "receipts?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;

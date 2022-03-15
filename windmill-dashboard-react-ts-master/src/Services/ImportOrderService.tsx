@@ -1,7 +1,7 @@
 import axios from "axios"
 import { GetApiConfig, baseApiUrl } from "../utils/ApiUtility/ApiConfig";
 export const getImportOrderList = async () => {
-    const { data } = await axios.get(baseApiUrl + "import-orders", {
+    const { data } = await axios.get(baseApiUrl + "import-orders?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;

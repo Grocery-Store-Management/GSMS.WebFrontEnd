@@ -1,7 +1,7 @@
 import axios from "axios"
 import { GetApiConfig, baseApiUrl } from "../utils/ApiUtility/ApiConfig";
 export const getCategoryList = async () => {
-    const { data } = await axios.get(baseApiUrl + "categories", {
+    const { data } = await axios.get(baseApiUrl + "categories?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;
