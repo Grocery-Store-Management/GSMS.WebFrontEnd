@@ -18,6 +18,7 @@ function App() {
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/app" component={Layout} />
           <Redirect exact from="/" to="/login" />
+          <Redirect exact from="/app" to="/login" />
         </Switch>
       </Router>
       <ToastContainer autoClose={1000}/>

@@ -1,5 +1,5 @@
 import { Link, useHistory } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ImageLight from '../assets/img/login-office.jpeg';
 import ImageDark from '../assets/img/login-office-dark.jpeg';
 import { FacebookIcon, GithubIcon, GoogleIcon } from '../icons';
@@ -35,7 +35,6 @@ function Login() {
               } else {
                 history.push('/app/receipt');
               }
-              history.push('/app');
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
@@ -66,7 +65,6 @@ function Login() {
               } else {
                 history.push('/app/receipt');
               }
-              history.push('/app');
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
@@ -102,6 +100,10 @@ function Login() {
         console.log(error);
       })
   }
+
+  useEffect(() => {
+    // if (localStorage.getItem())
+  }, []);
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900" style={{ zIndex: -1, overflow: "hidden" }}>
