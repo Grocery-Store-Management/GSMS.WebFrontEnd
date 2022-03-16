@@ -65,6 +65,7 @@ function Receipt() {
 
   async function refreshData() {
     try {
+      setPageLoading(true);
       let prodList = await getProductList();
       setDataTableProducts(prodList);
       setProducts(prodList);
