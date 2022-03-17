@@ -102,26 +102,28 @@ function Product(props: any) {
         }
     }
 
-    function editAll() {
+    async function editAll() {
+        setPageLoading(true);
         let prods = _.cloneDeep(products);
         let prodDets = _.cloneDeep(productDetails);
         try {
             setPageLoading(true)
-            prods.forEach((prod: any) => {
-                let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prod.id);
+            for (var i = 0; i < prods.length; i++) {
+                let curProdDet = prodDets.find((prodDet: any) => prodDet.productId === prods[i].id);
                 if (curProdDet) {
-                    editProduct(prod, curProdDet, false)
+                    await editProduct(prods[i], curProdDet, false)
                 }
+            }
+            prods.forEach(async (prod: any) => {
+
             })
             showToastSuccess("Cập nhật tất cả thành công!");
         }
         catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
+        } finally {
+            refreshData();
         }
-        finally {
-            setPageLoading(false)
-        }
-        refreshData();
     }
 
     async function editProduct(product: any, productDetail: any = null, singleUpdate: boolean = true) {
@@ -133,9 +135,12 @@ function Product(props: any) {
                 let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
                 if (prodIndex !== -1) {
                     if (JSON.stringify(prods[prodIndex]) !== JSON.stringify(product) || JSON.stringify(prodDets[prodDetIndex]) !== JSON.stringify(productDetail)) {
-                        setPageLoading(true)
+                        if (singleUpdate) setPageLoading(true)
                         await updateProduct(product);
-                        if (productDetail) await updateProductDetail(productDetail);
+                        if (productDetail) {
+                            if (productDetail.product === null) productDetail.product = ""
+                            await updateProductDetail(productDetail);
+                        }
                         if (singleUpdate) showToastSuccess("Cập nhật thành công!")
                     } else {
                         return
@@ -143,21 +148,21 @@ function Product(props: any) {
                 } else {
                     await addProduct(product);
                 }
-                refreshProductList();
-                refreshProductDetails();
+                if (singleUpdate) refreshProductList();
+                if (singleUpdate) refreshProductDetails();
             } catch (ex) {
                 console.log(ex)
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
             } finally {
-                setPageLoading(false)
+                if (singleUpdate) setPageLoading(false)
             }
         } else {
             return
         }
 
     }
-    
-    function handleRemoveProduct(product : any) {
+
+    function handleRemoveProduct(product: any) {
         setShowDeleteModal(true);
         setDeletedItem(product);
     }
@@ -248,17 +253,16 @@ function Product(props: any) {
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
-            <ConfirmModal modalOpen={showDeleteModal} 
-            callback={() => 
-                {
+            <ConfirmModal modalOpen={showDeleteModal}
+                callback={() => {
                     removeProduct(deletedItem)
                     setShowDeleteModal(false)
                 }}
-            onClose={() => setShowDeleteModal(false)}
-            header={`Xóa sản phẩm`} 
-            body={`Bạn có chắc là muốn xóa sản phẩm này?`}
-            accept={`Có`}
-            cancel={`Không`}
+                onClose={() => setShowDeleteModal(false)}
+                header={`Xóa sản phẩm`}
+                body={`Bạn có chắc là muốn xóa sản phẩm này?`}
+                accept={`Có`}
+                cancel={`Không`}
             />
             <div className=''>
                 <SectionTitle className='col col-md-3 mt-3'>Danh sách hàng trong kho</SectionTitle>
@@ -285,15 +289,15 @@ function Product(props: any) {
                             let prodStatus = status_mapping[curProdDetail?.status];
                             let prodType = type_mapping[curProdDetail?.status];
                             let prodCat = category.find((cat: any) => cat.id === product?.categoryId);
-                            return <TableRow key={i} 
+                            return <TableRow key={i}
                             >
                                 <TableCell
-                            
-                                
+
+
                                 >
                                     <div className="App"
                                     >
-                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"} 
+                                        <label onMouseEnter={(e: any) => e.target.style.cursor = "pointer"}
                                         >
                                             <input
                                                 hidden
