@@ -15,7 +15,11 @@ function Reports() {
     const [shownReceipt, setShownReciept] = useState<any>();
     const [showReceiptDetail, setShowReceiptDetail] = useState<boolean>(false);
     const [dataTableReceipts, setDataTableReceipts] = useState<any>([])
+    const [showEx, setShowEx] = useState<any>();
+    const [showExDetails, setShowExDetails] = useState<boolean>(false);
+    const [dataTableExport, setDataTableExports] = useState<any>([])
     const [pageTableReceipts, setPageTableReceipts] = useState(1)
+    const [pageTableEx, setPageTableEx] = useState(1)
     const [receipts, setReceipts] = useState<any>([]);
     const [receiptDetails, setReceiptDetails] = useState<any>([]);
     const [salesReportList, setSalesReport] = useState<any>([["Ngày", "Bán ra", "Mua vào"], ['1', 0, 0]])
@@ -27,7 +31,12 @@ function Reports() {
     const [reportMonth, setReportMonth] = useState<number>(0);
     const [reportYear, setReportYear] = useState<number>(0);
     const [pageLoading, setPageLoading] = useState<boolean>(false);
-
+    const [importOrder, setImportOrders] = useState<any>([]);
+    const [exportOrder, setExportOrders] = useState<any>([]);
+    const [importOrderDetails, setImportOrderDetails] = useState<any>([]);
+    function onPageChangeTableEx(p: number) {
+        setPageTableEx(p)
+    }
     function onPageChangeTableReceipt(p: number) {
         setPageTableReceipts(p)
     }
@@ -135,6 +144,8 @@ function Reports() {
         let categoryReport: any = [["Loại hàng", "Tỉ trọng trong kho"], ["", 0]];
         setReceipts(receiptList)
         setReceiptDetails(receiptDetailList)
+        setImportOrders(importOrderList)
+        setImportOrderDetails(importOrderDetailsList)
         //Line chart
         if (typeof (month) !== "number") month = Number.parseInt(month);
         if (typeof (year) !== "number") month = Number.parseInt(year);
@@ -207,6 +218,19 @@ function Reports() {
         setDataTableReceipts(receipts.slice((pageTableReceipts - 1) * 5, pageTableReceipts * 5))
     }, [pageTableReceipts, receipts])
 
+    useEffect(() => {
+        let exportOders: any[] = [];
+
+        importOrder.forEach((ord: any) => {
+            let od = importOrderDetails.find((d: any) => d.importOrderId === ord.id);
+            if (od && od.quantity < 0) {
+                exportOders.push(ord);
+            }
+        });
+        setExportOrders(exportOders);
+        setDataTableExports(exportOders.slice((pageTableEx - 1) * 5, pageTableEx * 5))
+    }, [pageTableEx, importOrder])
+
     function showReceiptDetails(receipt: any) {
         if (receipt.id === shownReceipt?.id) {
             setShowReceiptDetail(!showReceiptDetail)
@@ -216,16 +240,26 @@ function Reports() {
         }
     }
 
+    function showExDetail(ex: any) {
+        if (ex.id === showEx?.id) {
+            setShowExDetails(!showExDetails)
+        } else {
+            setShowExDetails(true)
+            setShowEx(ex)
+        }
+    }
+
     return (
         <>
             {pageLoading && pageLoader()}
             {<>
-                <SectionTitle 
+                <SectionTitle
                     className='row text-blue-400 mt-4 ml-4'>
                     Báo cáo trạng thái tháng
                     <Input
                         className='mr-2 ml-2 col col-sm-1'
                         css={""}
+                        style={{ width: "8.3333%" }}
                         type='number'
                         max={12}
                         min={1}
@@ -241,6 +275,7 @@ function Reports() {
                         css={""}
                         type='number'
                         value={reportYear}
+                        style={{ width: "8.3333%" }}
                         onChange={(e: any) => {
                             e.persist()
                             setReportYear(e.target.value);
@@ -390,7 +425,105 @@ function Reports() {
                                 totalResults={receipts.length}
                                 resultsPerPage={5}
                                 onChange={onPageChangeTableReceipt}
-                                label="Table navigation"
+                                label="Số trang"
+                            />
+                        </TableFooter>
+                    </TableContainer>
+                </div>
+                <div className='mt-4'>
+                    <SectionTitle className='ml-2'>Lịch sử xuất hàng</SectionTitle>
+                    <TableContainer className="mb-8 mt-0">
+                        <Table>
+                            <TableHeader>
+                                <tr>
+                                    <TableCell>Ngày xuất đơn</TableCell>
+                                    <TableCell>Tổng tiền</TableCell>
+                                    <TableCell>Tương tác</TableCell>
+                                </tr>
+                            </TableHeader>
+                            <TableBody>
+                                {dataTableExport.map((ex: any, i: any) => {
+                                    if (ex.importOrderDetails[0].quantity < 0) {
+                                        return (
+                                            <React.Fragment key={i}>
+                                                <TableRow >
+                                                    <TableCell>
+                                                        <div className="flex items-center text-sm">
+                                                            <div>
+                                                                <p className="font-semibold">{(new Date(ex.createdDate)).toLocaleString("vi-VN")}</p>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center space-x-4">
+                                                            <Button layout="primary" size="small" aria-label="Edit" onClick={() => showExDetail(ex)}>
+                                                                Xem chi tiết
+                                                            </Button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                                {showExDetails && showEx?.id === ex.id &&
+                                                    <TableRow>
+                                                        <TableCell>
+                                                            <Table>
+                                                                <TableHeader>
+                                                                    <tr>
+                                                                        <TableCell>Tên sản phẩm</TableCell>
+                                                                        <TableCell>Số lượng xuất hàng</TableCell>
+                                                                    </tr>
+                                                                </TableHeader>
+                                                                <TableBody>
+                                                                    {importOrderDetails.filter((impDet: any) => impDet.importOrderId === ex.id).map((det: any, i2: any) => {
+                                                                        return <TableRow key={i2}>
+                                                                            <TableCell>
+                                                                                <div className="flex items-center text-sm">
+                                                                                    <div>
+                                                                                        <p className="font-semibold">{det.name ? det.name : "Không rõ"}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </TableCell>
+                                                                            <TableCell>
+                                                                                <div className="flex items-center text-sm">
+                                                                                    <div>
+                                                                                        <p className="font-semibold">{det.quantity ? det.quantity * -1 : "Không rõ"}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </TableCell>
+                                                                        </TableRow>
+                                                                    })}
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                }
+                                            </React.Fragment>
+                                        )
+                                    } else {
+                                        return (
+                                            <React.Fragment key={i}>
+                                                <TableRow>
+                                                    <TableCell>
+                                                        <div className="flex items-center text-sm">
+                                                            <div>
+                                                                <p className="font-semibold">
+                                                                    Không có dữ liệu
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            </React.Fragment>
+                                        )
+                                    }
+                                })}
+                            </TableBody>
+                        </Table>
+                        <TableFooter>
+                            <Pagination
+                                totalResults={exportOrder.length}
+                                resultsPerPage={5}
+                                onChange={onPageChangeTableEx}
+                                label="Số trang"
                             />
                         </TableFooter>
                     </TableContainer>

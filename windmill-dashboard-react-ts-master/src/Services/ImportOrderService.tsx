@@ -8,7 +8,7 @@ export const getImportOrderList = async () => {
 }
 
 export const getImportOrderDetailList = async () => {
-    const { data } = await axios.get(baseApiUrl + "import-order-details", {
+    const { data } = await axios.get(baseApiUrl + "import-order-details?page=0", {
         ...GetApiConfig(), timeout: 60000
     });
     return data;
