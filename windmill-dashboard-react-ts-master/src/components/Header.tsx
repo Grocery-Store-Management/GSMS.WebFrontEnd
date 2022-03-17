@@ -36,7 +36,7 @@ function Header() {
         >
           <MenuIcon className="w-6 h-6" />
         </button>
-        <ul className="flex items-center justify-center flex-shrink-0 space-x-6 mt-3 float-right">
+        <ul className="flex items-center justify-center flex-shrink-0 space-x-6 mt-3 mb-3 float-right">
           {/* <!-- Theme toggler --> */}
           <li className="flex">
             <button

@@ -31,10 +31,8 @@ function Login() {
               localStorage.setItem("role", JSON.stringify(doc.data()));
               console.log("Document data:", doc.data());
               if (doc.data()?.role == ROLE.admin) {
-                history.push('/app/reports');
-              } else {
                 history.push('/app/receipt');
-              }
+              } 
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
