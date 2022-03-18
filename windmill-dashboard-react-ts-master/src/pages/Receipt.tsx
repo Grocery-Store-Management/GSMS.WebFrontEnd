@@ -126,16 +126,16 @@ function Receipt() {
 
   useEffect(() => {
     setDataTableProducts(
-      dataTableProducts.slice(
+      products.slice(
         (pageTableProducts - 1) * resultsPerPage,
         pageTableProducts * resultsPerPage
       )
     );
-  }, [pageTableProducts]);
+  }, [pageTableProducts, products]);
 
   useEffect(() => {
     setDataTableProductsInCart(
-      dataTableProductsInCart.slice(
+      productsInCart.slice(
         (pageTablePorductsInCart - 1) * resultsPerPage,
         pageTablePorductsInCart * resultsPerPage
       )
