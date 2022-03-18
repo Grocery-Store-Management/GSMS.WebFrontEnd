@@ -19,7 +19,7 @@ import {
     Input,
     Select,
 } from '@windmill/react-ui';
-import { FireIcon } from '../icons';
+import { FireIcon, MenuIcon } from '../icons';
 import { showToastError, showToastSuccess } from "../utils/ToasterUtility/ToasterUtility";
 import { status_mapping, type, type_mapping } from '../utils/demo/tableData';
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
@@ -40,6 +40,7 @@ function Product(props: any) {
     const [importOrdersDetails, setImportOrdersDetails] = useState<any[]>([])
     const [dataTableProducts, setDataTableProducts] = useState<any[]>([])
     const [category, setCategories] = useState<any>([])
+    const [sorted, setSorted] = useState<boolean>(false);
     const resultsPerPage = 5;
 
     function onPageChangeTableProducts(p: number) {
@@ -277,8 +278,31 @@ function Product(props: any) {
                             <TableCell>Tên hàng</TableCell>
                             <TableCell>Giá mua</TableCell>
                             <TableCell>Giá bán</TableCell>
-                            <TableCell>Số lượng</TableCell>
-                            <TableCell>Tình trạng</TableCell>
+                            <TableCell>Số lượng
+                                <button>
+                                    <MenuIcon className='pt-2 w-5 h-5' aria-hidden="true" onClick={() => {
+                                        var sortedProds: any[] = [];
+                                        if (sorted === false) {
+                                            setSorted(true);
+                                            var sortedProdDets = productDetails.sort((d1: any, d2: any) => d1.storedQuantity - d2.storedQuantity);
+                                            sortedProdDets.forEach((det: any) => {
+                                                products.forEach((p: any) => {
+                                                    if (p.id === det.productId) {
+                                                        sortedProds.push(p);
+                                                    }
+                                                })
+                                            })
+                                        } else {
+                                            setSorted(false);
+                                            sortedProds = originalProducts;
+                                        }
+                                        setProducts(sortedProds)
+                                    }} />
+                                </button>
+                            </TableCell>
+                            <TableCell>
+                                Tình trạng
+                            </TableCell>
                             <TableCell>Danh mục</TableCell>
                             <TableCell>Tương tác</TableCell>
                         </tr>
