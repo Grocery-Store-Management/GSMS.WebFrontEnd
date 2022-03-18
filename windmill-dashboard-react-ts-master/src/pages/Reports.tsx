@@ -93,10 +93,11 @@ function Reports() {
             let receiptCreatedDay = new Date(rec.createdDate)
             if (receiptCreatedDay.getDate() === day && (receiptCreatedDay.getMonth() + 1) === month && receiptCreatedDay.getFullYear() === year) {
                 let sale = 0;
-                let curRecDetail = receiptDetails.find((recDet: any) => recDet.receiptId === rec.id);
-                if (curRecDetail) {
-                    sale += curRecDetail.price * curRecDetail.quantity
-                    salesReportOfDay.push([day, sale])
+                if (rec.receiptDetails.length > 0) {
+                    rec.receiptDetails.forEach((curRecDetail: any) => {
+                        sale += curRecDetail.price * curRecDetail.quantity
+                        salesReportOfDay.push([day, sale])
+                    })
                 }
             }
         })
@@ -105,11 +106,12 @@ function Reports() {
             let importOrderCreatedDay = new Date(importOrder.createdDate)
             if (importOrderCreatedDay.getDate() === day && importOrderCreatedDay.getMonth() + 1 === month && importOrderCreatedDay.getFullYear() === year) {
                 let expense = 0;
-                let curImportOrderDetail = importOrdersDetails.find((importDet: any) => importDet.orderId === importOrder.id);
-                if (curImportOrderDetail && curImportOrderDetail.quantity > 0) {
-                    expense += curImportOrderDetail.price * curImportOrderDetail.quantity
-                    expensesReportOfDay.push([day, expense])
-                }
+                importOrder.importOrderDetails.forEach((curImportOrderDetail: any) => {
+                    if (curImportOrderDetail && curImportOrderDetail.quantity > 0) {
+                        expense += curImportOrderDetail.price * curImportOrderDetail.quantity
+                        expensesReportOfDay.push([day, expense])
+                    }
+                })
             }
         })
         if (salesReportOfDay.length === 0) {
@@ -120,12 +122,12 @@ function Reports() {
         }
         let revenueReportOfDay: any = [];
         salesReportOfDay.forEach((sale: any) => {
-            expensesReportOfDay.forEach((expense: any) => {
-                if (sale[0] === expense[0]) {
-                    revenueReportOfDay.push([day.toString(), sale[1], expense[1]])
-                }
-            })
+            revenueReportOfDay.push([day.toString(), sale[1], 0])
         })
+        expensesReportOfDay.forEach((expense: any) => {
+            revenueReportOfDay.push([day.toString(), 0, expense[1]])
+        })
+
         return revenueReportOfDay;
     }
 
@@ -166,9 +168,9 @@ function Reports() {
                 })
             }
         })
-        let totalSale = _.cloneDeep(totalSales);
-        let totalImport = _.cloneDeep(totalImports);
-        let totalProfit = _.cloneDeep(profit);
+        let totalSale = 0;
+        let totalImport = 0;
+        let totalProfit = 0;
         salesReport.forEach((entry: any) => {
             if (typeof (entry[1]) === "number" && typeof (entry[2]) === "number") {
                 totalSale += entry[1] as number;
@@ -211,6 +213,12 @@ function Reports() {
     }, [])
 
     useEffect(() => {
+        setTotalImport(0);
+        setTotalSale(0);
+        setProfit(0);
+        setSalesReport([["Ngày", "Bán ra", "Mua vào"], ['1', 0, 0]])
+        setBestSellerReportReport([["Sản phẩm", "Số lượng bán ra"], [null, 0]])
+        setCategoryReport([["Loại hàng", "Tỉ trọng trong kho"], ["", 0]])
         generateData(reportMonth, reportYear);
     }, [reportMonth, reportYear])
 
