@@ -42,6 +42,7 @@ function Receipt() {
   const [pageTableProducts, setPageTableProducts] = useState(1);
   const [pageTablePorductsInCart, setPageTableProductsInCart] = useState(1);
   const [products, setProducts] = useState<any[]>([]);
+  const [ogProducts, setOgProducts] = useState<any[]>([]);
   const [productsInCart, setProductsInCart] = useState<any[]>([]);
   const [dataTableProducts, setDataTableProducts] = useState<any[]>([]);
   const [productDetails, setProductsDetails] = useState<any[]>([]);
@@ -68,6 +69,7 @@ function Receipt() {
       setPageLoading(true);
       let prodList = await getProductList();
       setDataTableProducts(prodList);
+      setOgProducts(prodList);
       setProducts(prodList);
       let prodDetList = await getProductDetaiList();
       setProductsDetails(prodDetList);
@@ -178,9 +180,9 @@ function Receipt() {
   }
 
   function searchProduct(searchPrompt: String) {
-    let productList = _.cloneDeep(products);
+    let productList = _.cloneDeep(ogProducts);
     if (searchPrompt.length === 0) {
-      setDataTableProducts(productList);
+      setProducts(productList);
     } else {
       productList = productList.filter((prod: any) =>
         prod.name
@@ -188,7 +190,7 @@ function Receipt() {
           .toLowerCase()
           .includes(searchPrompt.trim().toLowerCase())
       );
-      setDataTableProducts(productList);
+      setProducts(productList);
     }
   }
 
@@ -388,7 +390,11 @@ function Receipt() {
         </div>
       </div>
     </div>
+
+
   );
 }
 
 export default Receipt;
+
+
