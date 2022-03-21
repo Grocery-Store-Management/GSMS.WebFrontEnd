@@ -101,16 +101,47 @@ function ImportOrder(props: any) {
     setShowCreateOrder(false);
   }
   async function sendImportOrder() {
+
     closeCreateNewImportOrder();
+    var impOrders: any[] = [];
+    var exOrders: any[] = [];
+    for (var i = 0; i < importOrders.length; i++) {
+      if (importOrders[i].importOrderDetails[0]) {
+        if (importOrders[i].importOrderDetails[0].quantity < 0) {
+          exOrders.push(importOrders[i])
+        } else {
+          impOrders.push(importOrders[i])
+        }
+      }
+    }
+
+    var newImpOrderIndexStr = "0";
+    var newExOrderIndexStr = "0";
+    console.log(impOrders)
+    var lastImpOrder = impOrders[0];
+    var lastExOrder = exOrders[0];
+    console.log(lastImpOrder)
+    if (lastImpOrder !== undefined) {
+      newImpOrderIndexStr = lastImpOrder.name.substring(lastImpOrder.name.lastIndexOf(" "), lastImpOrder.name.length + 1);
+    }
+    if (lastExOrder !== undefined) {
+      newExOrderIndexStr = lastExOrder.name.substring(lastExOrder.name.lastIndexOf(" "), lastExOrder.name.length + 1);
+    }
+    var newImpOrderIndex = parseInt(newImpOrderIndexStr);
+    var newExOrderIndex = parseInt(newExOrderIndexStr);
 
     let newImportOrder = {
       name:
         modalType === MODAL_TYPES.IMPORT_ORDER
-          ? `Đơn nhập hàng số ${filteredImportOrders.length + 1}`
-          : `Đơn xuất hàng số ${filteredExportOrders.length + 1}`,
+          ? `Đơn nhập hàng số ${newImpOrderIndex + 1}`
+          : `Đơn xuất hàng số ${newExOrderIndex + 1}`,
       importOrderDetails: importOrdersDetails,
       storeId: STORE_ID,
     };
+    if (newImportOrder.importOrderDetails.length <= 0) {
+      showToastError("Không thể thêm đơn hàng rỗng! Xin thử lại!")
+      return;
+    }
     try {
       setPageLoading(true);
       await createImportOrder(newImportOrder);
