@@ -46,24 +46,6 @@ function Product(props: any) {
     function onPageChangeTableProducts(p: number) {
         setPageTableProducts(p)
     }
-
-    async function refreshProductList() {
-        let prodList = await getProductList();
-        setProducts(prodList)
-        return prodList;
-    }
-
-    async function refreshProductDetails() {
-        let prodDetList = await getProductDetaiList();
-        setProductsDetails(prodDetList)
-        return prodDetList
-    }
-
-    async function refreshCategoryList() {
-        let catList = await getCategoryList();
-        setCategories(catList);
-    }
-
     function changeProductQuantity(product: any, quantity: any) {
         let prodDets = _.cloneDeep(productDetails)
         let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
@@ -149,8 +131,7 @@ function Product(props: any) {
                 } else {
                     await addProduct(product);
                 }
-                if (singleUpdate) refreshProductList();
-                if (singleUpdate) refreshProductDetails();
+                await refreshData()
             } catch (ex) {
                 console.log(ex)
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")

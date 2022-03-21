@@ -20,6 +20,7 @@ import { showToastError, showToastSuccess } from '../utils/ToasterUtility/Toaste
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import '../styles/General.css';
 import ConfirmModal from './ConfirmModal';
+import { toast } from 'react-toastify';
 
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Category(props: any) {
@@ -53,10 +54,14 @@ function Category(props: any) {
 
     async function refreshCategoryList() {
         let catList = await getCategoryList();
-        setCategory(catList)
-        setOriginalCategory(catList)
+        let cats = [
+            ...catList.filter((p: any) => p.name.includes("Loại hàng mặc định")),
+            ...catList.filter((p: any) => !p.name.includes("Loại hàng mặc định"))
+        ]
+        setCategory(cats)
+        setOriginalCategory(cats)
         setPageLoading(false);
-        return catList;
+        return cats;
     }
 
     function changeCategoryName(category: any, name: string) {
@@ -107,13 +112,14 @@ function Category(props: any) {
     }
 
     async function addDefaultCategory() {
-        let catList = _.cloneDeep(Category);
         let defaultCategory = {
             id: "",
             name: "Loại hàng mặc định",
         }
-        catList.push(defaultCategory);
-        setCategory(catList);
+        setPageLoading(true);
+        await addCategory(defaultCategory);
+        showToastSuccess("Loại hàng mặc định tạo thành công!");
+        await refreshCategoryList();
     }
 
     function editAll() {
