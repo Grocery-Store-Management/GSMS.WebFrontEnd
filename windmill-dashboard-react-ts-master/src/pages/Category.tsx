@@ -79,11 +79,7 @@ function Category(props: any) {
         try {
             setPageLoading(true)
             if (catIndex !== -1) {
-                if (category.id !== "") {
-                    await updateCategory(category);
-                } else {
-                    await addCategory(category);
-                }
+                await updateCategory(category);
             } else {
                 await addCategory(category);
             }
@@ -133,9 +129,6 @@ function Category(props: any) {
         }
         catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
-        }
-        finally {
-            setPageLoading(false)
         }
         refreshCategoryList();
         refreshProductDetails();

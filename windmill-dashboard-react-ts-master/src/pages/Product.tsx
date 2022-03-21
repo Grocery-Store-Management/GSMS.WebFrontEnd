@@ -198,7 +198,9 @@ function Product(props: any) {
         setCategories(categoryList);
         setImportOrders(importOrders);
         setImportOrdersDetails(importOrdersDetails);
-        setPageLoading(false)
+        setPageLoading(false);
+
+        searchProduct("");
     }
 
     useEffect(() => {
@@ -232,6 +234,24 @@ function Product(props: any) {
                     })
             })
     }
+
+    function searchProduct(searchPrompt: String) {
+        let productList = _.cloneDeep(originalProducts);
+        if (productList.length > 0) {
+            if (searchPrompt.length === 0) {
+                setProducts(productList);
+            } else {
+                productList = productList.filter((prod: any) =>
+                    prod.name
+                        .trim()
+                        .toLowerCase()
+                        .includes(searchPrompt.trim().toLowerCase())
+                );
+                setProducts(productList);
+            }
+        }
+    }
+
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
@@ -248,6 +268,22 @@ function Product(props: any) {
             />
             <div className=''>
                 <SectionTitle className='col col-md-3 mt-3'>Danh sách hàng trong kho</SectionTitle>
+                <div className="row">
+                    <Input
+                        css={undefined}
+                        className="col col-md-6 mb-2 ml-3"
+                        placeholder="Tìm kiếm sản phẩm"
+                        onChange={(e: any) => {
+                            e.persist();
+                            searchProduct(e.target.value);
+                        }}
+                    />
+                    <div className="col col-md-3 mb-2">
+                        <Button style={{ backgroundColor: "#73C4FF" }} size="regular">
+                            Tìm kiếm
+                        </Button>
+                    </div>
+                </div>
                 <Button className='col col-md-2 mb-3 theme-bg' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
                 <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
             </div>

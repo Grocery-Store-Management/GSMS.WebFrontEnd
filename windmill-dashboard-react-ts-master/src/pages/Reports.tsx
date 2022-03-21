@@ -322,15 +322,15 @@ function Reports() {
                         <div className='row'>
                             <div className='panel panel-md bg-default ml-4'>
                                 <SectionTitle className='mt-4'> Tháng này đã bán</SectionTitle>
-                                <SectionTitle>{totalSales} VND</SectionTitle>
+                                <SectionTitle>{totalSales.toLocaleString()} VND</SectionTitle>
                             </div>
                             <div className='panel panel-md bg-default ml-4'>
                                 <SectionTitle className='mt-4'>Tháng này đã nhập</SectionTitle>
-                                <SectionTitle>{totalImports} VND</SectionTitle>
+                                <SectionTitle>{totalImports.toLocaleString()} VND</SectionTitle>
                             </div>
                             <div className='panel panel-md bg-default ml-4'>
                                 <SectionTitle className='mt-4'>Tổng lợi nhuận tháng</SectionTitle>
-                                <SectionTitle>{profit} VND</SectionTitle>
+                                <SectionTitle>{profit > 0 ? profit.toLocaleString() : 0} VND</SectionTitle>
                             </div>
                         </div>
                         <Chart

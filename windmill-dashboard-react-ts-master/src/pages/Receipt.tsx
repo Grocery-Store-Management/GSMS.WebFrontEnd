@@ -172,10 +172,13 @@ function Receipt() {
       setProductsInCart([]);
       setDataTableProductsInCart([]);
       showToastSuccess("Tạo đơn thành công!");
+
     } catch (ex: any) {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!");
     } finally {
       setPageLoading(false);
+      searchProduct("");
+
     }
   }
 
@@ -254,7 +257,7 @@ function Receipt() {
                       </TableCell>
                       <TableCell>
                         <span className="text-sm">
-                          $ {curProdDetail?.price ? curProdDetail?.price : 0}
+                          {curProdDetail?.price ? curProdDetail?.price.toLocaleString() : 0} VND
                         </span>
                       </TableCell>
                       <TableCell>
