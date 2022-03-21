@@ -117,10 +117,8 @@ function ImportOrder(props: any) {
 
     var newImpOrderIndexStr = "0";
     var newExOrderIndexStr = "0";
-    console.log(impOrders)
     var lastImpOrder = impOrders[0];
     var lastExOrder = exOrders[0];
-    console.log(lastImpOrder)
     if (lastImpOrder !== undefined) {
       newImpOrderIndexStr = lastImpOrder.name.substring(lastImpOrder.name.lastIndexOf(" "), lastImpOrder.name.length + 1);
     }
