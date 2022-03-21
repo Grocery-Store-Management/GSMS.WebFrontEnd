@@ -200,7 +200,7 @@ function Product(props: any) {
         setImportOrdersDetails(importOrdersDetails);
         setPageLoading(false);
 
-        searchProduct("");
+        searchProduct("", prods);
     }
 
     useEffect(() => {
@@ -235,7 +235,7 @@ function Product(props: any) {
             })
     }
 
-    function searchProduct(searchPrompt: String) {
+    function searchProduct(searchPrompt: String, originalProducts: any) {
         let productList = _.cloneDeep(originalProducts);
         if (productList.length > 0) {
             if (searchPrompt.length === 0) {
@@ -275,7 +275,7 @@ function Product(props: any) {
                         placeholder="Tìm kiếm sản phẩm"
                         onChange={(e: any) => {
                             e.persist();
-                            searchProduct(e.target.value);
+                            searchProduct(e.target.value, originalProducts);
                         }}
                     />
                     <div className="col col-md-3 mb-2">
@@ -285,7 +285,9 @@ function Product(props: any) {
                     </div>
                 </div>
                 <Button className='col col-md-2 mb-3 theme-bg' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
-                <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
+                <Button className='col col-md-2 mb-3 float-right theme-bg'
+                    disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)}
+                    onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
                 <Table>
