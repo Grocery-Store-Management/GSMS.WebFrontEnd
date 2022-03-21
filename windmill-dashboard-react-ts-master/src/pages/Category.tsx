@@ -74,7 +74,11 @@ function Category(props: any) {
         try {
             setPageLoading(true)
             if (catIndex !== -1) {
-                await updateCategory(category);
+                if (category.id !== "") {
+                    await updateCategory(category);
+                } else {
+                    await addCategory(category);
+                }
             } else {
                 await addCategory(category);
             }
@@ -98,17 +102,18 @@ function Category(props: any) {
         }
         finally {
             setPageLoading(false)
-
         }
         refreshCategoryList();
     }
 
     async function addDefaultCategory() {
+        let catList = _.cloneDeep(Category);
         let defaultCategory = {
             id: "",
             name: "Loại hàng mặc định",
         }
-        Category.push(defaultCategory);
+        catList.push(defaultCategory);
+        setCategory(catList);
     }
 
     function editAll() {
@@ -142,9 +147,15 @@ function Category(props: any) {
         setDataTableCategory(Category.slice((pageTableCategory - 1) * resultsPerPage, pageTableCategory * resultsPerPage))
     }, [pageTableCategory, Category])
 
-    function handleRemoveCategory(cat: any) {
-        setShowDeleteModal(true);
-        setDeletedItem(cat);
+    function handleRemoveCategory(cat: any, index?: any) {
+        let catList = _.cloneDeep(Category);
+        if (cat.id === "") {
+            catList.splice(index, 1);
+            setCategory(catList)
+        } else {
+            setShowDeleteModal(true);
+            setDeletedItem(cat);
+        }
     }
 
     return (
@@ -168,7 +179,7 @@ function Category(props: any) {
                 <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(Category) === JSON.stringify(originalCategory)} onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
-                <Table style={{backgroundColor: "#fff"}}>
+                <Table style={{ backgroundColor: "#fff" }}>
                     <TableHeader>
                         <tr>
                             <TableCell>Tên</TableCell>
@@ -208,7 +219,7 @@ function Category(props: any) {
                                         <Button layout="primary" size="small" aria-label="Edit" onClick={() => editCategory(cat)}>
                                             Lưu
                                         </Button>
-                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveCategory(cat)}>
+                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveCategory(cat, i)}>
                                             Xóa
                                         </Button>
                                     </div>
