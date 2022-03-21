@@ -248,7 +248,7 @@ function Receipt() {
                         <div className="flex items-center text-sm">
                           {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
                           <div>
-                            <p className="font-semibold">{product.name}</p>
+                            <p className="font-semibold text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>{product.name}</p>
                             <p className="text-xs text-gray-600 dark:text-gray-400">
                               {prodCat?.name}
                             </p>
@@ -256,7 +256,7 @@ function Receipt() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">
+                        <span className="text-sm text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>
                           {curProdDetail?.price ? curProdDetail?.price.toLocaleString() : 0} VND
                         </span>
                       </TableCell>
@@ -344,7 +344,7 @@ function Receipt() {
                         <div className="flex items-center text-sm">
                           {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
                           <div>
-                            <p className="font-semibold">{product.name}</p>
+                            <p className="font-semibold text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>{product.name}</p>
                             <p className="text-xs text-gray-600 dark:text-gray-400">
                               {prodCat}
                             </p>

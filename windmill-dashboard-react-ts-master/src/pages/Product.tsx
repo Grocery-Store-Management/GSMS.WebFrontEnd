@@ -292,9 +292,33 @@ function Product(props: any) {
                     <TableHeader>
                         <tr>
                             <TableCell>Hình ảnh</TableCell>
-                            <TableCell>Tên hàng</TableCell>
+                            <TableCell>Tên hàng
+                            </TableCell>
                             <TableCell>Giá mua</TableCell>
-                            <TableCell>Giá bán</TableCell>
+                            <TableCell>Giá bán
+                                <button>
+                                    <MenuIcon className='pt-2 w-5 h-5' aria-hidden="true" onClick={() => {
+                                        var sortedProds: any[] = [];
+                                        if (sorted === false) {
+                                            setSorted(true);
+                                            var sortedProdDets = productDetails.sort((d1: any, d2: any) => d1.price - d2.price);
+                                            sortedProdDets.forEach((det: any) => {
+                                                products.forEach((p: any) => {
+                                                    if (p.id === det.productId) {
+                                                        sortedProds.push(p);
+                                                    }
+                                                })
+                                            })
+                                        } else {
+                                            setSorted(false);
+                                            sortedProds = originalProducts;
+                                        }
+                                        setProducts(sortedProds)
+                                    }} />
+                                </button>
+
+
+                            </TableCell>
                             <TableCell>Số lượng
                                 <button>
                                     <MenuIcon className='pt-2 w-5 h-5' aria-hidden="true" onClick={() => {
