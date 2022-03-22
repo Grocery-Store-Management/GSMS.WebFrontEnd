@@ -445,7 +445,6 @@ function Reports() {
                             <TableHeader>
                                 <tr>
                                     <TableCell>Ngày xuất đơn</TableCell>
-                                    <TableCell>Tổng tiền</TableCell>
                                     <TableCell>Tương tác</TableCell>
                                 </tr>
                             </TableHeader>
