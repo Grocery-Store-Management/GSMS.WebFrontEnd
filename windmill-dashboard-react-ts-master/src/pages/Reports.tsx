@@ -406,7 +406,7 @@ function Reports() {
                                                                         </TableCell><TableCell>
                                                                             <div className="flex items-center text-sm">
                                                                                 <div>
-                                                                                    <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
+                                                                                    <p className="font-semibold">{det.price ? det.price.toLocaleString() : "Không rõ"}</p>
                                                                                 </div>
                                                                             </div>
                                                                         </TableCell><TableCell>

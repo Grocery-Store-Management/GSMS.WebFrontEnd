@@ -272,7 +272,7 @@ function ImportOrder(props: any) {
                           <span className="text-sm"> {order.name} </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm"> {totalPrice} </span>
+                          <span className="text-sm"> {totalPrice.toLocaleString()} </span>
                         </TableCell>
                         <TableCell>
                           {new Date(order.createdDate)
@@ -340,7 +340,7 @@ function ImportOrder(props: any) {
                                             <div>
                                               <p className="font-semibold">
                                                 {det.price
-                                                  ? det.price
+                                                  ? det.price.toLocaleString()
                                                   : "Không rõ"}
                                               </p>
                                             </div>
@@ -433,7 +433,7 @@ function ImportOrder(props: any) {
                           <span className="text-sm"> {order.name} </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm"> {totalPrice} </span>
+                          <span className="text-sm"> {totalPrice.toLocaleString()} </span>
                         </TableCell>
                         <TableCell>
                           {new Date(order.createdDate)
@@ -489,7 +489,7 @@ function ImportOrder(props: any) {
                                             <div>
                                               <p className="font-semibold">
                                                 {det.price
-                                                  ? det.price
+                                                  ? det.price.toLocaleString()
                                                   : "Không rõ"}
                                               </p>
                                             </div>
