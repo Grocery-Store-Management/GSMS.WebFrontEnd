@@ -284,6 +284,7 @@ function ImportOrder(props: any) {
                             <Button
                               layout="primary"
                               size="small"
+                              className="theme-bg"
                               aria-label="Edit"
                               onClick={() => showOrderDetails(order)}
                             >
@@ -311,7 +312,7 @@ function ImportOrder(props: any) {
                               <TableHeader>
                                 <tr>
                                   <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Giá nhập</TableCell>
+                                  <TableCell>Giá nhập (VND)</TableCell>
                                   <TableCell>Số lượng nhập hàng</TableCell>
                                 </tr>
                               </TableHeader>
@@ -445,6 +446,7 @@ function ImportOrder(props: any) {
                             <Button
                               layout="primary"
                               size="small"
+                              className="theme-bg"
                               aria-label="Edit"
                               onClick={() => showOrderDetails(order)}
                             >
@@ -460,7 +462,7 @@ function ImportOrder(props: any) {
                               <TableHeader>
                                 <tr>
                                   <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Giá nhập</TableCell>
+                                  <TableCell>Giá nhập (VND)</TableCell>
                                   <TableCell>Số lượng xuất hàng</TableCell>
                                 </tr>
                               </TableHeader>

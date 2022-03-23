@@ -16,7 +16,7 @@ function Layout() {
   let location = useLocation();
 
   useEffect(() => {
-    closeSidebar()
+    closeSidebar();
   }, [location]);
 
   return (

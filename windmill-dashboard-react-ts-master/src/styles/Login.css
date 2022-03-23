@@ -4,6 +4,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 0;
 }
 
 .line-break {
@@ -37,4 +38,35 @@
   position: relative;
   left: 20vw;
   border-radius: 8px;
+  transition: .5s;
+}
+
+@media all and (max-width: 1800px) {
+  .login-box {
+    margin-left: 30vw;
+    position: relative;
+    left: 12vw;
+    border-radius: 8px;
+  }
+}
+@media all and (max-width: 1600px) {
+  .login-box {
+    margin-left: 30vw;
+    position: relative;
+    left: 10vw;
+    border-radius: 8px;
+  }
+}@media all and (max-width: 1500px) {
+  .login-box {
+    margin-left: 24vw;
+    position: relative;
+    border-radius: 8px;
+  }
+}
+@media all and (max-width: 1400px) {
+  .login-box {
+    margin-left: 20vw;
+    position: relative;
+    border-radius: 8px;
+  }
 }
