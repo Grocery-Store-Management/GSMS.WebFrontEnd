@@ -322,15 +322,15 @@ function Reports() {
                         <div className='row'>
                             <div className='panel panel-md bg-default ml-4'>
                                 <SectionTitle className='mt-4'> Tháng này đã bán</SectionTitle>
-                                <SectionTitle>{totalSales} VND</SectionTitle>
+                                <SectionTitle>{totalSales.toLocaleString()} VND</SectionTitle>
                             </div>
                             <div className='panel panel-md bg-default ml-4'>
                                 <SectionTitle className='mt-4'>Tháng này đã nhập</SectionTitle>
-                                <SectionTitle>{totalImports} VND</SectionTitle>
+                                <SectionTitle>{totalImports.toLocaleString()} VND</SectionTitle>
                             </div>
                             <div className='panel panel-md bg-default ml-4'>
                                 <SectionTitle className='mt-4'>Tổng lợi nhuận tháng</SectionTitle>
-                                <SectionTitle>{profit} VND</SectionTitle>
+                                <SectionTitle>{profit > 0 ? profit.toLocaleString() : 0} VND</SectionTitle>
                             </div>
                         </div>
                         <Chart
@@ -406,7 +406,7 @@ function Reports() {
                                                                         </TableCell><TableCell>
                                                                             <div className="flex items-center text-sm">
                                                                                 <div>
-                                                                                    <p className="font-semibold">{det.price ? det.price : "Không rõ"}</p>
+                                                                                    <p className="font-semibold">{det.price ? det.price.toLocaleString() : "Không rõ"}</p>
                                                                                 </div>
                                                                             </div>
                                                                         </TableCell><TableCell>
@@ -445,7 +445,6 @@ function Reports() {
                             <TableHeader>
                                 <tr>
                                     <TableCell>Ngày xuất đơn</TableCell>
-                                    <TableCell>Tổng tiền</TableCell>
                                     <TableCell>Tương tác</TableCell>
                                 </tr>
                             </TableHeader>

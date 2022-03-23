@@ -1,5 +1,5 @@
 import { Link, useHistory } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageLight from '../assets/img/login-office.jpeg';
 import ImageDark from '../assets/img/login-office-dark.jpeg';
 import { FacebookIcon, GithubIcon, GoogleIcon } from '../icons';
@@ -11,10 +11,14 @@ import { useFirestore } from '../utils/firebase/firestore';
 import { User } from '../models/User';
 import '../styles/General.css';
 import { ROLE } from '../Shared/Model';
+import { getBrandList } from '../Services/AuthorizationService';
+import { showToastError } from '../utils/ToasterUtility/ToasterUtility';
 
 function Login() {
   const history = useHistory();
   const firestore = firebase.firestore();
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   const SignInWithGoogle = () => {
     var google_provider = new firebase.auth.GoogleAuthProvider();
@@ -32,7 +36,7 @@ function Login() {
               console.log("Document data:", doc.data());
               if (doc.data()?.role == ROLE.admin) {
                 history.push('/app/receipt');
-              } 
+              }
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
@@ -56,7 +60,7 @@ function Login() {
         firestore.collection("gsms-employee").doc(user?.uid).get()
           .then((doc) => {
             if (doc.exists) {
-              localStorage.setItem("role", JSON.stringify(doc.data()));
+              localStorage.setItem("role", JSON.stringify(doc.data()?.role));
               console.log("Document data:", doc.data());
               if (doc.data()?.role == ROLE.admin) {
                 history.push('/app/reports');
@@ -74,38 +78,68 @@ function Login() {
       })
   }
 
-  const SignInWithGitHub = () => {
-    var github_provider = new firebase.auth.GithubAuthProvider();
+  // const SignInWithGitHub = () => {
+  //   var github_provider = new firebase.auth.GithubAuthProvider();
 
-    firebase.auth().signInWithPopup(github_provider)
-      .then(async (response) => {
-        const user = response.user;
-        const token: any = await user?.getIdToken();
-        localStorage.setItem("USER", JSON.stringify(user));
-        localStorage.setItem("token", token);
-        firestore.collection("gsms-employee").doc(user?.uid).get()
-          .then((doc) => {
-            if (doc.exists) {
-              console.log("Document data:", doc.data());
-              history.push('/app');
-            } else {
-              // doc.data() will be undefined in this case
-              console.log("No such document!");
-            }
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+  //   firebase.auth().signInWithPopup(github_provider)
+  //     .then(async (response) => {
+  //       const user = response.user;
+  //       const token: any = await user?.getIdToken();
+  //       localStorage.setItem("USER", JSON.stringify(user));
+  //       localStorage.setItem("token", token);
+  //       firestore.collection("gsms-employee").doc(user?.uid).get()
+  //         .then((doc) => {
+  //           if (doc.exists) {
+  //             console.log("Document data:", doc.data());
+  //             history.push('/app');
+  //           } else {
+  //             // doc.data() will be undefined in this case
+  //             console.log("No such document!");
+  //           }
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     })
+  // }
+
+  const SignIn = () => {
+    firestore.collection("gsms-employee").doc(username).get()
+      .then((doc) => {
+        if (doc.exists) {
+          var user = doc.data();
+          if (user?.password == password) {
+            console.log("Document data:", doc.data());
+            history.push('/app/receipt');
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+          showToastError("Wrong username or password");
+        }
+      }).catch(() => showToastError("Wrong username or password"));
   }
 
   useEffect(() => {
-    // if (localStorage.getItem())
+    localStorage.setItem("theme", "light")
+    if (localStorage.getItem("token")) {
+      getBrandList().then(() => {
+        var role = localStorage.getItem("role");
+        if (role === ROLE.admin) {
+          history.push('/app/reports');
+        } else {
+          history.push('/app/receipt');
+        }
+      }).catch(() => {
+        showToastError("Token is expired");
+      });
+    }
   }, []);
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900" style={{ zIndex: -1, overflow: "hidden" }}>
       <img src={BackgroundCircle} alt="background" className='circle-background' />
+      <img></img>
       <div className='login-box '>
         <div
           style={{ zIndex: 1, overflow: "hidden" }}
@@ -132,15 +166,23 @@ function Login() {
                   Welcome to GS250
                 </h1>
                 <Label>
-                  <span>Email</span>
-                  <Input css="" className="mt-1" type="email" placeholder="exmaple@gmail.com" />
+                  <span>Username</span>
+                  <Input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toString())}
+                    css="" className="mt-1"
+                    type="email"
+                    placeholder="exmaple@gs250.com" />
                 </Label>
-
                 <Label className="mt-4">
                   <span>Password</span>
-                  <Input css="" className="mt-1" type="password" placeholder="***************" />
+                  <Input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value.toString())}
+                    css="" className="mt-1"
+                    type="password"
+                    placeholder="***************" />
                 </Label>
-
                 <p className="mt-4">
                   <Link
                     className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline float-right"
@@ -149,7 +191,10 @@ function Login() {
                     Forgot your password?
                   </Link>
                 </p>
-                <button type='submit' className="col col-md-12 mt-4 b-10 text-changed">
+                <button
+                  onClick={SignIn}
+                  type='submit'
+                  className="col col-md-12 mt-4 b-10 text-changed">
                   LOGIN
                 </button>
 

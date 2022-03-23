@@ -62,7 +62,7 @@ function Header() {
               <Avatar
                 className="align-middle"
                 src={user?.photoURL}
-                alt="this is avatar"
+                defaultValue={''}
                 aria-hidden="true"
               />
             </button>
@@ -76,7 +76,7 @@ function Header() {
                 <span>Profile</span>
               </DropdownItem>
               <DropdownItem onClick={() => {
-                var theme = localStorage.getItem("theme") || '';
+                var theme = localStorage.getItem("theme") || 'light';
                 localStorage.clear();
                 localStorage.setItem("theme", theme);
                 window.location.href = '/';

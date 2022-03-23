@@ -46,24 +46,6 @@ function Product(props: any) {
     function onPageChangeTableProducts(p: number) {
         setPageTableProducts(p)
     }
-
-    async function refreshProductList() {
-        let prodList = await getProductList();
-        setProducts(prodList)
-        return prodList;
-    }
-
-    async function refreshProductDetails() {
-        let prodDetList = await getProductDetaiList();
-        setProductsDetails(prodDetList)
-        return prodDetList
-    }
-
-    async function refreshCategoryList() {
-        let catList = await getCategoryList();
-        setCategories(catList);
-    }
-
     function changeProductQuantity(product: any, quantity: any) {
         let prodDets = _.cloneDeep(productDetails)
         let prodDetIndex = prodDets.findIndex((prodDet: any) => prodDet.productId === product.id);
@@ -149,8 +131,7 @@ function Product(props: any) {
                 } else {
                     await addProduct(product);
                 }
-                if (singleUpdate) refreshProductList();
-                if (singleUpdate) refreshProductDetails();
+                await refreshData()
             } catch (ex) {
                 console.log(ex)
                 showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
@@ -217,7 +198,9 @@ function Product(props: any) {
         setCategories(categoryList);
         setImportOrders(importOrders);
         setImportOrdersDetails(importOrdersDetails);
-        setPageLoading(false)
+        setPageLoading(false);
+
+        searchProduct("", prods);
     }
 
     useEffect(() => {
@@ -251,6 +234,24 @@ function Product(props: any) {
                     })
             })
     }
+
+    function searchProduct(searchPrompt: String, originalProducts: any) {
+        let productList = _.cloneDeep(originalProducts);
+        if (productList.length > 0) {
+            if (searchPrompt.length === 0) {
+                setProducts(productList);
+            } else {
+                productList = productList.filter((prod: any) =>
+                    prod.name
+                        .trim()
+                        .toLowerCase()
+                        .includes(searchPrompt.trim().toLowerCase())
+                );
+                setProducts(productList);
+            }
+        }
+    }
+
     return (
         <div className="col col-md-12">
             {pageLoading && pageLoader()}
@@ -267,17 +268,59 @@ function Product(props: any) {
             />
             <div className=''>
                 <SectionTitle className='col col-md-3 mt-3'>Danh sách hàng trong kho</SectionTitle>
+                <div className="row">
+                    <Input
+                        css={undefined}
+                        className="col col-md-6 mb-2 ml-3"
+                        placeholder="Tìm kiếm sản phẩm"
+                        onChange={(e: any) => {
+                            e.persist();
+                            searchProduct(e.target.value, originalProducts);
+                        }}
+                    />
+                    <div className="col col-md-3 mb-2">
+                        <Button style={{ backgroundColor: "#73C4FF" }} size="regular">
+                            Tìm kiếm
+                        </Button>
+                    </div>
+                </div>
                 <Button className='col col-md-2 mb-3 theme-bg' onClick={addDefaultProduct}>Thêm sản phẩm +</Button>
-                <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)} onClick={editAll}>Lưu tất cả</Button>
+                <Button className='col col-md-2 mb-3 float-right theme-bg'
+                    disabled={JSON.stringify(products) === JSON.stringify(originalProducts) && JSON.stringify(productDetails) === JSON.stringify(originalProductDetails)}
+                    onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
                 <Table>
                     <TableHeader>
                         <tr>
                             <TableCell>Hình ảnh</TableCell>
-                            <TableCell>Tên hàng</TableCell>
+                            <TableCell>Tên hàng
+                            </TableCell>
                             <TableCell>Giá mua</TableCell>
-                            <TableCell>Giá bán</TableCell>
+                            <TableCell>Giá bán
+                                <button>
+                                    <MenuIcon className='pt-2 w-5 h-5' aria-hidden="true" onClick={() => {
+                                        var sortedProds: any[] = [];
+                                        if (sorted === false) {
+                                            setSorted(true);
+                                            var sortedProdDets = productDetails.sort((d1: any, d2: any) => d1.price - d2.price);
+                                            sortedProdDets.forEach((det: any) => {
+                                                products.forEach((p: any) => {
+                                                    if (p.id === det.productId) {
+                                                        sortedProds.push(p);
+                                                    }
+                                                })
+                                            })
+                                        } else {
+                                            setSorted(false);
+                                            sortedProds = originalProducts;
+                                        }
+                                        setProducts(sortedProds)
+                                    }} />
+                                </button>
+
+
+                            </TableCell>
                             <TableCell>Số lượng
                                 <button>
                                     <MenuIcon className='pt-2 w-5 h-5' aria-hidden="true" onClick={() => {

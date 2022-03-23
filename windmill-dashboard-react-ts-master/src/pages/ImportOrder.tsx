@@ -101,16 +101,45 @@ function ImportOrder(props: any) {
     setShowCreateOrder(false);
   }
   async function sendImportOrder() {
+
     closeCreateNewImportOrder();
+    var impOrders: any[] = [];
+    var exOrders: any[] = [];
+    for (var i = 0; i < importOrders.length; i++) {
+      if (importOrders[i].importOrderDetails[0]) {
+        if (importOrders[i].importOrderDetails[0].quantity < 0) {
+          exOrders.push(importOrders[i])
+        } else {
+          impOrders.push(importOrders[i])
+        }
+      }
+    }
+
+    var newImpOrderIndexStr = "0";
+    var newExOrderIndexStr = "0";
+    var lastImpOrder = impOrders[0];
+    var lastExOrder = exOrders[0];
+    if (lastImpOrder !== undefined) {
+      newImpOrderIndexStr = lastImpOrder.name.substring(lastImpOrder.name.lastIndexOf(" "), lastImpOrder.name.length + 1);
+    }
+    if (lastExOrder !== undefined) {
+      newExOrderIndexStr = lastExOrder.name.substring(lastExOrder.name.lastIndexOf(" "), lastExOrder.name.length + 1);
+    }
+    var newImpOrderIndex = parseInt(newImpOrderIndexStr);
+    var newExOrderIndex = parseInt(newExOrderIndexStr);
 
     let newImportOrder = {
       name:
         modalType === MODAL_TYPES.IMPORT_ORDER
-          ? `Đơn nhập hàng số ${filteredImportOrders.length + 1}`
-          : `Đơn xuất hàng số ${filteredExportOrders.length + 1}`,
+          ? `Đơn nhập hàng số ${newImpOrderIndex + 1}`
+          : `Đơn xuất hàng số ${newExOrderIndex + 1}`,
       importOrderDetails: importOrdersDetails,
       storeId: STORE_ID,
     };
+    if (newImportOrder.importOrderDetails.length <= 0) {
+      showToastError("Không thể thêm đơn hàng rỗng! Xin thử lại!")
+      return;
+    }
     try {
       setPageLoading(true);
       await createImportOrder(newImportOrder);
@@ -243,7 +272,7 @@ function ImportOrder(props: any) {
                           <span className="text-sm"> {order.name} </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm"> {totalPrice} </span>
+                          <span className="text-sm"> {totalPrice.toLocaleString()} </span>
                         </TableCell>
                         <TableCell>
                           {new Date(order.createdDate)
@@ -255,6 +284,7 @@ function ImportOrder(props: any) {
                             <Button
                               layout="primary"
                               size="small"
+                              className="theme-bg"
                               aria-label="Edit"
                               onClick={() => showOrderDetails(order)}
                             >
@@ -282,7 +312,7 @@ function ImportOrder(props: any) {
                               <TableHeader>
                                 <tr>
                                   <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Giá nhập</TableCell>
+                                  <TableCell>Giá nhập (VND)</TableCell>
                                   <TableCell>Số lượng nhập hàng</TableCell>
                                 </tr>
                               </TableHeader>
@@ -311,7 +341,7 @@ function ImportOrder(props: any) {
                                             <div>
                                               <p className="font-semibold">
                                                 {det.price
-                                                  ? det.price
+                                                  ? det.price.toLocaleString()
                                                   : "Không rõ"}
                                               </p>
                                             </div>
@@ -404,7 +434,7 @@ function ImportOrder(props: any) {
                           <span className="text-sm"> {order.name} </span>
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm"> {totalPrice} </span>
+                          <span className="text-sm"> {totalPrice.toLocaleString()} </span>
                         </TableCell>
                         <TableCell>
                           {new Date(order.createdDate)
@@ -416,6 +446,7 @@ function ImportOrder(props: any) {
                             <Button
                               layout="primary"
                               size="small"
+                              className="theme-bg"
                               aria-label="Edit"
                               onClick={() => showOrderDetails(order)}
                             >
@@ -431,7 +462,7 @@ function ImportOrder(props: any) {
                               <TableHeader>
                                 <tr>
                                   <TableCell>Tên sản phẩm</TableCell>
-                                  <TableCell>Giá nhập</TableCell>
+                                  <TableCell>Giá nhập (VND)</TableCell>
                                   <TableCell>Số lượng xuất hàng</TableCell>
                                 </tr>
                               </TableHeader>
@@ -460,7 +491,7 @@ function ImportOrder(props: any) {
                                             <div>
                                               <p className="font-semibold">
                                                 {det.price
-                                                  ? det.price
+                                                  ? det.price.toLocaleString()
                                                   : "Không rõ"}
                                               </p>
                                             </div>

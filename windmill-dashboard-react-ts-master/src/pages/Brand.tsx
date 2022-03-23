@@ -32,7 +32,7 @@ function Brand() {
     setPageTable1(p)
   }
 
-  function refreshData(){
+  function refreshData() {
     setPageLoading(true)
     getStoreList().then((res: any) => {
       if (res) { setResponse(res); setResult(res.length); setPageLoading(false) }
@@ -48,13 +48,10 @@ function Brand() {
     }
   }, [response, pageTable1])
 
-  function changeStoreStatus(store : any){
-    store = {
-      ...store,
-      status: store.status === 1 || store.status === null ? store.status = 0 : store.status = 1
-    }
-    updateStore(store);
-    refreshData();
+  async function changeStoreStatus(store: any) {
+    store.status === 1 || store.status === null ? store.status = 0 : store.status = 1
+    await updateStore(store);
+    await refreshData();
   }
 
   return (
@@ -86,7 +83,7 @@ function Brand() {
                     <TableCell>
                       <Badge
                         type={store.status === 1 ? type.SUCCESS as any : type.NEUTRAL}>
-                        {store.status === 1  ? "Đang hoạt động" : "Đã đóng cửa"}
+                        {store.status === 1 ? "Đang hoạt động" : "Đã đóng cửa"}
                       </Badge>
                     </TableCell>
                     <TableCell>

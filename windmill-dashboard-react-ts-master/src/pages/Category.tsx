@@ -20,6 +20,7 @@ import { showToastError, showToastSuccess } from '../utils/ToasterUtility/Toaste
 import { pageLoader } from '../utils/PageLoadingUtility/PageLoader';
 import '../styles/General.css';
 import ConfirmModal from './ConfirmModal';
+import { toast } from 'react-toastify';
 
 const STORE_ID = "36396edc-1534-407f-94e3-8e5d5ddab6af" //TRAN PHONG STORE HA NOI
 function Category(props: any) {
@@ -53,10 +54,14 @@ function Category(props: any) {
 
     async function refreshCategoryList() {
         let catList = await getCategoryList();
-        setCategory(catList)
-        setOriginalCategory(catList)
+        let cats = [
+            ...catList.filter((p: any) => p.name.includes("Loại hàng mặc định")),
+            ...catList.filter((p: any) => !p.name.includes("Loại hàng mặc định"))
+        ]
+        setCategory(cats)
+        setOriginalCategory(cats)
         setPageLoading(false);
-        return catList;
+        return cats;
     }
 
     function changeCategoryName(category: any, name: string) {
@@ -98,7 +103,6 @@ function Category(props: any) {
         }
         finally {
             setPageLoading(false)
-
         }
         refreshCategoryList();
     }
@@ -108,7 +112,10 @@ function Category(props: any) {
             id: "",
             name: "Loại hàng mặc định",
         }
-        Category.push(defaultCategory);
+        setPageLoading(true);
+        await addCategory(defaultCategory);
+        showToastSuccess("Loại hàng mặc định tạo thành công!");
+        await refreshCategoryList();
     }
 
     function editAll() {
@@ -122,9 +129,6 @@ function Category(props: any) {
         }
         catch (ex) {
             showToastError("Có lỗi xảy ra! Xin vui lòng thử lại")
-        }
-        finally {
-            setPageLoading(false)
         }
         refreshCategoryList();
         refreshProductDetails();
@@ -142,9 +146,15 @@ function Category(props: any) {
         setDataTableCategory(Category.slice((pageTableCategory - 1) * resultsPerPage, pageTableCategory * resultsPerPage))
     }, [pageTableCategory, Category])
 
-    function handleRemoveCategory(cat: any) {
-        setShowDeleteModal(true);
-        setDeletedItem(cat);
+    function handleRemoveCategory(cat: any, index?: any) {
+        let catList = _.cloneDeep(Category);
+        if (cat.id === "") {
+            catList.splice(index, 1);
+            setCategory(catList)
+        } else {
+            setShowDeleteModal(true);
+            setDeletedItem(cat);
+        }
     }
 
     return (
@@ -168,7 +178,7 @@ function Category(props: any) {
                 <Button className='col col-md-2 mb-3 float-right theme-bg' disabled={JSON.stringify(Category) === JSON.stringify(originalCategory)} onClick={editAll}>Lưu tất cả</Button>
             </div>
             <TableContainer className="mb-8">
-                <Table style={{backgroundColor: "#fff"}}>
+                <Table style={{ backgroundColor: "#fff" }}>
                     <TableHeader>
                         <tr>
                             <TableCell>Tên</TableCell>
@@ -208,7 +218,7 @@ function Category(props: any) {
                                         <Button layout="primary" size="small" aria-label="Edit" onClick={() => editCategory(cat)}>
                                             Lưu
                                         </Button>
-                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveCategory(cat)}>
+                                        <Button style={{ color: 'red' }} layout="link" size="small" aria-label="Delete" onClick={() => handleRemoveCategory(cat, i)}>
                                             Xóa
                                         </Button>
                                     </div>

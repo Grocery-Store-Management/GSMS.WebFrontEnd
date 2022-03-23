@@ -42,6 +42,7 @@ function Receipt() {
   const [pageTableProducts, setPageTableProducts] = useState(1);
   const [pageTablePorductsInCart, setPageTableProductsInCart] = useState(1);
   const [products, setProducts] = useState<any[]>([]);
+  const [ogProducts, setOgProducts] = useState<any[]>([]);
   const [productsInCart, setProductsInCart] = useState<any[]>([]);
   const [dataTableProducts, setDataTableProducts] = useState<any[]>([]);
   const [productDetails, setProductsDetails] = useState<any[]>([]);
@@ -68,6 +69,7 @@ function Receipt() {
       setPageLoading(true);
       let prodList = await getProductList();
       setDataTableProducts(prodList);
+      setOgProducts(prodList);
       setProducts(prodList);
       let prodDetList = await getProductDetaiList();
       setProductsDetails(prodDetList);
@@ -170,17 +172,20 @@ function Receipt() {
       setProductsInCart([]);
       setDataTableProductsInCart([]);
       showToastSuccess("Tạo đơn thành công!");
+
     } catch (ex: any) {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!");
     } finally {
       setPageLoading(false);
+      searchProduct("");
+
     }
   }
 
   function searchProduct(searchPrompt: String) {
-    let productList = _.cloneDeep(products);
+    let productList = _.cloneDeep(ogProducts);
     if (searchPrompt.length === 0) {
-      setDataTableProducts(productList);
+      setProducts(productList);
     } else {
       productList = productList.filter((prod: any) =>
         prod.name
@@ -188,7 +193,7 @@ function Receipt() {
           .toLowerCase()
           .includes(searchPrompt.trim().toLowerCase())
       );
-      setDataTableProducts(productList);
+      setProducts(productList);
     }
   }
 
@@ -223,6 +228,7 @@ function Receipt() {
                 <TableRow>
                   <TableCell>Tên hàng</TableCell>
                   <TableCell>Giá</TableCell>
+                  <TableCell>Số lượng</TableCell>
                   <TableCell>Tình trạng</TableCell>
                   <TableCell>Tương tác</TableCell>
                 </TableRow>
@@ -243,7 +249,7 @@ function Receipt() {
                         <div className="flex items-center text-sm">
                           {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
                           <div>
-                            <p className="font-semibold">{product.name}</p>
+                            <p className="font-semibold text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>{product.name}</p>
                             <p className="text-xs text-gray-600 dark:text-gray-400">
                               {prodCat?.name}
                             </p>
@@ -251,9 +257,14 @@ function Receipt() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">
-                          $ {curProdDetail?.price ? curProdDetail?.price : 0}
+                        <span className="text-sm text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>
+                          {curProdDetail?.price ? curProdDetail?.price.toLocaleString() : 0} VND
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center text-sm">
+                          {product.productDetails[0].storedQuantity}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge type={prodType}>
@@ -339,7 +350,7 @@ function Receipt() {
                         <div className="flex items-center text-sm">
                           {/* <Avatar className="hidden mr-3 md:block" src={product.avatar} alt="product avatar" /> */}
                           <div>
-                            <p className="font-semibold">{product.name}</p>
+                            <p className="font-semibold text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>{product.name}</p>
                             <p className="text-xs text-gray-600 dark:text-gray-400">
                               {prodCat}
                             </p>
@@ -388,7 +399,11 @@ function Receipt() {
         </div>
       </div>
     </div>
+
+
   );
 }
 
 export default Receipt;
+
+
