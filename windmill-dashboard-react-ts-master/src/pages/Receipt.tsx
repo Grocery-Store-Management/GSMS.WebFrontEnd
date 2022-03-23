@@ -228,6 +228,7 @@ function Receipt() {
                 <TableRow>
                   <TableCell>Tên hàng</TableCell>
                   <TableCell>Giá</TableCell>
+                  <TableCell>Số lượng</TableCell>
                   <TableCell>Tình trạng</TableCell>
                   <TableCell>Tương tác</TableCell>
                 </TableRow>
@@ -259,6 +260,11 @@ function Receipt() {
                         <span className="text-sm text-wrap" style={{ maxWidth: "200px", wordWrap: "break-word" }}>
                           {curProdDetail?.price ? curProdDetail?.price.toLocaleString() : 0} VND
                         </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center text-sm">
+                          {product.productDetails[0].storedQuantity}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge type={prodType}>
