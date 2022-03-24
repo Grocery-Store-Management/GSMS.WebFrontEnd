@@ -172,13 +172,12 @@ function Receipt() {
       setProductsInCart([]);
       setDataTableProductsInCart([]);
       showToastSuccess("Tạo đơn thành công!");
-
     } catch (ex: any) {
       showToastError("Có lỗi xảy ra! Xin vui lòng thử lại!");
     } finally {
-      setPageLoading(false);
       searchProduct("");
-
+      await refreshData();
+      setPageLoading(false);
     }
   }
 
