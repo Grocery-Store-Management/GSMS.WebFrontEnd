@@ -78,31 +78,6 @@ function Login() {
       })
   }
 
-  // const SignInWithGitHub = () => {
-  //   var github_provider = new firebase.auth.GithubAuthProvider();
-
-  //   firebase.auth().signInWithPopup(github_provider)
-  //     .then(async (response) => {
-  //       const user = response.user;
-  //       const token: any = await user?.getIdToken();
-  //       localStorage.setItem("USER", JSON.stringify(user));
-  //       localStorage.setItem("token", token);
-  //       firestore.collection("gsms-employee").doc(user?.uid).get()
-  //         .then((doc) => {
-  //           if (doc.exists) {
-  //             console.log("Document data:", doc.data());
-  //             history.push('/app');
-  //           } else {
-  //             // doc.data() will be undefined in this case
-  //             console.log("No such document!");
-  //           }
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     })
-  // }
-
   const SignIn = () => {
     firestore.collection("gsms-employee").doc(username).get()
       .then((doc) => {
@@ -124,26 +99,25 @@ function Login() {
       }).catch(() => showToastError("Wrong username or password"));
   }
 
-  useEffect(() => {
-    localStorage.setItem("theme", "light")
-    if (localStorage.getItem("token")) {
-      getBrandList().then(() => {
-        var role = localStorage.getItem("role");
-        if (role === ROLE.admin) {
-          history.push('/app/reports');
-        } else {
-          history.push('/app/receipt');
-        }
-      }).catch(() => {
-        showToastError("Token is expired");
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   localStorage.setItem("theme", "light")
+  //   if (localStorage.getItem("token")) {
+  //     getBrandList().then(() => {
+  //       var role = localStorage.getItem("role");
+  //       if (role === ROLE.admin) {
+  //         history.push('/app/reports');
+  //       } else {
+  //         history.push('/app/receipt');
+  //       }
+  //     }).catch(() => {
+  //       showToastError("Token is expired");
+  //     });
+  //   }
+  // }, []);
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900" style={{ zIndex: -1, overflow: "hidden" }}>
       <img src={BackgroundCircle} alt="background" className='circle-background' />
-      <img></img>
       <div className='login-box '>
         <div
           style={{ zIndex: 1, overflow: "hidden" }}
