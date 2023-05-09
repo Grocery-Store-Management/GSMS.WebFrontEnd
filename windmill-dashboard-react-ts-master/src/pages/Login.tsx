@@ -110,7 +110,11 @@ function Login() {
           var user = doc.data();
           if (user?.password == password) {
             console.log("Document data:", doc.data());
-            history.push('/app/receipt');
+            if (doc.data()?.role == ROLE.admin) {
+              history.push('/app/reports');
+            } else {
+              history.push('/app/receipt');
+            }
           }
         } else {
           // doc.data() will be undefined in this case
